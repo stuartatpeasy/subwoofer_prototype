@@ -198,7 +198,40 @@ it and revisit it from another direction later.
     retained/ignored boundary. Remove or revise an ignore rule if its generator
     or reconstruction source ceases to exist.
 
-## 7. Completion checks
+## 7. Component-selection granularity
+
+1. Classify each component as **generic**, **performance-critical**, or
+   **specialised** according to its function in this design, not its price or
+   physical size.
+2. Specify a generic component by the electrical and mechanical properties
+   required for safe substitution: value, tolerance, voltage/current/power
+   rating, dielectric or construction, temperature behaviour, package or land
+   pattern, and any relevant ripple, pulse, bias, or lifetime requirement. Do
+   not lock a manufacturer part number or distributor SKU when these properties
+   adequately define the part.
+3. Use an exact manufacturer part number for specialised components whose
+   important behaviour is not captured reliably by a short generic
+   specification. Typical examples include semiconductors, magnetics,
+   safety-rated parts, connectors with critical mechanics, crystals, and
+   amplifier output inductors.
+4. Treat a passive as performance-critical when parasitics, DC-bias behaviour,
+   ESR, pulse capability, thermal construction, matching, or stability-loop
+   interaction materially affects circuit operation. Specify either an exact
+   manufacturer part number or a documented approved-part/approved-series list
+   with explicit substitution limits.
+5. Avoid false precision. Do not spend project effort choosing an exact SKU for
+   an ordinary resistor or decoupling capacitor unless its particular
+   construction or parasitics matter. Conversely, do not label a part generic
+   merely because its nominal value is commonplace.
+6. Distributor stock, price, and lifecycle flags are procurement snapshots,
+   not permanent design properties. Recheck them before ordering. Record a
+   distributor number only as a purchasing aid; the manufacturer part number
+   remains the design identity for a specialised part.
+7. Apply the same distinction in schematics, BOMs, specifications, and TODO
+   items: generic parts carry substitution requirements; specialised parts
+   carry exact identities and the evidence supporting them.
+
+## 8. Completion checks
 
 For a user-requested comprehensive documentation review or handover, follow
 [`doc/DOCUMENTATION_REVIEW.md`](doc/DOCUMENTATION_REVIEW.md) in addition to this file.
