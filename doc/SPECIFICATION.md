@@ -1,5 +1,12 @@
 # System specification
 
+> **State — current system authority; reviewed 2026-10-11.** Owns locked
+> architecture and cross-subsystem constraints; detailed plate geometry and
+> finish belong to [mechanical design](MECHANICAL.md). Read for system-level
+> changes. Current direction permits CNC plate reliefs, components on both
+> PCB sides and justified through-hole parts. The 6061/finish choice and
+> completed thermal/mechanical stack remain provisional.
+
 ## 1 Locked decisions
 
 Do not revisit without measured/simulation evidence:
@@ -14,25 +21,6 @@ Do not revisit without measured/simulation evidence:
   intrusions and before assigning any apparent-volume benefit to wadding
 - 36 V main rail
 - Mean Well `RSP-200-36` main PSU
-- XP Power `STH0548S15` non-isolated 36 V-to-15 V switching-regulator module
-- Bourns `SRR7045-560M` 56 µH shielded power inductor in the populated Rev-A
-  STH0548S15 input EMI filter
-- generic 22 µF, 63 V-minimum, ±20%, 105 °C SMD aluminium-electrolytic
-  capacitor at the STH0548S15 input, with measured ESR included in the filter
-  damping assessment; 63 V is preferred and 100 V is an acceptable substitute
-- KEMET `C1206C104K1RAC7867` 100 nF, 100 V, ±10%, X7R, 1206 for the
-  STH0548S15 input and output bypasses and both LM2937 input bypasses; current
-  manufacturer packaging aliases are documented in
-  [Power and grounding](POWER_AND_GROUNDING.md)
-- 250 mA maximum total design load on the 15 V rail, despite the module's
-  400 mA component rating
-- two Texas Instruments `LM2937ESX-12/NOPB` fixed 12 V, 500 mA
-  DDPAK/TO-263 post-regulators, one each for `12V_AMP` and `12V_ANA`
-- 0 Ω default prefilter link on `12V_AMP`; 10 Ω RC prefilter on `12V_ANA`
-- KEMET `EEV226M035S9DAA` 22 µF, 35 V SMD aluminium electrolytic at each
-  LM2937 input and output; approve the parts for assembly only after measured
-  ESR and temperature behaviour meet the requirements in
-  [Power and grounding](POWER_AND_GROUNDING.md)
 - Schurter `DD11.0111.1111` C14 inlet with two-pole switch, one-pole line fuse,
   and no additional Rev-A inlet filter
 - Schurter `T2AH250V` 2 A time-lag ceramic appliance fuse
@@ -40,7 +28,7 @@ Do not revisit without measured/simulation evidence:
   point to the plate and PSU frame-ground terminal
 - TPA3251 PBTL
 - approximately 140–150 W
-- 450 kHz switching frequency
+- nominal 600 kHz switching frequency
 - passive cooling
 - 35 °C maximum rated room ambient; use 40 °C as a thermal-design margin
   case without claiming continuous full-power operation above 35 °C
@@ -53,11 +41,16 @@ Do not revisit without measured/simulation evidence:
   to the internally connected driver from a PBTL output fault
 - analogue RESET supervision with delayed turn-on and prompt power-down mute;
   no MCU and no automatic fault retry
-- Texas Instruments `TPS3842A011DRLR` adjustable undervoltage supervisor for
-  RESET control, in the six-pin 0.50 mm-pitch SOT-5X3 package
+- two Texas Instruments `TPS3762-Q1` undervoltage supervisors with wire-ORed
+  open-drain RESET outputs: fixed 30 V `TPS3762EUVF4DDFRQ1` monitors 36 V
+  PVDD; adjustable `TPS3762EUV02DDFRQ1` monitors the approximately 17.36 V
+  buck output. Both are powered from 36 V. Use a separate 130 kΩ/7.5 kΩ,
+  1% E24 SENSE divider near the amplifier's `17V3` feed, independent of the
+  MP4541 feedback path; the loaded headroom margin remains to be verified in
+  [Power amplifier](POWER_AMPLIFIER.md).
 - OPA1678/OPA1679
-- single 12 V analogue rail
-- buffered 6 V VMID
+- single 15 V analogue rail
+- buffered 7.5 V VMID
 - stereo RCA input
 - approximately 47 kΩ input impedance
 - active mono averaging
@@ -68,37 +61,65 @@ Do not revisit without measured/simulation evidence:
 - selectable 0°/180° polarity
 - differential TPA3251 drive
 - IHLP5050FDER100M5A inductors
-- SMD-only amplifier board
+- amplifier-board component technology and side chosen by electrical layout and
+  the verified machined-plate clearance; through-hole parts are permitted
 - X7R MLCC output-filter capacitors
-- 6 mm 1050A-H14 aluminium rear plate
+- nominal 6 mm CNC-machined aluminium rear plate with local PCB-clearance
+  reliefs and a continuous TPA3251 thermal land
 - matt-black external plate finish
 - no fan
 - no MCU/firmware
-- TPA3251 is the only rear-side PCB component and faces the aluminium plate
-- all other PCB components are front-side SMD
-- no through-hole components anywhere on the PCB
+- TPA3251 faces the plate; selected nearby support components may share its
+  plate-facing PCB side in machined reliefs
+- through-hole parts are allowed where their electrical/mechanical benefit and
+  finished lead clearance justify them
 - use leaded SMD IC packages with externally accessible pins; do not use BGA,
   CSP, DFN, QFN, or similar leadless packages
 - prefer larger-pitch packages such as SOIC where they are reasonably
   available; pin pitches down to 0.50 mm are acceptable when necessary
 - one electrically partitioned four-layer PCB; no two-layer fallback
 
-## 1.1 Locked PCB architecture
+The former 1050A-H14 flat plate, painted-exterior process, SMD-only board,
+and front-side-only support-component rules are superseded by the CNC-relieved
+plate and component-placement permissions above. JLCCNC 6061 and ordinary
+matt-black anodising are preferred **provisional** material/finish choices,
+subject to the thermal and fabrication gates in [Mechanical design](MECHANICAL.md).
+
+The previous 15 V converter feeding separate 12 V amplifier and analogue
+post-regulators is superseded by the current power-plan revision. The partial
+[canonical schematic](../diptrace/main_board.dchxml) now shows an MP4541GN
+candidate 36 V-to-approximately-17.36 V buck feeding an `XC6701DF02FR-G` 15 V
+analogue regulator and an `NCP1117ST12T3G` 12 V amplifier regulator. The buck
+ground split and exposed-pad mapping have been revised. The 12 V regulator's
+three leads and output-connected tab are now mapped correctly. Its ceramic
+output-capacitor stability, thermal, and cross-domain return issues remain;
+the present PGND–AGND–GNDAMP links are unpopulated placeholders, and a
+single-net `GND` schematic revision is proposed. Its
+amplifier load is not yet drawn. Prior
+component analysis remains
+in [power and grounding](POWER_AND_GROUNDING.md) as superseded context, not
+an active procurement or assembly instruction.
+
+## 1.1 PCB architecture and proposed grounding revision
 
 - one mechanically unified PCB, partitioned into analogue-front-end and
   Class-D power-amplifier domains
 - four copper layers for Rev A
-- no shared copper planes between the two domains
+- physically controlled analogue and amplifier return regions; one common
+  schematic `GND` net is proposed, with the actual copper topology open
 - separate power and return entries for the two domains, preserving the
   deliberate external branching defined in
   [Power and grounding](POWER_AND_GROUNDING.md)
-- a copper-free inter-domain corridor crossed only by the balanced audio pair
-  in the normal populated configuration
+- a placement corridor between analogue circuitry and Class-D switching
+  nodes; route the balanced audio pair together and retain suitable local
+  return references for any crossing
 
-Four layers are a project requirement even though they are not a functional
-requirement of the TPA3251 itself. The exact fabricator stack-up and the thermal
-interface between the rear-mounted top-exposed PowerPAD and aluminium plate
-remain to be finalised before layout.
+The one-board, four-layer architecture remains locked; the common `GND` net
+and return-copper layout are a proposed revision to the earlier split-net
+scheme. Four layers are a project requirement even though they are not a functional
+requirement of the TPA3251 itself. The exact fabricator stack-up, component
+placement, milled plate reliefs, and thermal interface between the rear-mounted
+top-exposed PowerPAD and aluminium plate remain to be finalised before layout.
 
 ## 2 Driver
 
@@ -206,7 +227,11 @@ These are small-signal model results, not completed-enclosure measurements.
 - 4 Ω load
 - main rail: 36 V DC
 - target clean output: approximately 140–150 W
-- switching frequency: 450 kHz
+- switching frequency: nominal 600 kHz, set by the 10.0 kΩ `FREQ_ADJ`
+  resistor in TI's PBTL reference design. The earlier 450 kHz requirement had
+  no recorded rationale; the 2026-10-11 review retained the reference resistor
+  and corrected the requirement. The output-filter values remain provisional
+  pending their existing validation gates.
 - passive cooling only
 
 ## 5 Main PSU

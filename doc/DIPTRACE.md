@@ -7,21 +7,24 @@
 > measured results, or the source schematic/layout themselves  
 > **Read when:** Inspecting, comparing, parsing, exporting, or proposing tooling
 > for DipTrace schematic, PCB, component-library, or pattern-library data  
-> **Current approved action:** Read-only inspection of retained exports; do not
-> modify/import XML or create/deploy a plug-in without task-specific authorization  
-> **Next gate:** Retain the first project `.dchxml` and `.dipxml` snapshots and
-> validate their root type, version, units, and correspondence to the native files  
-> **Limitations:** No project design export or live plug-in exchange has yet been
-> inspected, and no parser or plug-in has yet been implemented or qualified  
-> **Last reviewed:** 2026-09-17
+> **Current approved action:** Treat `diptrace/main_board.dchxml` as the canonical
+> partial schematic; inspect it read-only for circuit questions
+> **Next gate:** Complete the schematic, then validate its electrical details and
+> any future PCB export against the selected design
+> **Limitations:** No PCB design export or live plug-in exchange has been
+> inspected, and no parser or plug-in has been qualified
+> **Last reviewed:** 2026-10-04
 
 ## 1 Authority and retained resources
 
-The project uses DipTrace 5.3.0.3. Native `.dch` and `.dip` files remain the
-authoritative editable schematic and PCB sources. Corresponding `.dchxml` and
-`.dipxml` files are the preferred machine-readable inspection snapshots; PDF,
-BOM, pick-and-place, Gerber X2, and drill exports are secondary evidence for
-their specific visual, assembly, or manufacturing purposes.
+The project uses DipTrace 5.3.0.3. By the user's 2026-10-04 decision,
+`diptrace/main_board.dchxml` is the canonical source for the current partial
+schematic. It is a DipTrace schematic XML file with root type
+`DipTrace-Schematic`, version `5.3.0.3`, and units `inch`. There is presently no
+matching `.dch` file in `diptrace/`; do not require one as schematic authority.
+For future PCB work, decide the `.dip`/`.dipxml` authority when those files
+exist. PDF, BOM, pick-and-place, Gerber X2, and drill exports remain secondary
+evidence for their specific visual, assembly, or manufacturing purposes.
 
 The retained DipTrace Plugin & XML AI Context Pack is at:
 
@@ -62,23 +65,34 @@ This routing keeps the large pack out of routine electrical-design context.
 
 For each design checkpoint:
 
-1. Preserve the matching native `.dch` or `.dip` file.
-2. Save/export the corresponding `.dchxml` or `.dipxml` snapshot without
-   replacing the native authority.
-3. Record or compute a SHA-256 hash for every inspected input.
-4. Validate the XML root `Type`, `Version`, and `Units` before interpreting it.
-5. Parse locally and return a bounded, task-specific report rather than loading
+1. Inspect the current canonical `diptrace/main_board.dchxml` for schematic
+   questions; preserve it during read-only review.
+2. Record or compute a SHA-256 hash for every inspected input.
+3. Validate the XML root `Type`, `Version`, and `Units` before interpreting it.
+4. Parse locally and return a bounded, task-specific report rather than loading
    the complete XML into conversational context.
-6. Compare schematic and PCB component, footprint, pin/pad, and net identities
+5. Compare schematic and PCB component, footprint, pin/pad, and net identities
    before treating the two snapshots as a matched design state.
-7. Use PDFs when visual organisation or placement matters and manufacturing
+6. Use PDFs when visual organisation or placement matters and manufacturing
    outputs only for the particular fabrication checks they can establish.
 
-When project design files are introduced, use a narrow retained tree such as
-`diptrace/source/` for native files, `diptrace/exchange/` for XML snapshots, and
-`diptrace/review/` for intentionally retained visual or tabular exports. Do not
-create or ignore bulk generated outputs until their retained inputs and
-reconstruction route are known.
+Keep the present canonical XML at its existing path. If future design files
+justify a directory split, update this authority and the project index as part
+of that move. Do not create or ignore bulk generated outputs until their
+retained inputs and reconstruction route are known.
+
+For separate ground nets that meet physically, DipTrace's [official FAQ](https://diptrace.com/support/faq/)
+recommends a zero-ohm resistor (or small inductor) between nets; a direct wire
+merges them. Place such a link only at a genuine PCB junction and check its
+current rating and copper path. If the returns meet off-board at the PSU or
+distribution wiring, keep the board nets distinct and show the junction in a
+separate system wiring drawing or through explicitly labelled connector pins.
+The link symbol is a netlist aid, not a substitute for deciding the physical
+return route. An unpopulated 0 Ω part is an open circuit, so the current
+R1/R2 placeholders are not a valid finished-board join. The proposed main-board
+revision uses one `GND` net and controlled local return copper; the canonical
+schematic has not yet been changed. Check the completed copper and net
+connectivity, and review its high-current return paths explicitly.
 
 ## 4 Important interpretation rules learned from the pack
 

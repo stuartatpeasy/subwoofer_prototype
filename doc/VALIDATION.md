@@ -1,5 +1,10 @@
 # Prototype validation
 
+> **State — current prototype checks; reviewed 2026-10-11.** Owns practical
+> build verification. The auxiliary buck and regulators remain candidates;
+> the two-supervisor RESET topology and dedicated buck divider are selected;
+> 12 V LDO headroom remains to be checked at the loaded buck trough.
+
 ## 1 Mains construction and protective earth
 
 Before first energisation:
@@ -37,34 +42,40 @@ additional protection and does not replace the PE inspection and bond test.
 ## 2 Electrical
 
 - input impedance vs frequency
+- assembled 20–100 Hz analogue-path distortion at representative and maximum
+  clean signal levels with the selected Würth `885012208124` coupling
+  capacitors; if a material excess appears, compare with a film reference
+  and measure effective capacitance at the actual DC biases before changing
+  the part choice
 - LPF frequency range
 - LPF Q
 - gain structure
 - clipping level into 4 Ω
 - output noise
 - PWM residual
-- STH0548S15 15 V output regulation, ripple, load-step response, and switching
-  spectrum at representative reset, idle, and driven auxiliary loads, including
-  any interaction products with the TPA3251's 450 kHz switching
-- combined steady-state 15 V rail load no greater than the 250 mA project limit
-- selected LM2937 output-capacitor ESR measured at 100 kHz on a representative
-  sample and confirmed within 0.01–3 Ω; manufacturer data or additional
-  measurements must also cover the project's actual temperature range and
-  confirm at least 10 µF capacitance
-- LM2937ESX-12 dropout characterised at 25 °C with load currents of 50, 75,
-  100, 125, 150, 175, and 200 mA: establish the regulated output at 15.0 V
-  input, reduce input voltage slowly, and record `VIN - VOUT` when `VOUT` has
-  fallen 100 mV from its regulated baseline at each load
+- MP4541GN candidate `17V3` output regulation, minimum loaded trough, ripple,
+  load-step response, and switching spectrum at representative reset, idle,
+  and driven auxiliary loads, including
+  any interaction products with the TPA3251's nominal 600 kHz switching
+- measure the actual 15 V analogue-rail load and XC6701 dropout/headroom at
+  that load and the expected warm operating condition; note any analogue-rail
+  droop before RESET without treating pre-dropout muting as a requirement
+- verify the NCP1117 12 V regulator's effective output capacitance and ESR
+  meet its stability requirements at the assembled voltage and temperature;
+  check its thermal behaviour at the actual amplifier-rail load
 - quiescent differential DC voltage at the post-filter loudspeaker output
-- TPS3842 RESET timing at cold and warm start: remain low for at least 400 ms
-  after PVDD application and release only after the amplifier and analogue
-  rails have settled
+- shared TPS3762 RESET timing at cold and warm start: remain low for at least
+  400 ms after PVDD application and release only after the amplifier and
+  analogue rails have settled
 - peak and duration of post-filter loudspeaker-output transients during normal
   power-up, normal power-down, rapid off/on operation, and removal/restoration
   of mains power; define the numerical thump criterion before testing
-- prompt TPS3842 RESET assertion while the monitored 15 V rail decays and both
-  12 V rails are still regulated; verify the actual falling and release
-  thresholds against the calculated resistor/tolerance limits
+- prompt RESET assertion as either 36 V PVDD or `17V3` decays; measure the
+  buck monitor's falling and rising thresholds against its calculated divider
+  limits, and verify at least 400 ms hold after an isolated buck interruption.
+  Bound the instantaneous `17V3` trough and amplifier-feed/return drop against
+  the calculated 0.47 V allowance above the NCP1117's 13.5 V specified
+  input minimum; record both LDO outputs at RESET assertion
 - correct diagnostic states at the `FAULT` and `CLIP_OTW` test points for safe,
   non-destructive conditions available during bring-up; do not inject a
   destructive output fault merely to exercise protection
@@ -76,8 +87,8 @@ additional protection and does not replace the PE inspection and bond test.
 - polarity switching
 - idle PVDD current
 - PVDD and bootstrap switching-node ringing at the IC pins, using a probing
-  method with sufficiently small loop area to assess the opposite-side
-  capacitor/via implementation rather than the probe loop
+  method with sufficiently small loop area to assess the actual local
+  capacitor/routing implementation rather than the probe loop
 
 ## 3 Thermal
 

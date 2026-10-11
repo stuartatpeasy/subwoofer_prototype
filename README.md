@@ -14,7 +14,8 @@ Primary constraints:
 - no microcontroller or firmware
 - no forced-air cooling
 - no custom mains PSU
-- all amplifier-board parts SMD
+- CNC-relieved rear plate allowing selected components and through-hole leads on
+  the plate-facing side of the amplifier PCB
 - one electrically partitioned four-layer PCB
 - engineering-led, measurable design
 
@@ -32,7 +33,7 @@ specification first only when a decision could affect more than one subsystem.
 | What constrains the cabinet, PCB, and rear plate? | [Mechanical design](doc/MECHANICAL.md) | PCB clearance, aluminium plate, thermal interface, and rear-panel structure |
 | What heat load must passive cooling handle? | [Thermal design](doc/THERMAL.md) | Present thermal assumptions and cooling requirement |
 | What must the prototype prove? | [Prototype validation](doc/VALIDATION.md) | Electrical, thermal, and acoustic measurements |
-| How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Native/XML authority, AI context-pack route, read-only inspection workflow, and future parser/plugin gates |
+| How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Canonical partial schematic XML, AI context-pack route, read-only inspection workflow, and future parser/plugin gates |
 | What work remains? | [Action list](doc/TODO.md) | Ordered design, construction, and validation tasks |
 | How should the documentation itself be reviewed or consolidated? | [Documentation review procedure](doc/DOCUMENTATION_REVIEW.md) | Targeted and comprehensive review modes, preservation rules, validation, and Git gates |
 

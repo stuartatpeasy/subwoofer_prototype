@@ -1,11 +1,22 @@
 # Power and grounding
 
-> **State:** Current design authority for the power tree, mains entry,
-> protective earth, DC distribution, and grounding. The RSP-200-36, inlet,
-> fuse, STH0548S15 auxiliary converter, two LM2937ESX-12/NOPB post-regulators,
-> M4 protective-earth topology, and unfiltered-inlet decision are locked.
-> Exact internal placement remains part of the mechanical-layout gate. Last
-> reviewed: 2026-09-19.
+> **State:** Current authority for mains entry, protective earth, DC
+> distribution, and grounding. The RSP-200-36, inlet, fuse, M4 protective-earth
+> topology, and unfiltered-inlet decision remain locked. The auxiliary supply
+> is under redesign: the canonical partial schematic now includes an MP4541GN
+> candidate 36 V-to-approximately-17.36 V buck feeding a 15 V analogue LDO and
+> an NCP1117 12 V amplifier LDO. The NCP1117 pin and tab mapping is now
+> correct. Its output-capacitor stability, thermal design, and physical return
+> paths need resolution as described in Section 1. The proposed schematic
+> direction is one GND net with locally controlled analogue, buck, and
+> amplifier return copper; the canonical schematic still shows three nets.
+> The power tree is not approved for PCB implementation. The selected two-
+> supervisor RESET topology senses 36 V and `17V3` with a selected dedicated
+> divider; its headroom claim depends on the loaded buck trough and 12 V LDO
+> input in [Power amplifier](POWER_AMPLIFIER.md).
+> Earlier STH0548S15/LM2937 selections and their calculations below are
+> superseded context, not current implementation instructions. Last reviewed:
+> 2026-10-11.
 
 ## 1 Power architecture
 
@@ -16,29 +27,116 @@
   |
   +--> TPA3251 PVDD
   |
-  +--> ~15 V buck
+  +--> MP4541GN ~17.36 V buck (candidate partial schematic)
          |
-         +--> 12 V AMP LDO
+         +--> NCP1117ST12T3G 12 V LDO (drawn, not approved)
          |      |
-         |      +--> TPA3251 VDD/GVDD
+         |      +--> TPA3251 VDD/GVDD (drawn; loaded rail unverified)
          |
-         +--> low-noise 12 V ANA LDO
+         +--> XC6701DF02FR-G 15 V analogue LDO (partial schematic)
                 |
                 +--> analogue front end
                 |
-                +--> buffered VMID ≈ 6 V
+                +--> buffered VMID ≈ 7.5 V
 ```
 
 Requirements:
 
-- `12V_AMP` and `12V_ANA` are separate nets
+- keep the amplifier and analogue supply domains separate
 - deliberate grounding/star connection
-- both rails use the fixed 12 V Texas Instruments `LM2937ESX-12/NOPB` in the
-  exposed-lead DDPAK/TO-263 package
-- retain branch-specific input filtering and separate returns; using one LDO
-  type does not combine the electrical domains
+- resolve the MP4541GN implementation issues below and the 12 V
+  amplifier supply faults in Section 1.2, then recalculate noise, load, heat,
+  grounding, and RESET sequencing; confirm the lowest loaded `17V3` trough
+  against the selected buck supervisor's release threshold
 
-### 1.1 Locked 36 V supply: Mean Well RSP-200-36
+### 1.1 MP4541GN candidate schematic review (2026-10-06)
+
+The canonical partial schematic uses `R6 = 180 kΩ` and `R10 = 11 kΩ` at FB,
+giving a nominal `1 V × (1 + 180/11) ≈ 17.36 V` output. `R5 = 47 kΩ` sets
+approximately 674 kHz in the manufacturer's nominal frequency equation.
+With 36 V input and `L1 = 47 µH`, ideal nominal inductor ripple is about
+0.28 A peak-to-peak. The Bourns `SRN8040-470M` has 1.4 A rated RMS current,
+1.5 A saturation current, and 0.19 Ω maximum DCR; the current rating is
+plausible for the auxiliary load, subject to its completed load budget.
+
+The revised canonical XML shows a nine-pad SOIC-8EP pattern for `U2` and
+1210 patterns for `C7`–`C9`. U2 has symbol pad 9 assigned to `PGND`.
+Verify the actual land dimensions against the chosen parts and the resulting
+PCB netlist before layout.
+
+The current XML assigns `C5`–`C7` (36 V input capacitors), `C9`–`C11`
+(buck output capacitors), `C14` (U2 VCC decoupling), `R8` (FREQ), `R4/R9` (EN
+divider), `R6/R10` (FB divider), and U2 GND pin 7 and exposed pad 9 to `PGND`.
+The 15 V LDO U3 and its local bypass capacitors remain on `AGND`.
+Connect R10 to a quiet PGND sense point near the output-capacitor return, not
+through the high-current switching return. Keep the VIN/input-capacitor and
+SW/inductor/output-capacitor current loops compact; a new net name alone does
+not control their physical paths. Lay out the buck-to-analogue return region so
+the buck's pulsed current does not flow through quiet analogue copper.
+The TPA3251's PVDD and 12 V VDD/GVDD returns use one local amplifier ground.
+The 12 V branch takes its input from the buck's `17V3` net and returns it on
+`GNDAMP`. The current schematic joins `PGND` to `GNDAMP` through R1 (0 Ω)
+and `AGND` to `GNDAMP` through R2 (0 Ω). These parts will not be populated, so
+the proposed schematic revision merges the three nets into `GND` and removes
+R1/R2. Keep the amplifier return out of quiet analogue copper. Final 12 V
+supply placement and return routing remain open.
+
+The three output capacitors total 30 µF by nameplate value; their effective
+capacitance at approximately 17.36 V bias is unverified. The output net remains
+named `17V3`. The 12 V LDO is sourced from this rail; at the previous
+120 mA amplifier-rail allocation its pass loss is approximately
+`(17.36 V - 12 V) × 0.12 A ≈ 0.64 W`, before ground-current loss. The MP4541
+may enter pulse-skip operation at light load, so assess rail ripple and
+analogue noise at the actual idle and operating loads. These are design
+checks, not claims of measured faults.
+
+Manufacturer sources: [MP4541GN data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4541GN/document_id/9688/),
+[MPS exposed-pad guidance](https://forum.monolithicpower.com/t/mp4541-exposed-pad-connection/2823/3),
+[SRN8040 data sheet](https://www.bourns.com/docs/product-datasheets/srn8040.pdf),
+and [Samsung capacitor identity](https://product.samsungsem.com/mlcc/CL32A106KBJNNN.do).
+
+### 1.2 NCP1117 12 V branch review (2026-10-06)
+
+The placed `U1 = NCP1117ST12T3G` maps VIN/pin 3 to `17V3`, VSS/pin 1 to
+`GNDAMP`, and VOUT/pin 2 and tab pad 4 to `12VAMP`. This matches onsemi's
+pinout, including its tab-to-output connection. Verify all four pads in the
+PCB netlist before layout; this closes the earlier schematic tab-net error.
+
+The NCP1117 input maximum is 20 V. For assumed 1% R6/R10 resistors and
+MPS's 0.985–1.015 V feedback-reference limits, the 17.36 V target spans about
+16.78–17.96 V in steady-state tolerance. That leaves about 2.04 V to the
+NCP1117 input limit at the high end; resistor tolerance is not specified in
+the schematic, and startup/load transients still need to remain within 20 V.
+
+The `XC6701DF02FR-G` 15 V output may be as high as 15.30 V. Torex's
+25 °C voltage chart specifies maximum dropout of 0.17 V at 20 mA and
+0.85 V at 100 mA for this output version. At the illustrative 16.78 V
+minimum buck level, remaining margin is about 1.31 V at 20 mA or
+0.63 V at 100 mA, before rail ripple and return-path drops. Establish the
+actual analogue load and use its loaded headroom and thermal conditions;
+the 20 mA case is promising, while 100 mA leaves little room.
+Torex defines the published dropout point at a 2% output fall, so these
+25 °C figures do not establish the onset of loss of regulation. The selected
+buck supervisor threshold in [Power amplifier](POWER_AMPLIFIER.md) permits
+analogue-rail droop during a buck fault; it does not guarantee RESET before
+this 15 V LDO leaves regulation.
+
+`C4` is a nominal 10 µF ceramic at the NCP1117 output, now paralleled with
+`C19 = 470 µF` electrolytic and `C20 = 100 nF`. Onsemi requires at
+least 4.7 µF *effective* output capacitance and a specified ESR stability
+range (typically 33 mΩ to 2.2 Ω); the bank's effective capacitance under 12 V
+bias and ESR have not been verified to satisfy those limits. Its input capacitor
+`C3` is also nominally 10 µF. At 120 mA, the 0.64 W pass loss implies about
+103 °C junction rise using the data sheet's 160 °C/W SOT-223 minimum-pad
+reference, before ground-current loss. This is not the actual board's thermal
+resistance, but demands a deliberate copper/thermal design or a lower-loss
+regulator. The TPA3251 12 V VDD/GVDD feeds and local bypasses are now drawn;
+their actual load and U1 stability/thermal behaviour remain unverified.
+
+Manufacturer sources: [onsemi NCP1117 data sheet](https://www.onsemi.com/download/data-sheet/pdf/ncp1117-d.pdf)
+and [Torex XC6701 data sheet](https://product.torexsemi.com/system/files/series/xc6701.pdf).
+
+### 1.3 Locked 36 V supply: Mean Well RSP-200-36
 
 Use the Mean Well `RSP-200-36`. Manufacturer data current at the review date:
 
@@ -121,7 +219,7 @@ Primary sources:
 - [Mean Well enclosed-supply installation manual](https://www.meanwell.com/Upload/PDF/Enclosed_Type_EN.pdf)
 - [Mean Well RSP-200 approvals and declarations](https://www.meanwell.com/webaPP/Product/search.aspx?pdf=UlNQLTIwMCwzMjAtVUstZGVjLnBkZg%3D%3D&prod=RSP-200)
 
-### 1.2 Mains inlet, switching, and appliance fuse
+### 1.4 Mains inlet, switching, and appliance fuse
 
 Locked inlet assembly:
 
@@ -183,7 +281,7 @@ Primary component sources:
 - [Schurter fuse-drawer data](https://www.schurter.com/en/datasheet/typ_fusedrawer_2.pdf)
 - [Schurter SPT fuse data](https://www.schurter.com/en/datasheet/typ_spt_5x20.pdf)
 
-### 1.3 Internal mains wiring and access assumptions
+### 1.5 Internal mains wiring and access assumptions
 
 - Use harmonised stranded copper appliance wire, 0.75 mm² minimum, rated
   300/500 V or better and for the expected internal temperature: brown line,
@@ -258,29 +356,48 @@ Requirements:
 The Mean Well PSU output is the primary DC branching point.
 
 ```text
-Mean Well +V
-  |
-  +--> dedicated heavy feed --> TPA3251 amplifier-domain power entry
-  |
-  +--> separate feed --> 36 V -> 15 V buck converter
+Mean Well +V (three common terminals)
+  |-- two proposed conductors --> TPA3251 amplifier-domain power entry
+  +-- one proposed conductor  --> 36 V -> 17V3 buck converter
 
-Mean Well -V
-  |
-  +--> dedicated heavy return --> TPA3251 power-ground plane
-  |
-  +--> separate return --> buck-converter input return
+Mean Well -V (three common terminals)
+  |-- two proposed conductors --> TPA3251 power-ground region
+  +-- one proposed conductor  --> buck-converter input return
 ```
 
 Requirements:
 
 - Amplifier and buck currents must not share significant wiring impedance.
-- Branches should meet only at, or immediately adjacent to, the Mean Well output terminals.
+- The buck-fed 12 V amplifier rail also connects the PCB return regions;
+  do not assume the PSU terminals are their only connection. Keep each
+  outgoing feed close to its corresponding return and review the resulting
+  parallel paths.
 - Use suitably heavy conductors for the amplifier branch.
 - TPA3251 PCB must use a compact, low-impedance ground plane rather than star traces.
 
+Earlier candidate amplifier-branch connector (2026-10-06): Molex Micro-Fit+
+`218216-0400` four-contact right-angle SMT header with mating
+`226263-1043` 300 mm, 16 AWG, factory-terminated female-to-free-end cable.
+That candidate assigned two contacts to +36 V and two to return; these are two electrical nets,
+regardless of the RSP-200's three parallel screw terminals per net. At the
+36 V/5.56 A PSU limit, each connector contact is individually rated above the
+whole branch current, so safe operation does not rely on equal current sharing.
+This is a procurement candidate, not an approved PCB footprint or harness:
+confirm pin numbering, pad/anchor geometry, cable reach, wire-end termination,
+strain support, and polarity marking during layout. This four-contact candidate
+does not implement the newly proposed six-conductor arrangement; select a
+suitable connector or connector set before layout. Keep the buck's separate
+feed and return as shown above. Mouser UK listed both parts as in stock,
+normally stocked, active, and MOQ 1 at the review date; recheck before order.
+
 ---
 
-## 5 Auxiliary-rail grounding
+## 5 Superseded auxiliary-rail design and grounding
+
+Sections 5.1 and 5.2 retain the earlier 15 V converter and two 12 V
+post-regulator analysis for provenance. They do not define the current power
+tree or its bill of materials. The separate-domain principle remains current;
+the exact new branching and return junction await the complete schematic.
 
 The 15 V buck output is the branching/reference point for the two 12 V rails.
 
@@ -315,7 +432,7 @@ Requirements:
   are implemented on separate PCBs or on one partitioned PCB.
 - Do not route TPA3251 gate-drive or switching-current returns through analogue-ground wiring.
 
-### 5.1 Locked 15 V converter: XP Power STH0548S15
+### 5.1 Previous 15 V converter: XP Power STH0548S15
 
 Use the XP Power `STH0548S15` non-isolated switching-regulator module:
 
@@ -408,11 +525,13 @@ Capacitor sources:
 
 The data sheet gives approximately 540 kHz switching at 20% load and about
 50 kHz at 10% load. Check conducted ripple, magnetic/electric coupling, and
-mixing with the TPA3251's 450 kHz switching during prototype validation. The
+mixing with the TPA3251's then-assumed 450 kHz switching during prototype
+validation. The current amplifier setting is nominal 600 kHz; this paragraph
+records the superseded converter option. The
 two 12 V post-regulators remain required; the converter does not directly feed
 the analogue or amplifier housekeeping circuits.
 
-### 5.2 Locked 12 V post-regulators and branch networks
+### 5.2 Previous 12 V post-regulators and branch networks
 
 Use one Texas Instruments `LM2937ESX-12/NOPB` on each branch. This is the
 fixed-12 V, 500 mA DDPAK/TO-263 version; do not substitute the lower-current
@@ -578,7 +697,7 @@ The aluminium rear plate acts as:
 The TPA3251 heatsink/PowerPAD arrangement requires the amplifier ground to be intentionally referenced to the rear plate.
 
 ```text
-TPA3251 AMP_GND
+TPA3251 GNDAMP
   |
 controlled low-impedance bond
   |
@@ -591,7 +710,7 @@ Requirements:
 
 - Use one intentional amplifier-ground-to-chassis bond.
 - Locate this bond close to the TPA3251/heatsink region.
-- Avoid additional unintended low-impedance AMP_GND-to-chassis connections elsewhere.
+- Avoid additional unintended low-impedance GNDAMP-to-chassis connections elsewhere.
 - Treat the Mean Well `-V` rail as earth-referenced once the completed amplifier/chassis bonding is installed.
 
 ---
@@ -601,7 +720,7 @@ Requirements:
 The analogue domain uses a dedicated quiet ground plane:
 
 ```text
-12V_ANA_GND
+AGND
   |
 analogue-domain ground plane
   |
@@ -637,31 +756,18 @@ Reason:
 
 ## 9 Grounding topology summary
 
-```text
-                         PROTECTIVE EARTH
-                               |
-                    dedicated chassis stud
-                               |
-                    aluminium rear plate
-                               |
-                   controlled AMP_GND bond
-                               |
-                         Mean Well -V
-                        /             \
-                       /               \
-              AMP power return      buck return
-                    |                    |
-              TPA3251 ground            |
-                                         |
-                                  15 V buck output
-                                   /             \
-                                  /               \
-                         12V_AMP_GND          12V_ANA_GND
-                              |                    |
-                        TPA housekeeping      analogue ground
-                                                   |
-                                            insulated RCAs
-```
+The current partial schematic uses `GNDAMP`, `PGND`, and `AGND`, joined through
+R1/R2 0 Ω links that are not intended to be populated. These links do not
+represent a completed-board connection. The proposed revision uses one
+electrical `GND` net and controls analogue, buck, and amplifier return paths by
+placement and copper geometry. The six Mean Well output terminals are three
+connections to each of its common +V and -V rails, not isolated outputs.
+Separate amplifier and buck 36 V wire branches remain intended; their return
+paths also connect on the PCB through the buck-fed 12 V amplifier rail and its
+local decoupling. Do not claim a single physical ground junction or use the
+TPA3251's internal ground connections as a PCB return conductor. Keep the
+12 V amplifier return out of quiet analogue copper. The exact board-current
+paths and connector assignment remain to be settled in layout.
 
 ---
 
@@ -682,22 +788,29 @@ Reason:
 - Use a continuous analogue-ground plane.
 - Keep VMID distribution distinct from ground.
 - Keep high-impedance nodes away from Class-D switching nodes and PSU magnetics.
-- Connect to `12V_ANA_GND` at the intended supply-entry point.
+- Connect the quiet analogue return region to the wider board return outside
+  the buck's pulsed current paths.
 
-### 10.3 Locked combined-PCB partition
+### 10.3 Combined-PCB partition under grounding review
 
-Rev A uses one four-layer PCB with two electrically distinct copper
-domains. This replaces two mechanically separate boards, but it does not merge
-their grounding or supply topology.
+Rev A uses one four-layer PCB with physically partitioned analogue and
+Class-D domains. A common schematic `GND` net is proposed; it does not require
+uniform ground copper across the entire board.
 
 Partition rules:
 
-- Keep `AMP_GND` and `12V_ANA_GND` as separate plane islands on every layer.
-- Leave a component-, via-, and copper-free corridor between the domains on
-  every layer, except for the balanced audio pair crossing it.
-- Bring amplifier power/return and analogue power/return to separate terminal
-  pairs. Their defined common points remain in the external supply distribution;
-  do not create a second DC ground bond across the PCB corridor.
+- Keep broad, low-impedance local return copper for the amplifier and a quiet
+  analogue return region. Contain the buck's pulsed input and output loops near
+  its capacitors and switch. Define any inter-region ground connections from
+  complete supply-and-return loops, not from a literal single-point rule.
+- Keep a placement and routing corridor between the analogue circuitry and
+  switching nodes. Route the balanced audio pair together across it. Determine
+  other crossings from the finished placement and supply/return loops; do not
+  leave a signal or power trace crossing a reference-plane gap.
+- Bring amplifier and buck 36 V feeds and returns from separate Mean Well
+  terminal pairs. The PSU terminals share common rails, and the buck-fed 12 V
+  amplifier branch also connects the returns on the PCB. Review parallel
+  return paths rather than assuming the PSU is their sole meeting point.
 - Put the TPA3251 input side at the corridor edge. Put its switching nodes,
   PVDD commutation loops, output inductors, and speaker connection on the far
   side, away from the analogue domain.
@@ -707,18 +820,17 @@ Partition rules:
 - AC-couple both conductors symmetrically at the TPA3251 side so the amplifier
   establishes its own input bias/common-mode voltage. Confirm the final input
   network when the differential-driver values are selected.
-- Reserve matched optional footprints at the receiving end for proportionate
-  RF/common-mode mitigation if prototype measurements show it is needed; do
-  not populate speculative filtering by default.
+- Populate the symmetric 100 Ω/100 pF input networks specified in
+  [Front end](FRONT_END.md). Reserve matched optional footprints for any
+  additional RF/common-mode mitigation justified by prototype measurements;
+  leave those additional positions unpopulated by default.
 - Keep mounting hardware in the analogue domain electrically isolated from the
   protective-earthed aluminium plate. The single intended amplifier-ground to
   chassis bond remains near the TPA3251/heatsink region.
 
-The copper-free corridor is an electromagnetic-layout partition, not galvanic
-isolation. The two grounds are already related at the defined auxiliary-supply
-reference, and parasitic coupling through the PCB, wiring, and earthed aluminium
-plate remains. Good Class-D loop layout and physical orientation are therefore
-more important than corridor width alone.
+The corridor is a placement and field-control tool, not galvanic isolation.
+Good Class-D loop layout and a continuous return reference beneath any
+crossing are more important than a nominal corridor width.
 
 ### 10.4 Layer-count decision
 
@@ -748,27 +860,25 @@ worse in-band.
 
 Provisional layer intent, subject to the exact fabricator and thermal stack:
 
-- front outer layer: every component other than the TPA3251, the shortest
-  possible capacitor-terminal connections, and broad high-current copper;
-- rear outer layer: the TPA3251 alone, plus the shortest possible pin fan-out
-  into local via groups and broad high-current copper;
-- inner layers: separate local ground and supply regions. In the amplifier
-  domain, place the solid `AMP_GND` plane on the inner layer closest to the
-  rear-mounted IC and use the other inner layer for PVDD/local supply
-  distribution. The analogue domain may place `12V_ANA_GND` closest to its
-  front-side components;
-- no copper on any layer crosses the inter-domain corridor except the balanced
-  audio pair; and
-- 2-oz outer copper preferred in the amplifier domain. Confirm the actual
-  fabricator stack-up, inner-layer weights, dielectric spacing, and current/
-  thermal constraints before routing.
+- front outer layer: analogue components and amplifier parts best placed away
+  from the plate, with broad high-current copper where appropriate;
+- rear outer layer: the TPA3251, selected close decoupling/bootstrap and other
+  support parts that fit the machined reliefs, with direct short pin connections;
+- inner layers: keep a solid `GND` reference adjacent to the rear-mounted
+  TPA3251 and a quiet `GND` region for front-side analogue circuitry; reserve
+  the remaining area for supply distribution without severing critical
+  return paths; and
+- begin with approximately 35 µm (1 oz) copper on all four layers. Upgrade
+  selected outer layers to approximately 70 µm (2 oz) only if actual route
+  width, length, RMS current, voltage drop, heating, or fabrication constraints
+  justify the extra cost. Confirm the fabricator's finished stack-up before
+  routing.
 
-Because every TPA3251 support component is on the opposite side of the board,
-the vertical transitions are part of every critical loop. Use multiple closely
-spaced vias for PVDD and ground pin groups and keep the outward and return
-transitions adjacent. The bootstrap loops and local regulator/reference bypass
-loops also require paired, very short via transitions even though their DC
-current is small.
+The former requirement that every TPA3251 support part crosses the PCB is
+superseded. Put the high-frequency local decoupling on the IC side where the
+pin geometry and milled clearance permit. Where a loop must cross layers,
+keep its outward and return transitions adjacent and use appropriate local
+via groups. Apply the return-path and placement rules on both populated sides.
 
 ---
 
@@ -781,7 +891,6 @@ Treat the following as fixed unless prototype evidence requires revision:
 - IEC inlet PE connects by one short conductor to the dedicated M4 plate stud;
   a separate conductor runs from that stud to RSP terminal 3 `FG`.
 - Amplifier and buck receive separate 36 V feed/return branches from the Mean Well PSU.
-- `12V_AMP` and `12V_ANA` have separate return branches meeting at the buck-output/reference region.
 - TPA3251 uses a solid local power-ground plane.
 - Analogue circuitry uses a separate quiet ground plane.
 - TPA3251 amplifier ground is intentionally bonded to the aluminium rear plate at one controlled point.

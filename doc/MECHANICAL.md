@@ -1,5 +1,14 @@
 # Mechanical design
 
+> **State — current mechanical authority; reviewed 2026-10-10.** Owns cabinet,
+> rear-plate and PCB/plate fit; electrical bonds are owned by
+> [power and grounding](POWER_AND_GROUNDING.md), and heat-load acceptance by
+> [thermal design](THERMAL.md). Read for plate or PCB packaging changes.
+> Current direction: CNC-relieved nominal 6 mm plate, with JLCCNC 6061 and
+> matt-black anodising preferred provisionally. Next gate: confirmed material,
+> selective finish, finished contact/clearance stack and thermal budget. No
+> final plate drawing or assembled thermal result is yet approved.
+
 ## 1 Two-chamber cabinet architecture
 
 The cabinet has a 36 mm laminated plywood front baffle and 18 mm remaining
@@ -135,51 +144,69 @@ behind its vent before cutting panels.
 
 The Rev-A implementation is one partitioned four-layer PCB carrying
 both the amplifier and analogue front end. It sits parallel to the rear
-aluminium plate while preserving separate electrical domains as defined in
+aluminium plate while preserving physically controlled circuit regions as defined in
 [Power and grounding](POWER_AND_GROUNDING.md).
 
-Critical constraint:
+The former approximately 1.2 mm uniform PCB-to-flat-plate gap, sole rear-side
+TPA3251, front-side-only support parts, and SMD-only board are superseded. Use a
+CNC-relieved inner plate face: a local, flat, bare thermal land contacts the
+TPA3251 top PowerPAD through a thin TIM, while surrounding recessed fields
+clear selected same-side SMD parts, through-hole terminations, copper, and
+assembly tolerances. The land and substantial surrounding plate remain one
+continuous thermal spreader; do not create a narrow thermal neck merely to
+gain component clearance.
 
-```text
-PCB underside to aluminium plate clearance ≈ 1.2 mm
-```
-
-In the amplifier domain, therefore:
-
-- no through-hole parts anywhere on the PCB; protruding leads are incompatible
-  with the plate clearance and no partial plate insulation will be used
-- mount only the TPA3251 on the rear side, with its top-exposed thermal pad
-  facing the aluminium plate
-- mount every other component on the front side as SMD
-- verify the TPA3251 package/TIM/plate compression and board-flatness stack;
-  there are no neighbouring rear-side component-height accommodations
-- keep rear-side copper, solder, and via finishes other than the intended
-  TPA3251 ground/thermal contact clear of the plate under worst-case board bow,
-  spacer, and assembly tolerances
-- keep analogue-domain mounting points electrically isolated from the plate and
-  do not bridge the PCB-domain partition with mounting hardware
+The TPA3251 must not become a mechanical spacer. Set PCB supports and the land
+height from the actual package height, PCB thickness/bow, TIM compression, and
+machining tolerances. The clamping arrangement must keep a reliable thermal
+contact without loading the soldered leads. For each relieved zone, check the
+maximum assembled component or trimmed-lead projection plus electrical
+clearance and tolerance against the finished pocket depth. Define the pocket
+floor/web thickness and flatness after the actual layout and thermal budget;
+the nominal 6 mm stock thickness is not a licence to remove most of the heat
+spreader. Keep all other unintended metal-to-net contacts clear, including
+under board bow and loose or mis-trimmed leads. Insulate only where a verified
+clearance and thermal design calls for it. Keep analogue-domain mounting
+points isolated from the plate and do not bridge the PCB-domain partition with
+mounting hardware.
 
 ### 2.1 Aluminium heatsink/control plate
 
-Locked material:
+Current manufacturing selection: custom CNC machining through JLCCNC, with
+6061 preferred over its listed 7075 option. Retain nominal 6 mm starting
+thickness and the largest practical cabinet-fitting plate. 1050A-H14 was the
+earlier flat-plate choice; its higher thermal conductivity does not resolve the
+PCB-side placement problem by itself. Verify JLCCNC's available 6061 temper and
+stock thickness, final machined web, panel stiffness, and passive-cooling
+budget before approving production geometry.
 
-- 1050A-H14 aluminium
-- 6 mm thick
-- use largest practical plate fitting cabinet
-- inner face bare
-- outer face matt black painted
+At roughly 20 °C, published representative conductivities are 222 W/(m·K)
+for 1050A-H14, 166 W/(m·K) for 6061-T6, and 130 W/(m·K) for 7075. For an
+unchanged plate geometry, a local conduction resistance varies approximately
+as `1/(k × remaining thickness)`: 6061 therefore gives about 34% more
+conduction resistance than 1050A, while 7075 gives about 71% more. This is a
+material/geometry comparison, not a prediction of the assembled IC temperature.
+Sources: [JLCCNC CNC materials](https://jlccnc.com/cnc-machining),
+[1050A-H14 data](https://ucpcdn.thyssenkrupp.com/_legacy/UCPthyssenkruppBAMXUK/assets.files/material-data-sheets/aluminium/1050-h14.pdf),
+[6061-T6 data](https://www.aalco.co.uk/datasheets/Aluminium-Alloy-6061-T6-Extrusions_145.ashx),
+and [7075 data](https://ucpcdn.thyssenkrupp.com/_legacy/UCPthyssenkruppBAMXUK/assets.files/material-data-sheets/aluminium/7075.pdf).
 
-Surface treatment:
-
-- degrease
-- lightly abrade
-- aluminium-compatible etch primer
-- thin matt-black top coat
-
-Keep bare:
-
-- TPA3251 thermal-contact area
-- intended grounding/bonding points
+Preferred visible finish: bead blasting plus ordinary matt-black anodising.
+Do not assume a menu selection provides selective finishing. The fabrication
+drawing must identify the visible cosmetic face and explicitly show bare,
+unblasted functional zones: the flat TPA3251 thermal land, dedicated M4 PE-stud
+contact on the inner face, and controlled amplifier-ground-to-plate contact.
+Preserve specified contact flatness and finish; a blasted land may increase
+TIM thickness. Show coating boundaries and acceptable anodising rack/contact
+marks away from the visible face and functional zones. Mark any other
+tolerance-critical bores, threads, mating/gasket faces or recess depths with
+their required finished dimensions and coating state. Confirm masking or
+post-finish machining of bare zones with JLCCNC in the quote; its standard
+black-anodised part must not be assumed to have the required bare contacts.
+If selective finishing is unavailable, retain an as-machined plate with a
+separately applied matt-black exterior finish as the fallback.
+Sources: [JLCCNC finish comparison](https://jlccnc.com/finishes) and
+[anodising dimensional guidance](https://jlccnc.com/blog/anodizing-thickness).
 
 The plate must also accommodate the front-screw-mounted Schurter
 `DD11.0111.1111` inlet and its rear cover. Use the supplier drawing/CAD for the
@@ -193,6 +220,17 @@ internal position must preserve free-air convection, keep the terminal guard
 accessible for assembly, respect the manufacturer's mounting-screw penetration
 limits, accommodate the Mean Well `TBC-09` terminal cover, and prevent mains
 wiring from sharing the signal/DC loom space.
+
+The intended fabrication route is now a custom CNC-machined plate. An
+illustrative `300 × 200 × 5 mm` FreeCAD solid with representative holes and a
+recess was accepted by JLCCNC's quote tool on 2026-10-07; the user reported an
+approximate US$20 quote for that test article. This establishes that a native
+solid STEP export can pass the upload/quote stage. It is not a quote for the
+locked 6 mm plate or evidence that the final material, features, thermal path,
+PCB clearance, or machining details are resolved. The retained generator and
+reconstruction instructions are in `tmp/cnc-machining-debug/quote_probe_freecad.py`;
+the corresponding `.FCStd` and `.step` files in that directory are exploratory
+outputs.
 
 ### 2.2 Plate installation
 
