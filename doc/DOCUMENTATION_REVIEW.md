@@ -74,6 +74,8 @@ The repeated optimisation has four primary goals:
 4. Preserve unique raw measurements, manually authored sources, and artefacts without a verified reconstruction path.
 5. Remove conversational narration, repeated instructions, obsolete next actions, superseded UI troubleshooting, and project-irrelevant machine details once their decision-relevant conclusion is recorded.
 6. Give each subject one authority. Consumers should state only the consequence they need and link to that authority.
+   For a reusable fact, use the [Hub](../../Hub/README.md) as that authority;
+   retain only project-specific consequences and links in this spoke.
 7. Separate current operating instructions, qualification evidence, active diagnostics, and dated history.
 8. Split or merge files only when topic ownership, reading routes, or current-versus-historical use becomes clearer.
 9. Keep safety gates in the current procedure whenever omitting them from normal context could create a credible equipment or personal hazard.
@@ -194,6 +196,8 @@ For both modes, validate the selected scope proportionately:
 2. spot-check external links used as technical authorities;
 3. confirm heading numbering is coherent;
 4. confirm changed durable topic files are indexed and routed appropriately;
+   when a fact crosses the Hub boundary, check its owner, update the shared
+   authority and direct consumers, and validate their cross-project links;
 5. ensure routine routes reach current authorities without requiring qualification or history unnecessarily;
 6. search for stale filenames, status phrases, release states, and next-action text;
 7. inspect the actual diff while preserving unrelated changes;

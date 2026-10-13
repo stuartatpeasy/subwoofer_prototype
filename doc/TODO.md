@@ -35,74 +35,116 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   summer's 10 kΩ input and 3.0 kΩ feedback resistors to set 0.6
   correlated-stereo gain, then
   a level-pot-wiper follower and a 10.0 kΩ/10.0 kΩ unity inverter about VMID.
-  Use the selected Würth `885012208124` 2.2 µF X7R capacitors at both RCA
-  inputs and both amplifier inputs, followed by 100 Ω series and 100 pF C0G
-  shunt parts at the TPA3251 input pins. The Würth part is confirmed for
-  Rev-A assembly; review distortion and effective capacitance after assembly
-  and compare with film if a material excess appears. Then confirm input
+  Use the now-selected Panasonic `ECW-FD2W225J4` 2.2 µF film capacitors at
+  both RCA inputs C1/C6 and both amplifier inputs C11/C15, followed by
+  100 Ω series and 100 pF C0G shunt parts at the TPA3251 input pins.
+  Verify the four through-hole patterns and physical clearance during PCB
+  layout. Then confirm input
   sensitivity, common-mode conditions, symmetry, and 15 V analogue-rail
   headroom in simulation. The revised 7.5 V VMID gives approximately 1.26 V
   peak input common-mode margin for a 3 V RMS source at the first buffer.
 - [ ] Finalise the TPA3251 surrounding passives from the TI PBTL reference
   design, including the `OC_ADJ` CB3C threshold resistor.
-- [ ] Qualify the provisional three-per-position 220 nF, 250 V X7R
-  output-filter bank in [power amplifier](POWER_AMPLIFIER.md) against the
-  single 680 nF, 250 V comparison: confirm exact-part effective capacitance,
-  PWM ripple heating/loss, peak voltage, and final layout, then lock the BOM.
-- [ ] Select the exact Zobel parts and check pulse/continuous dissipation.
+- [ ] Qualify the now-placed C21/C22/C24/C25 Murata
+  `GRJ21BC72A105ME11L` 1 µF, 100 V X7S PVDD bypass parts on `CAP_0805`:
+  Murata's 25 °C, 1 V RMS model predicts only about 0.42 µF at 36 V.
+  The 2.2 µF, 100 V, 0805 `GRM21BD72A225KE01L` model gives approximately
+  0.7 µF at 36 V. Compare exact 1206 candidates against both 0805 parts using
+  their own DC-bias and impedance data. The provisional Würth
+  `885012208124` 2.2 µF, 100 V 1206 part predicts about 1.13 µF at 36 V,
+  or 1.02 µF if −10% initial tolerance is applied to its typical bias curve.
+  Check switching peaks, ripple suitability, short-loop placement, new pad
+  geometry and the proposed 4 mm CNC-pocket clearance. TI's EVM uses nominal 1 µF 1206
+  MLCCs, so no 1 µF *effective* threshold is established. The earlier Würth
+  0805-on-0603 mismatch is no longer present in the saved schematic.
+- [ ] Qualify the now-drawn pair of TDK `B32701P4684K000` 680 nF film
+  output-filter capacitors C17/C30, one per combined speaker-output side, as
+  described in [power amplifier](POWER_AMPLIFIER.md). Their saved pattern has
+  the manufacturer-confirmed 10 mm lead pitch; check carrier ripple, capacitor
+  temperature, peak voltage, response/damping and final physical placement
+  before locking the BOM.
+- [ ] Decide whether to retain the 250 V C19/C28 1 nF shunts and C16/C31
+  10 nF Zobel capacitors or use suitable 100 V parts; confirm the final
+  post-inductor voltage peaks and Zobel resistor/capacitor heating. Select
+  the exact Zobel parts and check pulse/continuous dissipation.
 - [ ] Resolve the MP4541GN candidate buck review in
-  [power and grounding](POWER_AND_GROUNDING.md): verify the revised U2 SOIC-8EP
-  and C7–C9 1210 land dimensions; verify U2 pad 9 in the PCB netlist; define
-  the buck's local switching-current return and output capacitance under bias
-  and load/ripple.
-- [ ] Verify the now-correct U1 NCP1117 pin 2/tab 4 `12VAMP` mapping in the PCB
-  netlist.
-  Check its 20 V input limit against the approximately 17.36 V buck's transient
-  peaks; verify C2 effective capacitance and ESR for stability, and size its
-  thermal copper for
-  the actual 12 V load. Revise the proposed schematic to one `GND` net and
-  remove unpopulated R1/R2 placeholders; resolve the `17V3` feed and local
+  [power and grounding](POWER_AND_GROUNDING.md): verify the U5 SOIC-8EP
+  and C42–C44 1210 land dimensions; verify U5 pad 9 in the PCB netlist; define
+  the buck's local switching-current return and verify the approximately
+  20.4 µF typical bias-adjusted C42–C44 bank estimate against loaded ripple,
+  start-up and meaningful load transients. Add the user-selected fourth
+  identical schematic position as unpopulated; fit it only if those checks
+  show a material need. The current XML still contains only C42–C44.
+- [ ] Verify the now-placed `U9 = L78M12ABDT-TR` DPAK footprint, pin mapping,
+  ground tab, and thermal copper for the actual 12 V load. The selected C36
+  Murata 1 µF, 100 V input ceramic exceeds 0.33 µF at 17.3 V bias on the
+  user's part data; place it locally at U9's input and ground. C37 = 100 nF
+  at the output is sensible alongside C8 = 470 µF and C9 = 100 nF.
+  ST does not require an output capacitor for stability. Its 14.5 V specified
+  minimum input is above the supervisor's calculated 13.97 V low trip: accept
+  possible brief 12 V sag before RESET and check prototype `17V3`, `12VAMP`,
+  and RESET waveforms rather than claiming pre-dropout muting. The schematic
+  uses one `GND` net with R1/R2 removed; resolve the `17V3` feed and local
   amplifier return route without carrying amplifier return through quiet
-  analogue copper. Check the resulting RESET timing.
+  analogue copper. See [power and grounding](POWER_AND_GROUNDING.md).
 - [ ] Check the `XC6701DF02FR-G` 15 V analogue LDO's loaded dropout, heat,
-  bypass requirements, and noise in the completed power tree.
+  bypass requirements, and noise in the completed power tree. The schematic
+  now maps its SOT-223 VSS tab pad 4 to `GND`; verify this in the PCB netlist
+  and provide suitable thermal copper.
+- [ ] Retain the drawn `D1 = Yageo S1B` from `12VAMP` to `17V3`; verify its
+  polarity, pattern and pulse-current path for a sudden `17V3` short with
+  C8's 470 µF output bank. See [power and grounding](POWER_AND_GROUNDING.md).
 - [x] Select two 36 V-powered `TPS3762-Q1` undervoltage supervisors with
   wire-ORed open-drain RESET outputs: fixed 30 V PVDD monitor and adjustable
   `17V3` monitor, with separate CTR capacitors for at least 400 ms after
   either detected fault.
-- [ ] Select the CTR capacitors: a nominal 220 nF, ±10%, 50 V X7R is acceptable
-  if manufacturer bias/ageing data establish at least 135 nF effective over
-  tolerance and temperature; 330 nF X7R provides more margin but extends the
-  nominal release delay to about 1.22 s.
+- [x] Retain the placed KEMET `C0805C224K5RAC` 220 nF, ±10%, 50 V X7R
+  CTR capacitors. Its bias curve and 3% per decade-hour ageing rate give a
+  credible margin above 135 nF under the conservative example in
+  [power amplifier](POWER_AMPLIFIER.md); the curve is typical, so this is not
+  a formal worst-case guarantee. Check at least 400 ms RESET release on the
+  prototype; reconsider 330 nF only if timing or margin requires it.
 - [x] Select the dedicated E24 buck SENSE divider: 130 kΩ/7.5 kΩ, 1%,
   separate from the MP4541 feedback path, gives approximately 14.67 V
   nominal falling. Analogue-LDO pre-dropout muting is not a requirement.
-- [ ] Verify that the conservative lowest buck trip retains adequate margin
-  above the NCP1117's 13.5 V specified input: the calculated allowance is
-  0.47 V. Bound loaded buck trough, amplifier-feed/return drop, and RESET
-  sequence. Recheck Mouser stock and normal stocking before ordering.
+- [ ] Bound loaded buck trough, amplifier-feed/return drop, and RESET
+  sequence with the placed L78M12. The conservative 13.97 V buck trip is
+  0.53 V below its 14.5 V specified input minimum, so allow possible brief
+  12 V sag before RESET. The 18 V setpoint and revised supervisor divider are
+  unselected candidates analysed in [power and grounding](POWER_AND_GROUNDING.md);
+  revisit them only if loaded trough, analogue headroom or temperature warrants
+  it. Recheck Mouser stock and normal stocking before ordering.
 - [ ] Complete the buffered 7.5 V VMID. The current partial schematic has a
-  10 kΩ/10 kΩ divider with 4.7 µF input filtering, a direct-feedback U5.3
-  OPA1679 follower, and R5 = 10 Ω outside its feedback loop; it has no VMID
+  10 kΩ/10 kΩ divider with 4.7 µF input filtering, a direct-feedback U1.3
+  OPA1679 follower, and R32 = 10 Ω outside its feedback loop; it has no VMID
   shunt capacitor. Check loaded ceramic capacitance, source/sink current,
   noise, stability, and start-up. Add output filtering only if those checks
   identify a material need.
 - [x] Remove the unnecessary VMID series paths and reference-filter capacitors;
-  the current XML references U5.4 and U6.2 directly to VMID.
-- [ ] Verify that the corrected C30/C37/C41 `PatType21` land pattern transfers
+  the current XML references U1.4 and U2.2 directly to VMID.
+- [ ] Verify that the corrected C2/C4/C5 `PatType36` land pattern transfers
   to the PCB for the selected Panasonic `ECH-U1H823JX9` PPS-film part. Correct
   the misleading `MLCC` component-style name before BOM release; check ±5%
   capacitance tolerance and pot-gang tracking.
-- [x] Feed U6.2's R26 from U6.4's output rather than the level-pot wiper; the
+- [x] Feed U2.2's R11 from U2.4's output rather than the level-pot wiper; the
   current XML has removed the 10 kΩ wiper load.
-- [x] Add the nominal 1 MΩ `DIFF_IN`-to-VMID wiper-fault bias (R20) and
-  matched 47 Ω output isolators (R21/R24) near U6.3/U6.4 before the J3 cable;
-  R26 remains on the U6.4 side of its isolator.
-- [x] Add the TPA3251 differential-input coupling/RF networks (C64/C65,
-  R35/R36, C62/C63) to both J3 returns.
+- [x] Add the nominal 1 MΩ `DIFF_IN`-to-VMID wiper-fault bias (R6) and
+  matched 47 Ω output isolators (R7/R12) near U2.3/U2.4 before the J3 cable;
+  R11 remains on the U2.4 side of its isolator.
+- [x] Add the TPA3251 differential-input coupling/RF networks to both
+  polarity-switch returns; the current amplifier-input coupling parts are
+  C11/C15.
+- [x] Reconcile the analogue front-end reference designators in
+  [FRONT_END.md](FRONT_END.md) with the newly renumbered schematic before BOM
+  release; current RCA coupling is C1/C6 and amplifier-input coupling C11/C15.
+- [x] Correct J5's placed purchasing fields: `Mfr part` is now
+  `39-28-1023`, and Mouser `SKU` is `538-39-28-1023`.
+- [ ] Run and inspect DipTrace ERC before PCB release, with unconnected-pin and
+  short checks enabled where applicable. Both checks are now enabled in the
+  saved XML, but it contains no ERC result; classify expected unused pins rather
+  than treating every warning as a fault.
 - [ ] Verify actual J3 harness load, physical DPDT 0°/180° mapping, and
-  terminal identification. Reconcile R35/R36 0603 parts with the documented
-  0805 thin-film preference before BOM release.
+  terminal identification.
 - [ ] Verify the Sallen-Key filter transfer function, Q, adjustment range,
   component tolerances, and control tracking in simulation.
 - [ ] Qualify the selected Bourns `PDB182-K420K-203B` 20 kΩ dual-gang linear
@@ -118,11 +160,20 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
 
 ## 3 Complete the physical and safety design
 
-- [ ] Review and validate the documented grounding, chassis, and
-  protective-earth strategy, including every intentional and incidental
-  conductive path in the assembled unit.
-- [x] Lock the PCB architecture and layer count: one electrically partitioned
+- [ ] Implement and validate the selected common-`GND` layout, the one
+  intended board-to-chassis bond, and the independent protective-earth paths.
+  Account for intentional and incidental conductive contacts in the assembly;
+  the conceptual single-net decision is closed.
+- [x] Lock the PCB architecture and layer count: one physically partitioned
   four-layer board, with no two-layer fallback.
+- [x] Select the latching, through-hole 36 V input and speaker-output
+  connector pairs documented in [power and grounding](POWER_AND_GROUNDING.md)
+  and [power amplifier](POWER_AMPLIFIER.md).
+- [ ] Verify that the saved J6 three 36 V contacts and three GND contacts are
+  allocated to the two amplifier pairs and one buck pair in the PCB and harness;
+  verify both connector footprints, cable routes and clearances,
+  strain support, polarity, and driver-end termination before PCB release.
+  Recheck Mouser availability and purchasing terms before ordering.
 - [ ] Select the exact fabricator stack-up, copper weights, dielectric spacing,
   finished thickness, via construction/plating, and detailed layer usage for
   the rear-mounted TPA3251 and whichever support parts are placed on each side.

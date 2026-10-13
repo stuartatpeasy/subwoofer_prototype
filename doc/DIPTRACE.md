@@ -13,7 +13,7 @@
 > any future PCB export against the selected design
 > **Limitations:** No PCB design export or live plug-in exchange has been
 > inspected, and no parser or plug-in has been qualified
-> **Last reviewed:** 2026-10-04
+> **Last reviewed:** 2026-10-11
 
 ## 1 Authority and retained resources
 
@@ -88,10 +88,9 @@ current rating and copper path. If the returns meet off-board at the PSU or
 distribution wiring, keep the board nets distinct and show the junction in a
 separate system wiring drawing or through explicitly labelled connector pins.
 The link symbol is a netlist aid, not a substitute for deciding the physical
-return route. An unpopulated 0 Ω part is an open circuit, so the current
-R1/R2 placeholders are not a valid finished-board join. The proposed main-board
-revision uses one `GND` net and controlled local return copper; the canonical
-schematic has not yet been changed. Check the completed copper and net
+return route. An unpopulated 0 Ω part is an open circuit, so the former R1/R2
+placeholders were removed. The canonical schematic now uses one `GND` net;
+control local return copper in layout. Check completed copper and net
 connectivity, and review its high-current return paths explicitly.
 
 ## 4 Important interpretation rules learned from the pack

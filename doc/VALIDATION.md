@@ -1,7 +1,8 @@
 # Prototype validation
 
-> **State — current prototype checks; reviewed 2026-10-11.** Owns practical
-> build verification. The auxiliary buck and regulators remain candidates;
+> **State — current prototype checks; reviewed 2026-10-13.** Owns practical
+> build verification. The auxiliary buck and 15 V regulator remain to be
+> qualified; the L78M12 12 V regulator is placed but not yet approved;
 > the two-supervisor RESET topology and dedicated buck divider are selected;
 > 12 V LDO headroom remains to be checked at the loaded buck trough.
 
@@ -43,10 +44,8 @@ additional protection and does not replace the PE inspection and bond test.
 
 - input impedance vs frequency
 - assembled 20–100 Hz analogue-path distortion at representative and maximum
-  clean signal levels with the selected Würth `885012208124` coupling
-  capacitors; if a material excess appears, compare with a film reference
-  and measure effective capacitance at the actual DC biases before changing
-  the part choice
+  clean signal levels with the selected Panasonic `ECW-FD2W225J4` film
+  coupling capacitors; investigate any material excess before changing parts
 - LPF frequency range
 - LPF Q
 - gain structure
@@ -60,9 +59,8 @@ additional protection and does not replace the PE inspection and bond test.
 - measure the actual 15 V analogue-rail load and XC6701 dropout/headroom at
   that load and the expected warm operating condition; note any analogue-rail
   droop before RESET without treating pre-dropout muting as a requirement
-- verify the NCP1117 12 V regulator's effective output capacitance and ESR
-  meet its stability requirements at the assembled voltage and temperature;
-  check its thermal behaviour at the actual amplifier-rail load
+- check the L78M12 12 V regulator's input bypass and thermal behaviour at the
+  actual amplifier-rail load; check its rail during start-up and shutdown
 - quiescent differential DC voltage at the post-filter loudspeaker output
 - shared TPS3762 RESET timing at cold and warm start: remain low for at least
   400 ms after PVDD application and release only after the amplifier and
@@ -73,9 +71,10 @@ additional protection and does not replace the PE inspection and bond test.
 - prompt RESET assertion as either 36 V PVDD or `17V3` decays; measure the
   buck monitor's falling and rising thresholds against its calculated divider
   limits, and verify at least 400 ms hold after an isolated buck interruption.
-  Bound the instantaneous `17V3` trough and amplifier-feed/return drop against
-  the calculated 0.47 V allowance above the NCP1117's 13.5 V specified
-  input minimum; record both LDO outputs at RESET assertion
+  Record the instantaneous `17V3` trough, amplifier-feed/return drop, both
+  regulator outputs and RESET assertion; allow for a brief 12 V sag because
+  the lowest calculated 13.97 V trip is below the L78M12's 14.5 V specified
+  input minimum
 - correct diagnostic states at the `FAULT` and `CLIP_OTW` test points for safe,
   non-destructive conditions available during bring-up; do not inject a
   destructive output fault merely to exercise protection

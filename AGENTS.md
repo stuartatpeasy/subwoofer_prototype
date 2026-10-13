@@ -19,18 +19,30 @@ for a particular task takes precedence.
    or diagnose a failure. Load `HISTORY` only for provenance or a superseded
    decision. Do not routinely ingest history merely because it is linked.
 
+### 1.1 Shared Hub baseline
+
+1. This project is a spoke of the shared [Hub](../Hub/README.md). The Hub owns
+   reusable user preferences, resources, environment facts, and general
+   procedures; this project owns its requirements, implementation, measurements,
+   decisions, and application of shared facts. Link to a Hub fact's current
+   authority and record only this project's consequence here.
+2. When a task depends on shared context, open the Hub index and then only its
+   relevant topic. Apply the Hub baseline alongside this project's more
+   specific constraints. A spoke may add constraints but must not silently
+   contradict a Hub fact or procedure. Correct shared facts in the Hub and
+   update affected consumers; record a project-specific exception here with
+   its reason and scope. A direct user instruction takes precedence.
+3. When useful information arises that applies beyond this project, add it to
+   the Hub's appropriate authority with its source, date, and evidence status.
+   Keep transient prices, stock, and unverified observations labelled as such.
+   Follow the Hub's access and privacy rules, and report any shared update that
+   could not be made in this turn.
+
 ## 2. Technical communication
 
-Regarding technical topics: teach the user technical mathematics in small,
-sequential chunks. Anchor abstractions in circuit or physical intuition, derive
-important results rather than merely stating them, and follow each new idea with
-a worked example.
-
-Assume a rusty EE-undergraduate mathematical foundation: the user's conceptual
-and engineering reasoning is sound, but calculus recall and algebraic fluency
-need rebuilding. Do not over-simplify the engineering ideas, but avoid
-unexplained mathematical jumps. If a concept does not settle immediately, park
-it and revisit it from another direction later.
+Apply the Hub's [cross-project working preferences](../Hub/preferences/working-style.md)
+for technical explanations and everyday collaboration. The project-specific
+commissioning rules below add constraints for this hardware.
 
 ## 3. Proportionate project process and safety
 
@@ -84,13 +96,8 @@ it and revisit it from another direction later.
 
 ## 4. Agent delegation
 
-1. Use agents when independent or parallel work would materially reduce the
-   wall-clock time needed to complete a task.
-2. Select each agent's model and effort level deliberately to match the
-   complexity, uncertainty, and consequence of its assigned work.
-3. Do not delegate when coordination and review overhead would outweigh the
-   likely time saving. The primary agent remains responsible for integrating
-   and checking delegated results.
+Follow the delegation rule in the Hub's
+[working preferences](../Hub/preferences/working-style.md).
 
 ## 5. Keep Markdown current through a consolidated end-of-turn pass
 
@@ -200,36 +207,9 @@ it and revisit it from another direction later.
 
 ## 7. Component-selection granularity
 
-1. Classify each component as **generic**, **performance-critical**, or
-   **specialised** according to its function in this design, not its price or
-   physical size.
-2. Specify a generic component by the electrical and mechanical properties
-   required for safe substitution: value, tolerance, voltage/current/power
-   rating, dielectric or construction, temperature behaviour, package or land
-   pattern, and any relevant ripple, pulse, bias, or lifetime requirement. Do
-   not lock a manufacturer part number or distributor SKU when these properties
-   adequately define the part.
-3. Use an exact manufacturer part number for specialised components whose
-   important behaviour is not captured reliably by a short generic
-   specification. Typical examples include semiconductors, magnetics,
-   safety-rated parts, connectors with critical mechanics, crystals, and
-   amplifier output inductors.
-4. Treat a passive as performance-critical when parasitics, DC-bias behaviour,
-   ESR, pulse capability, thermal construction, matching, or stability-loop
-   interaction materially affects circuit operation. Specify either an exact
-   manufacturer part number or a documented approved-part/approved-series list
-   with explicit substitution limits.
-5. Avoid false precision. Do not spend project effort choosing an exact SKU for
-   an ordinary resistor or decoupling capacitor unless its particular
-   construction or parasitics matter. Conversely, do not label a part generic
-   merely because its nominal value is commonplace.
-6. Distributor stock, price, and lifecycle flags are procurement snapshots,
-   not permanent design properties. Recheck them before ordering. Record a
-   distributor number only as a purchasing aid; the manufacturer part number
-   remains the design identity for a specialised part.
-7. Apply the same distinction in schematics, BOMs, specifications, and TODO
-   items: generic parts carry substitution requirements; specialised parts
-   carry exact identities and the evidence supporting them.
+Apply the Hub's [component-selection procedure](../Hub/procedures/component-selection.md)
+to this design. The current schematic, specification, and BOM own the actual
+part identities and substitution requirements.
 
 ## 8. Completion checks
 

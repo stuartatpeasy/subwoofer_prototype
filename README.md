@@ -16,7 +16,7 @@ Primary constraints:
 - no custom mains PSU
 - CNC-relieved rear plate allowing selected components and through-hole leads on
   the plate-facing side of the amplifier PCB
-- one electrically partitioned four-layer PCB
+- one four-layer PCB with physically controlled analogue and power regions
 - engineering-led, measurable design
 
 ## 2 Documentation index
@@ -34,6 +34,8 @@ specification first only when a decision could affect more than one subsystem.
 | What heat load must passive cooling handle? | [Thermal design](doc/THERMAL.md) | Present thermal assumptions and cooling requirement |
 | What must the prototype prove? | [Prototype validation](doc/VALIDATION.md) | Electrical, thermal, and acoustic measurements |
 | How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Canonical partial schematic XML, AI context-pack route, read-only inspection workflow, and future parser/plugin gates |
+| Which shared resources, environment facts, or general procedures apply? | [Hub index](../Hub/README.md) | Open only the relevant Hub topic; retain this project's design and evidence here |
+| How should a schematic review be run and reported? | [Shared Hub index](../Hub/README.md) | Open its schematic-review procedure; use this project's saved schematic and current design authorities as the review inputs |
 | What work remains? | [Action list](doc/TODO.md) | Ordered design, construction, and validation tasks |
 | How should the documentation itself be reviewed or consolidated? | [Documentation review procedure](doc/DOCUMENTATION_REVIEW.md) | Targeted and comprehensive review modes, preservation rules, validation, and Git gates |
 
@@ -55,6 +57,15 @@ specification first only when a decision could affect more than one subsystem.
   tooling](doc/DIPTRACE.md), then only the affected electrical, grounding, or
   mechanical authority. Load the bundled context-pack files selected by that
   route rather than the whole pack.
+- **Schematic review:** whenever asked to review this project's schematic,
+  open the [shared Hub index](../Hub/README.md) and follow its schematic-review
+  procedure. Then use the DipTrace inspection route above and the affected
+  project authorities. Report numbered findings with severity and verification
+  state.
+- **Shared context:** for tools, suppliers, the listening room, or general
+  procedures, open the [Hub index](../Hub/README.md), then only the topic needed
+  alongside this project's affected authority. Record project-specific
+  decisions and measurements here; update the Hub for reusable new facts.
 - **Planning question:** [action list](doc/TODO.md), using the
   [system specification](doc/SPECIFICATION.md) to distinguish locked decisions
   from provisional selections.

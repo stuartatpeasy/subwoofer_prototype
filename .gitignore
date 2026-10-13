@@ -1,2 +1,5 @@
 # DipTrace temp files
 *.*~
+
+# Other temp files
+*.*#

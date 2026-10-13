@@ -1,10 +1,13 @@
 # Power amplifier
 
-> **State — current amplifier authority; reviewed 2026-10-11.** Owns the
+> **State — current amplifier authority; reviewed 2026-10-13.** Owns the
 > TPA3251 stage and RESET topology. Two 36 V-powered TPS3762-Q1 supervisors
 > monitoring PVDD and `17V3` are selected. The dedicated 130 kΩ/7.5 kΩ,
-> 1% E24 buck SENSE divider is selected; its 12 V LDO headroom claim still
-> requires a loaded buck-trough and return-offset check.
+> 1% E24 buck SENSE divider is selected. The now-placed L78M12 12 V regulator
+> may sag briefly before the lowest calculated RESET trip; loaded buck-trough,
+> return-offset and start/stop checks remain open.
+> The two-position Mini-Fit Jr speaker-output pair is selected; placement and
+> finished harness routing remain open.
 
 ## 1 TPA3251 output stage
 
@@ -61,9 +64,30 @@ Use the TPA3251's internal undervoltage, overcurrent, short-circuit, and thermal
 protection. Supply undervoltage may recover automatically. A persistent
 overload or overtemperature shutdown may remain latched until the user switches
 the complete subwoofer off and on. Do not add an automatic fault-retry circuit.
-The partial schematic draws `R13 = 22 kΩ` at `OC_ADJ`; its CB3C threshold
-and associated surrounding passives still require final review with the PBTL
-implementation.
+The partial schematic draws `R18 = 22 kΩ` from `OC_ADJ` to GND, matching the
+[TI PBTL reference circuit](https://www.ti.com/lit/ds/symlink/tpa3251.pdf).
+TI's protection table assigns 22 kΩ to cycle-by-cycle current control (CB3C)
+and lists a 16.3 A OC threshold; its electrical-characteristics table separately
+lists 14 A nominal peak current for a 1 Ω test load at 22 kΩ. These are
+different published descriptions, not a guaranteed 16.3 A trip point in this
+board. The IC senses individual half-bridge FET current. At 150 W into a
+nominal 4 Ω resistive load, the speaker current is
+`sqrt(2 × 150 W / 4 Ω) = 8.66 A peak`; ideal sharing gives about 4.33 A peak
+through each of the two parallel output paths on either bridge side. Real
+speaker impedance, filter ripple, sharing error, and faults change those
+currents. The 22 kΩ value therefore follows TI's starting example but is not
+yet proven to protect this driver's voice coil or the output inductors. The
+[Vishay inductor data sheet](https://www.vishay.com/docs/34337/ihlp5050fd-5a.pdf)
+lists 7.8 A typical DC current for an approximately 20% inductance drop in the
+10 µH part. That criterion is not a destructive limit, but it is below even
+TI's 12.3 A table threshold at 30 kΩ; IC overcurrent protection cannot be
+treated as an inductor saturation guard. CB3C
+can limit individual overcurrent cycles and later latch off after persistent
+overload; it is not a continuous output-power limiter. Retain R18 provisionally
+while checking the chosen inductor's current limits and the 22–30 kΩ CB3C
+options against the finished output stage. The
+[TPA3251EVM guide](https://www.ti.com/lit/ug/slau751/slau751.pdf) lists
+24, 27, and 30 kΩ as progressively lower nominal CB3C thresholds.
 
 No normally visible fault LED is required. Provide accessible SMD diagnostic
 test points for `FAULT` and `CLIP_OTW`; TP1 and TP2 are now drawn. These signals
@@ -90,14 +114,23 @@ X7R is electrically suitable if its **minimum effective capacitance** after
 initial tolerance, temperature, DC bias and ageing remains at least
 `0.400 s / 2.96 MΩ = 135 nF`. A nominal 220 nF, ±10% X7R loses at most 10%
 initially and 15% over the X7R temperature range, leaving `220 nF × 0.90 ×
-0.85 = 168 nF` before bias and ageing. Those latter effects together may
-reduce the remaining value by no more than 19.7% if the 400 ms minimum is
-to be guaranteed. A 220 nF, 50 V X7R is therefore acceptable when its
-manufacturer data support that bound at up to 5.5 V on CTR; it is not an
-unqualified generic substitution. A 330 nF, ±10%, 50 V X7R offers more
-capacitance margin, at the cost of a longer nominal release delay (about
-1.22 s rather than 0.81 s). The capacitor value remains provisional until
-the chosen X7R construction is checked. A single, provisional 30 kΩ/10 kΩ,
+0.85 = 168 nF` before bias and ageing. The placed KEMET base part
+`C0805C224K5RAC` has the same nominal 220 nF, ±10%, 50 V X7R specification
+as the cited `C0805C224K5RACTU` packaging variant. The latter part's data
+show a small typical DC-bias change at the CTR pin's
+at-most-5.5 V operating voltage and specify 3% ageing loss per decade-hour,
+with capacitance tolerance referred to 1,000 hours after the last heating
+above the ceramic's Curie point. Ten years after that event is about 1.94
+decades beyond the reference, or approximately 5.8% further ageing loss. For
+illustration, allowing 5% bias loss as well as the full 15% X7R temperature
+change and the initial 10% tolerance gives `220 nF × 0.90 × 0.85 × 0.95 ×
+0.942 ≈ 151 nF`, corresponding to approximately 446 ms at TI's minimum
+2.96 MΩ timing resistance. The bias plot is typical, not a guaranteed
+part-by-part bound, so this is a credible design margin rather than a formal
+400 ms guarantee. Retain the placed 220 nF parts and check RESET release
+timing on the prototype; consider 330 nF only if that check fails or more
+margin becomes necessary. At nominal values, 330 nF would lengthen the
+delay to about 1.22 s instead of 0.81 s. A single, provisional 30 kΩ/10 kΩ,
 1%-resistor divider from the existing 12 V amplifier rail supplies the shared
 RESET pull-up, subject to confirmation of the finished 12 V rail limits and
 ground offsets. The 12 V rail supplies a logic level, not a precision sense
@@ -105,9 +138,11 @@ threshold. Do not load the TPA3251 DVDD reference as an external supply.
 
 The selected dedicated buck SENSE divider is **130 kΩ** from `17V3` to
 SENSE and **7.5 kΩ** from SENSE to the supervisor's local ground. Both are E24,
-1% resistors with TCR no worse than 100 ppm/°C. The purpose is to assert RESET
-before the NCP1117 12 V amplifier LDO loses its specified input headroom,
-while allowing some droop of the 15 V analogue rail during a buck fault. The
+1% resistors with TCR no worse than 100 ppm/°C. The purpose is to detect a
+falling buck rail and assert RESET while the 12 V amplifier supply is still
+usable, while allowing some droop of the 15 V analogue rail during a buck
+fault. With the now-placed L78M12, a brief 12 V sag before RESET assertion
+remains possible at the lowest threshold. The
 15 V rail is not itself monitored. With a nominal 0.8 V falling SENSE threshold,
 
 ```text
@@ -123,30 +158,29 @@ is 1% + 100 °C × 100 ppm/°C = 2%. Opposed resistor extremes give a calculated
 falling threshold of about **13.97–15.40 V**. With maximum 2.5% hysteresis,
 the highest rising release is about **15.78 V**. The calculated lowest healthy
 buck output is 16.78 V, so the rising threshold leaves about **1.00 V** for
-buck ripple, transients, and sense/return offsets. Onsemi specifies the fixed
-12 V NCP1117 output over 0–800 mA with VIN from **13.5 to 20 V**; its output
-range over those conditions is 11.76–12.24 V. The lowest calculated falling
-threshold is therefore **0.47 V above** its specified minimum input. That is
-the entire allowance for instantaneous buck trough below the sensed rail,
-trace/return drop, and other unmodelled effects. A divider cannot guarantee
-full 12 V regulation unless those effects are bounded below 0.47 V. The
+buck ripple, transients, and sense/return offsets. ST specifies the placed
+L78M12A's 12 V output over 5–350 mA with VIN from **14.5 to 27 V**. The lowest
+calculated falling threshold is therefore **0.53 V below** its specified
+minimum input. Brief 12 V sag before RESET assertion cannot be excluded, even
+without buck ripple or feed drop. The 2 V dropout figure is typical at 25 °C,
+not a guaranteed limit at this board's load and temperature. The
 analogue 15 V LDO may already be out of regulation when RESET asserts; no
 pre-dropout mute is claimed for that branch. At a fully specified 3 V RMS
 input, the OPA167x first-buffer common-mode margin disappears if its supply
 falls below approximately 12.5 V; smaller programme signals need less
 headroom (see [analogue front end](FRONT_END.md)). Implement the chosen
 divider at the amplifier-side `17V3` feed; confirm loaded buck trough,
-amplifier-feed and return drops, and start/stop behaviour before claiming
-guaranteed 12 V LDO regulation until RESET assertion.
+amplifier-feed and return drops, and start/stop behaviour. RESET-before-any-
+12 V-sag is not a design claim.
 
-The current partial schematic's MP4541GN feedback divider (`R6 = 180 kΩ`,
-`R10 = 11 kΩ`) is not a substitute for this separate SENSE divider. Its FB
+The current partial schematic's MP4541GN feedback divider (`R24 = 180 kΩ`,
+`R28 = 11 kΩ`) is not a substitute for this separate SENSE divider. Its FB
 node is regulated near 1.0 V; the TPS3762's 0.8 V falling threshold would
 represent only `0.8 V × (1 + 180/11) = 13.89 V` nominal at the buck output.
 With the same conservative ±0.9% TPS threshold, ±200 nA SENSE current, 1%
 resistor initial tolerance and opposed 100 ppm/°C drift over 100 °C used
 above, its calculated minimum trip falls to about 13.22 V, below the
-NCP1117's 13.5 V specified input minimum even before ripple or feed losses.
+L78M12's 14.5 V specified input minimum even before ripple or feed losses.
 If the extra SENSE current were 200 nA, the static shift in the buck's regulated
 output would be about `200 nA × 180 kΩ = 36 mV`: small, but not zero. The
 added SENSE input and long branch would also expose the buck's
@@ -163,9 +197,11 @@ detect failure of either downstream LDO while both monitored rails stay
 healthy; the TPA3251 retains its internal supply protection.
 
 Primary sources: [TI TPS3762-Q1 data sheet](https://www.ti.com/lit/ds/symlink/tps3762-q1.pdf),
+[KEMET C0805C224K5RACTU specification](https://search.kemet.com/download/specsheet/C0805C224K5RACTU),
+[KEMET X7R series test methods](https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf),
 [TI TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf), and
 [Torex XC6701 data sheet](https://product.torexsemi.com/system/files/series/xc6701.pdf),
-and [onsemi NCP1117 data sheet](https://www.onsemi.com/download/data-sheet/pdf/ncp1117-d.pdf).
+and [ST L78M data sheet](https://www.st.com/resource/en/datasheet/l78m.pdf).
 
 #### 1.2.1 Superseded supervisor analyses (decision record)
 
@@ -238,6 +274,29 @@ metalwork. `RESET` control is thump suppression and functional shutdown; it is
 not claimed as independent protection against a physically shorted output
 transistor.
 
+### 1.3 Speaker-output connection
+
+Selected board-to-driver pair (2026-10-12): Molex Mini-Fit Jr `39-28-1023`
+two-position, vertical through-hole, tin-plated PCB header and `215326-1023`
+two-position female-to-pigtail assembly. The assembly has two factory-terminated
+16 AWG (approximately 1.31 mm²), **600 mm** conductors; its housing and
+contacts are supplied as part of the assembly, so no separate pins or crimp
+tool are required. Connect the two positions to the filtered PBTL speaker
+outputs, not to chassis or `GND`. The selected parts have a positive latch and
+are distinct in position count from the six-position 36 V input connector.
+
+At the approximately 150 W into 4 Ω output target, speaker current is
+`sqrt(150 W / 4 Ω) = 6.12 A RMS`. Molex's two-position, 16 AWG brass-contact
+guideline is 9 A per contact, subject to PCB copper, ambient temperature, and
+the completed cable termination. Confirm the 600 mm route, pin numbering,
+header footprint and clearance, strain support, polarity, and the driver-end
+termination during layout and assembly. Recheck Mouser UK availability,
+normal-stock status, MOQ, and price before ordering.
+
+Manufacturer sources: [Mini-Fit Jr product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/555/5556/PS-5556-001-001.pdf),
+[header](https://www.molex.com/en-us/products/part-detail/39281023), and
+[600 mm pigtail series](https://www.molex.com/en-us/products/series-chart/215326).
+
 ## 2 Output inductors
 
 Locked part:
@@ -263,56 +322,133 @@ Prototype validation required:
 
 ## 3 Output capacitors
 
-> **State:** Provisional capacitor selection, reviewed 2026-10-07. Owns the
+> **State:** Provisional capacitor selection, reviewed 2026-10-12. Owns the
 > output-filter capacitor choice. The 10 µH inductors are locked in Section 2.
-> Next gate: compare effective capacitance and PWM-frequency heating for the
-> exact bank at the actual post-filter waveform before PCB implementation.
+> The canonical schematic now draws two TDK `B32701P4684K000` film capacitors,
+> one on each combined speaker-output side. Next gate: check response/damping,
+> carrier ripple and capacitor temperature in the prototype. The TDK series has
+> a published 600 kHz current allowance.
 
-TI's TPA3251 EVM has four 680 nF film shunt positions with 7 µH inductors.
-This project's four 10 µH inductors remain locked, so 680 nF is a reference
-target rather than an exact copy of the EVM filter. With an ideal 10 µH and
-680 nF, `1/(2π√(LC)) ≈ 61 kHz`; 660 nF gives approximately 62 kHz.
-These are unloaded LC frequencies, not a complete prediction of the driven
-speaker response. The 100 V X7R bank previously shown here is superseded by
-the higher-voltage candidate below: TI's LC-filter guidance calls for a
-ceramic rating above 150 V and recommends 250 V for capacitance stability.
+The [TPA3251 data sheet's differential PBTL example](https://www.ti.com/lit/ds/symlink/tpa3251.pdf)
+draws four 10 µH inductors but only **two** 680 nF post-filter shunts: one
+on each combined speaker-output side. Its accompanying design-requirements
+table describes the filter as 10 µH + 1 µF, so the figure and table should
+be treated as example values rather than an exact capacitor mandate. The
+[TPA3251 EVM](https://www.ti.com/lit/ug/slau751/slau751.pdf) instead has four
+680 nF positions and 7 µH inductors; that different LC implementation was the
+source of the previous four-position assumption.
 
-**Preferred provisional implementation:** three 220 nF ±10%, 250 V X7R,
-soft-termination 1210 MLCCs in parallel at each of the four filter positions
-(660 nF nominal per position, 12 parts total). TDK
-`C3225X7R2E224K200AE` is a candidate, not yet a locked BOM part. It is
-currently listed as in production. A single 680 nF, 250 V X7R 2220 such as
-TDK `CGA9N3X7R2E684K230KA` is a simpler comparison candidate; banking does
-not itself cure X7R voltage dependence or distortion. The bank divides ripple
-current and dissipation among three smaller bodies and permits compact,
-symmetric placement, at the cost of more joints and board area. Keep all
-three on the same post-inductor node with short, similarly sized connections
-to the correct return. Select the side from the completed electrical layout
-and machined-plate clearance, rather than the former front-side-only rule.
+In the current XML, L1 and L3 join at `SPK+`, while L2 and L4 join at `SPK-`.
+C17 and C30 each provide one 680 nF shunt to GND. Each same-side pair of
+10 µH inductors is ideally 5 µH in parallel, giving the simple LC scale
+`f0 = 1/(2π√(5 µH × 680 nF)) ≈ 86 kHz`. This is not a measured loaded
+response; speaker impedance, filter loss, layout, and the Zobel network alter
+damping. The earlier 12 × 220 nF MLCC arrangement, with six shunts per side,
+was superseded by the two film parts; its idealised scale was about 62 kHz.
 
-Each shunt capacitor sees a DC level around half of 36 V at idle, plus audio
-and switching ripple; the relevant rating check is its peak terminal voltage,
-including overshoot. Do not equate `3 × 220 nF` nameplate with 660 nF in
-operation: obtain the manufacturer's exact DC-bias, frequency, and ripple
-temperature-rise data, then check the total effective capacitance over the
-actual voltage and temperature range. X7R's ±15% temperature classification
-does not cover DC-bias loss. Avoid Y5V/Z5U. Check ceramic flex/crack risk in
-the final layout and compare loaded response and capacitor temperature during
-prototype validation.
+**Capacitance trade-off (idealised):** for differential operation into a
+purely resistive 4 Ω speaker, symmetry lets each combined output side be
+modelled with 5 µH series inductance, its shunt capacitor, and 2 Ω to a
+virtual ground. The low-pass denominator is
+`1 + sL/R + s²LC`, so `f0 = 1/(2π√(LC))` and `Q = R√(C/L)`.
 
-Film remains an alternative if a part fits and its **AC current and
-voltage at the PWM frequency**, pulse-rise rating, and temperature are
-verified. TI favours film for stable capacitance and audio performance; the
-EVM's 680 nF, 250 V through-hole film part can now be considered, but is not
-automatically approved for this board's waveform, placement, or clearance.
-A nominal-value part is not approved merely from its DC voltage rating.
+| Capacitance per side | Implementation example | Ideal f0 | Ideal Q | Additional ideal attenuation at 600 kHz versus 680 nF |
+| --- | --- | ---: | ---: | ---: |
+| 680 nF | one 680 nF | 86 kHz | 0.74 | reference |
+| 1.0 µF | one 1.0 µF | 71 kHz | 0.89 | about 3 dB |
+| 1.36 µF | two 680 nF in parallel | 61 kHz | 1.04 | about 6 dB |
+| 2.04 µF | three 680 nF in parallel | 50 kHz | 1.28 | about 9.5 dB |
 
-Sources: [TI TPA3251 EVM](https://www.ti.com/lit/ug/slau751/slau751.pdf),
-[TI LC filter design guidance](https://www.ti.com/lit/an/slaa701a/slaa701a.pdf),
-[TDK 220 nF candidate](https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C3225X7R2E224K200AE),
-and [TDK 680 nF comparison](https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=CGA9N3X7R2E684K230KA).
+The 680 nF value gives Q close to the 0.707 Butterworth value in this simple
+4 Ω model. Larger capacitance reduces carrier voltage ripple, but raises Q
+and can increase response peaking around the lowered LC frequency. The real
+speaker is not a 4 Ω resistor at tens of kilohertz, and the Zobel and loss
+change the result; this table is a sensitivity calculation, not a predicted
+measured response. At 100 Hz and 150 W into 4 Ω, each side carries only about
+5 mA RMS of audio-frequency current in a 680 nF shunt (about 10 mA for
+1.36 µF), so extra capacitance offers little benefit within the intended
+subwoofer passband. At the carrier, inductor ripple is set mainly by rail
+voltage, inductance and switching period; extra capacitance chiefly lowers
+the shunt voltage ripple. Paralleling identical parts shares that ripple
+current, but the selected single TDK part already has substantial published
+current allowance. Retain one 680 nF per side as the prototype baseline;
+increase capacitance only if measured residual carrier or response warrants
+the accompanying damping and layout review. TI's PBTL figure uses 680 nF,
+while its accompanying table gives 1 µF as another example.
+
+**Drawn provisional prototype choice:** two TDK `B32701P4684K000`
+metallised-polypropylene through-hole capacitors, C17 from `SPK+` to GND and
+C30 from `SPK-` to GND. Each is 680 nF ±10%, 450 V DC, with a 13 × 6 × 12 mm
+maximum body and 10 mm lead pitch (0.6 mm leads). The alternative TDK
+`B32702P4684K000` has the same capacitance and voltage, a 18 × 5 × 10.5 mm
+body and 15 mm pitch (0.8 mm leads). The smaller-pitch part occupies about
+78 mm² of body plan area versus 90 mm² for the 15 mm version, but is 1.5 mm
+taller; verify actual plate clearance. Both have a clear manufacturer drawing,
+unlike the conflicting distributor pitch for the earlier Panasonic candidate.
+The two-capacitor arrangement follows the data-sheet PBTL figure and avoids
+the MLCC bank's uncertain DC-bias capacitance. Place each close to its
+inductor join with a compact ground return. The 2026-10-11 six-MLCC proposal
+and subsequent Panasonic film proposal are superseded as preferred candidates;
+they remain alternatives if the TDK part fails prototype checks.
+
+At idle, each output shunt sits near half of the 36 V rail; audio and
+switching ripple add to this. The 450 V DC rating has ample nominal margin,
+subject to measured overshoot. For a first-order carrier
+current estimate, each 10 µH inductor sees about 18 V for half a 600 kHz
+period: `ΔI ≈ 18 V / (2 × 600 kHz × 10 µH) = 1.5 A` peak-to-peak. If the
+two same-side PBTL currents add, the single shunt sees about 3 A peak-to-peak,
+or `3/(2√3) ≈ 0.87 A RMS` for a triangular ripple at idle. This is an
+idealised estimate, not a measured worst case over modulation and load.
+
+TDK's 680 nF permissible-current curves extend to 1 MHz, unlike Panasonic's
+published ECWFD plot, which stops around 250 kHz and omits the exact
+15 mm-pitch 680 nF variant. Reading TDK's **sinusoidal** curves at 600 kHz
+gives approximately 3 A RMS for `B32701P4684K000` and 2.5 A RMS for
+`B32702P4684K000` at ambient temperature at most 85 °C and no more than
+15 °C self-heating. The 10 mm part thus has both the smaller plan area and
+the higher published current allowance. These curves are stronger selection
+evidence than either part's isolated-pulse dV/dt limit (60 V/µs and
+25 V/µs respectively), but a PWM waveform has harmonics and its actual
+current changes with modulation and load. Verify the waveform, capacitor case
+temperature at representative maximum output, residual carrier and loaded
+filter response on the prototype. At the final PCB stage, confirm lead pitch,
+orientation, clearance and mechanically secure mounting. The nominal 450 V
+rating alone is not the approval criterion.
+
+Sources: [TDK B3270*P data sheet](https://www.tdk-electronics.tdk.com/inf/20/20/ds/mkp_b32701p_b32703p.pdf),
+[TDK B32701P4684K000 product page](https://product.tdk.com/en/search/capacitor/film/snubbering_pfc/info?part_no=B32701P4684K000),
+[TDK B32702P4684K000 product page](https://product.tdk.com/en/search/capacitor/film/snubbering_pfc/info?part_no=B32702P4684K000),
+[Panasonic ECWFD technical data](https://industrial.panasonic.com/cdbs/www-data/pdf/RDI0000/ABD0000COS113.pdf),
+[TI TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf), and
+[TI LC filter design guidance](https://www.ti.com/lit/an/slaa701a/slaa701a.pdf).
 
 ## 4 Zobel/output damping network
+
+**2026-10-12 output-small-capacitor rating review (no part change yet).** In
+the current schematic C19/C28 are 1 nF directly from the two post-inductor
+speaker-output nodes to GND. C16/C31 are 10 nF in series with R20/R21
+(3.3 Ω) from those same nodes to GND. Each capacitor therefore sees its
+own output-to-ground voltage, not the full differential speaker voltage.
+In an ideal symmetrical 36 V PBTL stage delivering 144 W into 4 Ω, the
+differential 24 V RMS output corresponds to about 12 V RMS per side around
+an 18 V midpoint: roughly 1–35 V per node. Add switching ripple and any
+LC/output-wiring overshoot to that estimate; the actual peak is unverified.
+Thus the drawn 250 V ratings are not required by the nominal waveform.
+100 V ceramic parts are a reasonable provisional rating with substantial
+nominal margin, subject to the final voltage waveform, dielectric/impedance,
+and capacitor and resistor temperature. A 50 V 10 nF X7R/3.3 Ω pair is used
+in TI's output-network guidance, but choosing 100 V here leaves more room
+for post-filter ringing. The TPA3251's 50 V output-pin absolute maximum
+does not itself bound overshoot at the post-inductor nodes. Retain the 250 V
+parts if they are convenient and their electrical performance and footprints
+are suitable; lowering the rating is a cost/availability choice, not an
+electrical requirement. The 1 nF parts are small high-frequency shunts:
+at 600 kHz their ideal reactance is about 265 Ω versus 0.39 Ω for the
+680 nF film shunts. The 10 nF/3.3 Ω branch starts to become resistive near
+4.8 MHz, making its high-frequency damping and heating more important than
+the nominal voltage rating alone.
+[TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf);
+[TI output-network guidance](https://e2e.ti.com/support/audio-group/audio/f/audio-forum/492175/question-about-tpa3251d2-diodes-at-output).
 
 Reference resistor:
 
@@ -338,8 +474,9 @@ Default:
 
 - SMD preferred; allow through-hole with justified layout and plate clearance
 - 1%
-- 0805 preferred
-- approximately 125 mW minimum
+- choose the package and power rating for the actual voltage, dissipation,
+  assembly method, and placement; 0603 is suitable for the low-level input
+  resistors R16/R17
 
 Exceptions:
 
@@ -354,11 +491,90 @@ Guideline:
 
 - 12 V rails: 16–25 V X7R
 - bootstrap: 50–100 V
-- PVDD bypass: 50–63 V minimum
-- output filter: provisional 250 V X7R bank; see Section 3
+- PVDD bypass: 50–63 V minimum; 100 V is acceptable when the chosen part
+  retains sufficient capacitance and low impedance under 36 V bias
+- output filter: provisional 680 nF TDK metallised-polypropylene film
+  shunt per combined speaker side; see Section 3 for qualification
 - use C0G/NP0 for small precision/HF values where appropriate
 
 Do not blindly use 100 V parts everywhere.
+
+**2026-10-12 PVDD bypass review (placed choice unqualified).** The saved
+schematic now places Murata `GRJ21BC72A105ME11L` 1 µF, 100 V X7S capacitors
+C21/C22/C24/C25 on `CAP_0805` patterns. The earlier Würth 0805 part on a
+0603 pattern was a real mismatch in a preceding schematic state; that specific
+problem is superseded, not an open error in this snapshot. The nearby 470 µF
+capacitors supply lower-frequency energy and do not replace short-loop PVDD
+bypass. TI calls for a 1 µF ceramic at each PVDD node, close to the IC. The
+placed part's nominal 1 µF and 100 V rating do not establish its effective
+capacitance or impedance under 36 V bias and switching peaks. At 600 kHz,
+ideal 1 µF and 0.5 µF capacitors have approximately 0.27 Ω and 0.53 Ω
+reactance respectively; above self-resonance, package and layout inductance
+matter increasingly. Check exact-part biased capacitance, impedance over the
+switching harmonics, voltage peaks, short-loop placement and rear-plate
+clearance before qualifying the placed choice. The RSP-200-36 output is
+adjustable to 39.6 V and its overvoltage trip range reaches 48.6 V; the
+TPA3251 PVDD pin itself has a 50 V absolute maximum including peaks, so the
+capacitor's higher rating does not relax the rail-voltage limit.
+[TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf);
+[RSP-200 data sheet](https://www.meanwell.com/Upload/PDF/RSP-200/RSP-200-spec.pdf);
+[Murata MLCC part list](https://www.murata.com/-/media/webrenewal/tool/library/common-pdf/dynamic-model/component-list-d-mlcc-2504.ashx?cvid=20250523010405000000&la=en).
+
+**2026-10-13 DC-bias evidence and selection (open).** Murata's supplied
+simulation for the placed part reports −58.3% capacitance change at 36 V DC,
+25 °C and 1 V RMS AC: approximately 0.42 µF per nominal 1 µF part. This is a
+modelled operating-point result, not a guaranteed minimum or impedance curve.
+The TPA3251 data sheet recommends a 1 µF ceramic close to each PVDD node; its
+[EVM BOM](https://www.ti.com/lit/ug/slau751/slau751.pdf) actually fits nominal
+1 µF, 50 V X7R 1206 MLCCs (`GRM31MR71H105KA88L`). Thus the reference
+implementation strongly indicates that TI's 1 µF is a nominal component value,
+not an explicit requirement for 1 µF *after* DC bias. It does not demonstrate
+that this different 0805 part at 0.42 µF has the same margin. At 600 kHz the
+ideal capacitive reactance for 0.42 µF is about 0.63 Ω, versus 0.27 Ω for
+1 µF; real impedance also includes ESR, ESL and the PCB loop.
+
+Consider replacing all four with an exact, layout-compatible 2.2 µF part to
+recover margin. A hypothetical 2.2 µF part with the same 58.3% loss would
+provide about 0.92 µF at 36 V, but the new part's bias curve must be checked
+individually. Extra local capacitance itself has no identified adverse effect
+on the TPA3251; the selection gate is adequate effective capacitance and
+low impedance near switching frequencies, voltage/ripple suitability, and a
+short PVDD-to-ground loop within the rear-plate clearance. Do not change the
+placed MPN or footprint on nominal capacitance alone.
+
+**2026-10-13 0805 comparison (selection still open).** Murata's supplied
+simulation for 2.2 µF, 100 V, 0805 X7T `GRM21BD72A225KE01L` reports a
+−69.6% change at 36 V DC, 25 °C and 1 V RMS AC, and displays 0.707 µF.
+Multiplying nominal 2.2 µF by the displayed percentage gives 0.669 µF;
+use roughly 0.7 µF for this comparison and check the simulator's reference
+value before relying on a more precise figure. Either value is a material
+improvement over the placed part's approximately 0.42 µF, but remains below
+1 µF in this model. The TI EVM's nominal 1 µF PVDD parts use 1206 packages.
+Investigate a 1206 replacement as the next practical option, comparing exact
+parts' biased capacitance and impedance at 36 V and checking the larger land
+pattern, package height, short bypass loop and rear-plate clearance. Larger
+package alone does not guarantee a particular effective capacitance; 1210 is
+an option only if a suitable 1206 cannot meet these constraints. Retain
+adequate voltage margin for PVDD peaks rather than treating a 50 V rating as
+automatically interchangeable with the placed 100 V rating.
+
+**2026-10-13 1206 candidate (not yet placed).** Würth Elektronik
+`885012208124` is a 2.2 µF ±10%, 100 V X7R 1206 MLCC, not a nominal 1 µF
+part. Its supplied DC-bias plot indicates approximately −48.5% at 36.2 V:
+`2.2 µF × 0.515 = 1.13 µF` typical, or approximately `1.02 µF` if −10%
+initial tolerance is applied to the same bias ratio. The plotted bias ratio
+is not a guaranteed worst-case specification; temperature dependence (X7R
+±15% over its rated range) and ageing can reduce the operating value further.
+No 1 µF *effective* minimum is established by TI, so the approximately 1 µF
+estimate is a useful margin comparison, not an acceptance threshold. The
+manufacturer's package dimensions are 3.2 × 1.6 mm with maximum height
+1.9 mm. At the proposed, still-unverified 4 mm PCB-back-to-finished-pocket
+clearance, this leaves about 2.1 mm before solder height and assembly
+tolerances. The CNC pocket makes vertical space a secondary concern; retain
+the short supply/return loop and the continuous TPA3251 thermal land.
+Qualify the candidate's switching-frequency impedance/ripple behaviour and
+the final pad geometry before changing C21/C22/C24/C25 in DipTrace.
+[Würth part data sheet](https://www.we-online.com/components/products/datasheet/885012208124.pdf).
 
 ### 5.3 Bulk electrolytics
 

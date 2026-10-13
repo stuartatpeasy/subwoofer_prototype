@@ -1,6 +1,6 @@
 # System specification
 
-> **State — current system authority; reviewed 2026-10-11.** Owns locked
+> **State — current system authority; reviewed 2026-10-12.** Owns locked
 > architecture and cross-subsystem constraints; detailed plate geometry and
 > finish belong to [mechanical design](MECHANICAL.md). Read for system-level
 > changes. Current direction permits CNC plate reliefs, components on both
@@ -63,7 +63,6 @@ Do not revisit without measured/simulation evidence:
 - IHLP5050FDER100M5A inductors
 - amplifier-board component technology and side chosen by electrical layout and
   the verified machined-plate clearance; through-hole parts are permitted
-- X7R MLCC output-filter capacitors
 - nominal 6 mm CNC-machined aluminium rear plate with local PCB-clearance
   reliefs and a continuous TPA3251 thermal land
 - matt-black external plate finish
@@ -77,46 +76,56 @@ Do not revisit without measured/simulation evidence:
   CSP, DFN, QFN, or similar leadless packages
 - prefer larger-pitch packages such as SOIC where they are reasonably
   available; pin pitches down to 0.50 mm are acceptable when necessary
-- one electrically partitioned four-layer PCB; no two-layer fallback
+- one four-layer PCB with physically controlled analogue and power regions;
+  no two-layer fallback
 
 The former 1050A-H14 flat plate, painted-exterior process, SMD-only board,
 and front-side-only support-component rules are superseded by the CNC-relieved
 plate and component-placement permissions above. JLCCNC 6061 and ordinary
 matt-black anodising are preferred **provisional** material/finish choices,
 subject to the thermal and fabrication gates in [Mechanical design](MECHANICAL.md).
+The former X7R MLCC output-filter technology preference is also superseded:
+through-hole film is permitted, with exact selection still provisional in
+[Power amplifier](POWER_AMPLIFIER.md).
 
 The previous 15 V converter feeding separate 12 V amplifier and analogue
 post-regulators is superseded by the current power-plan revision. The partial
 [canonical schematic](../diptrace/main_board.dchxml) now shows an MP4541GN
 candidate 36 V-to-approximately-17.36 V buck feeding an `XC6701DF02FR-G` 15 V
-analogue regulator and an `NCP1117ST12T3G` 12 V amplifier regulator. The buck
-ground split and exposed-pad mapping have been revised. The 12 V regulator's
-three leads and output-connected tab are now mapped correctly. Its ceramic
-output-capacitor stability, thermal, and cross-domain return issues remain;
-the present PGND–AGND–GNDAMP links are unpopulated placeholders, and a
-single-net `GND` schematic revision is proposed. Its
-amplifier load is not yet drawn. Prior
-component analysis remains
+analogue regulator and the now-placed `L78M12ABDT-TR` 12 V amplifier regulator.
+The buck exposed pad and the 12 V regulator's ground tab are drawn; verify the
+transferred PCB netlist and land pattern.
+The former `PGND`, `AGND`, and `GNDAMP` nets have been merged into one `GND`
+net, and the unpopulated R1/R2 links have been removed. The TPA3251's 12 V
+feeds are drawn, but their loaded current, L78M12 thermal behaviour, and the
+physical bypass and return paths remain open. The selected nominal 1 µF C36
+input bypass meets the local capacitance target on the user's DC-bias data;
+its placement remains a PCB check.
+Prior component analysis remains
 in [power and grounding](POWER_AND_GROUNDING.md) as superseded context, not
 an active procurement or assembly instruction.
 
-## 1.1 PCB architecture and proposed grounding revision
+## 1.1 PCB architecture and grounding
 
 - one mechanically unified PCB, partitioned into analogue-front-end and
   Class-D power-amplifier domains
 - four copper layers for Rev A
-- physically controlled analogue and amplifier return regions; one common
-  schematic `GND` net is proposed, with the actual copper topology open
+- physically controlled analogue and amplifier return regions; the schematic
+  uses one common `GND` net, with the actual copper topology open
 - separate power and return entries for the two domains, preserving the
   deliberate external branching defined in
   [Power and grounding](POWER_AND_GROUNDING.md)
+- selected through-hole, latching board connections for the 36 V input and
+  driver output; exact pairs and remaining harness/layout gates are owned by
+  [power and grounding](POWER_AND_GROUNDING.md) and
+  [power amplifier](POWER_AMPLIFIER.md), respectively
 - a placement corridor between analogue circuitry and Class-D switching
   nodes; route the balanced audio pair together and retain suitable local
   return references for any crossing
 
 The one-board, four-layer architecture remains locked; the common `GND` net
-and return-copper layout are a proposed revision to the earlier split-net
-scheme. Four layers are a project requirement even though they are not a functional
+supersedes the earlier split-net scheme, while return-copper geometry remains
+to be designed. Four layers are a project requirement even though they are not a functional
 requirement of the TPA3251 itself. The exact fabricator stack-up, component
 placement, milled plate reliefs, and thermal interface between the rear-mounted
 top-exposed PowerPAD and aluminium plate remain to be finalised before layout.
@@ -232,6 +241,9 @@ These are small-signal model results, not completed-enclosure measurements.
   no recorded rationale; the 2026-10-11 review retained the reference resistor
   and corrected the requirement. The output-filter values remain provisional
   pending their existing validation gates.
+- output-filter capacitor candidate: one TDK `B32701P4684K000` 680 nF
+  metallised-polypropylene film shunt on each combined speaker-output side;
+  prototype checks remain open in [Power amplifier](POWER_AMPLIFIER.md)
 - passive cooling only
 
 ## 5 Main PSU

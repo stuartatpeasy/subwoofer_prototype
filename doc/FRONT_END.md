@@ -1,14 +1,16 @@
 # Analogue front end
 
-> **State — current design basis; reviewed 2026-10-11.** Owns the analogue
+> **State — current design basis; coupling and filter parts checked 2026-10-13.** Owns the analogue
 > signal path and its part choices; power rails and ground partitioning belong
 > to [power and grounding](POWER_AND_GROUNDING.md). Read when changing the
-> schematic front end. Current conclusions: retain R5 outside the VMID buffer
+> schematic front end. Current conclusions: retain R32 outside the VMID buffer
 > feedback loop; the selected Panasonic PPS-film capacitors have the intended
 > land pattern, and the J2 wiper-bias and J3 receiving networks are drawn.
 > Next gate: verify external pot/switch wiring and panel-cable stability, then
-> validate the assembled filter and noise. The XML
-> is partial, and assembled performance has not been measured.
+> validate the assembled filter and noise. The XML is partial, and assembled
+> performance has not been measured. Current signal-path reference labels were
+> reconciled with the 2026-10-12 saved schematic; explicitly dated former
+> labels remain only as historical context.
 
 ## 1 Overview
 
@@ -43,7 +45,7 @@ TPA3251
 
 ### 1.2 Buffered VMID
 
-The current partial schematic uses U5.3, an OPA1679 unity-gain buffer, to generate
+The current partial schematic uses U1.3, an OPA1679 unity-gain buffer, to generate
 the nominal 7.5 V analogue midpoint from `15VA`:
 
 ```text
@@ -55,22 +57,22 @@ the nominal 7.5 V analogue midpoint from `15VA`:
   |
 10 kΩ || 4.7 µF ceramic
   |
-AGND
+GND (quiet analogue region)
 ```
 
 The two 10 kΩ legs present a 5 kΩ Thevenin resistance to the divider
 capacitor. At its nominal 4.7 µF, the pole is 6.77 Hz, the time constant is
 23.5 ms, and 1% settling takes approximately 108 ms. Actual ceramic
-capacitance under 7.5 V bias remains to be checked. U5.3 has direct
-output-to-inverting-input feedback. The separate `R5 = 10 Ω` lies between
+capacitance under 7.5 V bias remains to be checked. U1.3 has direct
+output-to-inverting-input feedback. The separate `R32 = 10 Ω` lies between
 that sensed output and VMID; there is no shunt capacitor directly on VMID.
 The former 10 kΩ feedback resistor has been removed, consistent with the
 [OPA1679's unity-gain stability](https://www.ti.com/lit/ds/symlink/opa1679.pdf).
 Assess VMID noise, load current, and stability with the complete front end
 before adding output filtering.
 
-Keep R5 outside U5.3's feedback loop as the present baseline. Sensing VMID
-after R5 would correct its small load-dependent voltage drop at low frequency,
+Keep R32 outside U1.3's feedback loop as the present baseline. Sensing VMID
+after R32 would correct its small load-dependent voltage drop at low frequency,
 but would put the VMID load and its capacitance in the feedback path. TI
 recommends a series output resistor to isolate heavier capacitive loads on
 the OPA167x; compensated dual feedback would be a separate design if lower
@@ -84,17 +86,17 @@ defined.
 
 ### 1.3 OPA1679 supply decoupling
 
-The partial schematic has `C1` and `C2`, each 100 nF from `15VA` to
-`AGND`, for U5 and U6 respectively, and a separate nominal `C16 = 1 µF`
-at the U3 15 V LDO output. With C1/C2 placed very close to the respective
+The partial schematic has `C54` and `C55`, each 100 nF from `15VA` to
+`GND`, for U1 and U2 respectively, and a separate nominal `C48 = 1 µF`
+at the U6 15 V LDO output. With C54/C55 placed very close to the respective
 op-amp supply pins and returned to the local analogue ground, this meets
 TI's usual single-supply OPA1679 bypass recommendation: a 0.1 µF ceramic is
 adequate in most cases. An additional 1 µF at either op amp is optional if the
 15 V distribution becomes long or noisy, not required by the present partial
 circuit. Torex recommends a 0.1–1 µF local output capacitor for load-step
 response, although XC6701's internal compensation does not require one for
-stability; check C16's effective capacitance under 15 V bias and place it near
-U3. A remote op-amp capacitor does not replace U3's local capacitor. Sources:
+stability; check C48's effective capacitance under 15 V bias and place it near
+U6. A remote op-amp capacitor does not replace U6's local capacitor. Sources:
 [TI OPA1679 data sheet](https://www.ti.com/lit/ds/symlink/opa1679.pdf),
 Sections 8.3–8.4, and [Torex XC6701 data sheet](https://product.torexsemi.com/system/files/series/xc6701.pdf),
 Notes on Use.
@@ -105,13 +107,13 @@ The 2026-10-06 canonical export confirms that the two former 1 µF local
 reference-filter capacitors C18 and C23 have been removed. Previously,
 R12/C18 and R13/C23 made separate nominal 3.39 Hz reference filters while
 the level-pot bottom and other stages used unfiltered VMID. At J2's minimum
-setting, its wiper equals VMID and U6.2's ideal differential output is
+setting, its wiper equals VMID and U2.2's ideal differential output is
 `2 × (VMID - Vref)`. A 0.5 mV VMID disturbance well above the former filter
 pole would therefore have produced approximately 1 mV differential, not
 0.5 mV. Removing the two shunt capacitors removes this mismatch mechanism.
 
-The current XML has no separate series VMID reference-filter resistors. U6.2 and
-U5.4 now take their non-inverting references directly from the common VMID
+The current XML has no separate series VMID reference-filter resistors. U2.2 and
+U1.4 now take their non-inverting references directly from the common VMID
 net. The previous reference-filter mismatch and its two unnecessary 47 kΩ
 series-noise sources are therefore absent.
 
@@ -150,14 +152,14 @@ RCA
  |
 330–470 pF RF shunt
  |
-Würth 885012208124 2.2 µF X7R coupling capacitor
+Panasonic ECW-FD2W225J4 2.2 µF film coupling capacitor
  |
 47 kΩ to VMID
  |
 OPA167x unity buffer
 ```
 
-In the current partial schematic, U5.1 and U5.2 have direct output-to-inverting-
+In the current partial schematic, U1.1 and U1.2 have direct output-to-inverting-
 input feedback. The 47 kΩ resistors give their non-inverting inputs a DC path
 to VMID. Adding 47 kΩ to each feedback path merely to balance typical
 [OPA1679 input bias currents](https://www.ti.com/lit/ds/symlink/opa1679.pdf)
@@ -166,7 +168,7 @@ only 0.47 µV of DC shift, while an added resistor contributes noise and can
 interact with input capacitance. Revisit this only if measured DC offset
 identifies a material need.
 
-Those resistors are `R12` and `R23`. Their primary jobs are to set the
+Those resistors are `R1` and `R9`. Their primary jobs are to set the
 approximately 47 kΩ connected-source input load and provide the AC-coupled
 inputs with a DC bias path. With the nominal 2.2 µF input capacitors, the
 simple high-pass corner is 1.54 Hz. They are not the main control on
@@ -177,21 +179,57 @@ that resistor is shunted by the source through the coupling capacitor and its
 actual input-node noise contribution is smaller. Changing 47 kΩ solely to
 reduce an assumed noise or crosstalk figure is not selected.
 
-Select Würth Elektronik `885012208124` (2.2 µF, ±10%, 100 V, X7R, 1206)
-for both RCA-input coupling positions and both TPA3251 differential-input
-coupling positions described in Section 7. This is the confirmed Rev-A
-assembly choice, not a claim that its in-circuit distortion and capacitance
-have already been measured. Review the assembled 20–100 Hz distortion and
-effective low-frequency response after construction; reopen the choice only
-if those results show a material problem. Its 100 V rating and the relatively
-small signal voltage across each coupling capacitor make it a reasonable
-Class 2 ceramic candidate, but neither fact establishes a distortion result.
-The former 15 V converter plan also provisionally used this part in its EMI
-filter; that supply-filter use is superseded by the revised power tree.
+The current schematic selects Panasonic `ECW-FD2W225J4` (2.2 µF, ±5%,
+450 V, metallised polypropylene, radial lead, 7.5 mm pitch) for both RCA
+coupling positions C1/C6 and both TPA3251 input positions C11/C15. This
+supersedes the earlier Würth `885012208124` X7R selection. Film removes the
+Class 2 ceramic voltage-coefficient uncertainty; an audible or measured
+distortion improvement in this circuit has not yet been established. Verify
+the four through-hole patterns and rear-plate clearance during PCB layout.
+[Panasonic part data](https://industrial.panasonic.com/ww/products/pt/film-cap-electroequip/models/ECWFD2W225J4).
 
-Retain Rubycon `16MF225KA23216` and Kyocera AVX `CB162D0225JBC` as film
-references or fallback parts if the assembled signal path reveals a problem.
-Their different land patterns must be checked before any substitution.
+The previously considered Rubycon `16MF225KA23216` and Kyocera AVX
+`CB162D0225JBC` film alternatives remain unselected; their different land
+patterns would need checking before substitution.
+
+**2026-10-11 film reassessment (historical; substitution made 2026-10-13).** The
+schematic labels the RCA coupling capacitors C1/C6 and the amplifier-input
+coupling capacitors C11/C15; earlier references C25/C42 and C64/C65 in this
+discussion predate the schematic renumbering (reference check 2026-10-12).
+These were the four X7R
+capacitors carrying bass-band signal. At nominal
+2.2 µF, the magnitude of their reactance at 20 Hz is 3.62 kΩ. With a
+low-impedance 3 V RMS RCA source, approximately 0.23 V RMS appears across
+each RCA coupling capacitor (47 kΩ return plus 1 kΩ input series resistor).
+For a 1.8 V RMS driver leg, approximately 0.27 V RMS appears across each
+amplifier-input capacitor (nominal 24 kΩ input). These are illustrative
+worst-clean-level calculations, not measured distortion; the actual voltage
+increases if DC bias reduces the effective X7R capacitance. Film removes this
+voltage-dependent-capacitance uncertainty, but no audible or measured
+improvement has been established in this circuit. A 2.2 µF film part is a
+reasonable pre-layout substitution if its footprint and rear-plate clearance
+are acceptable. Polypropylene is not required solely for low distortion:
+TI's AC-coupling comparison found no significant performance difference among
+the film dielectrics it tested. Keep both amplifier-input legs the same value
+and type, and verify the chosen part's voltage rating at the actual DC bias.
+[TI capacitor distortion study](https://www.ti.com/lit/an/slyt796a/slyt796a.pdf).
+
+**2026-10-11 input-value check (historical alternatives; C1/C6 remain 2.2 µF).**
+Using the 47 kΩ bias resistor alone, 1.0 µF gives a 3.39 Hz pole and
+0.123 dB capacitor-related loss at 20 Hz relative to the input's midband
+gain; with a −10% film capacitor and −1% bias resistor, that loss is
+0.154 dB. The separate 1 kΩ/47 kΩ midband divider loses about 0.18 dB
+irrespective of capacitance. This is small, but a corner below 20 Hz does not
+mean zero loss at 20 Hz. Defining a strict input-stage budget of 0.10 dB
+at 20 Hz gives a maximum pole of 3.05 Hz. With the same tolerances, the
+nominal capacitance must be at least 1.25 µF; 1.5 µF ±10% film gives
+0.069 dB worst-case loss. At a looser 0.20 dB input-stage budget, 1.0 µF
+±10% is sufficient. The existing 2.2 µF amplifier-input coupling adds
+approximately 0.10 dB nominally at 20 Hz on each signal path, independent
+of this choice. Do not count both RCA coupling capacitors as cascaded poles:
+each source traverses only its own input capacitor before summing. The
+1 kΩ RCA series resistor slightly lowers the input pole; the calculations
+above omit it conservatively. The 2026-10-13 film selection retains 2.2 µF.
 
 A Nichicon UWP 2.2 µF bipolar aluminium electrolytic remains an unselected
 alternative. Of its two relevant ratings, prefer the
@@ -217,13 +255,9 @@ own current product page marks it `NRFND`. Treat it only as a stocked
 contingency unless Panasonic restores a new-design lifecycle status or an
 active successor with the same electrical advantage becomes available.
 
-Confirm the selected Würth capacitor's effective capacitance at the actual DC
-biases and assess the assembled 20–100 Hz distortion at representative and
-maximum clean signal levels. If there is a material excess, compare against a
-film reference to isolate the capacitor contribution before changing the
-selection. Provide the Würth land pattern from its manufacturer's recommendation;
-do not assume the film, bipolar-electrolytic, and MLCC terminations are
-interchangeable.
+Assess the assembled low-frequency response as part of normal prototype
+validation. The selected Panasonic film part has a distinct through-hole
+pattern; verify its 7.5 mm pitch and physical clearance on the PCB.
 
 Requirements:
 
@@ -258,10 +292,10 @@ maximum system gain depend on the level potentiometer's total-resistance
 tolerance. Use generic 0.1%, 0805 thin-film resistors with temperature
 coefficient no worse than ±25 ppm/°C for all three summing resistors.
 
-The current U5.4 stage uses `R16/R27 = 10 kΩ` inputs and `R22 = 3 kΩ`
+The current U1.4 stage uses `R3/R13 = 10 kΩ` inputs and `R8 = 3 kΩ`
 feedback; its non-inverting input connects directly to VMID, with no
 shunt filter capacitor. There is no feedback capacitor. One could add
-approximately 1 nF C0G/NP0 in parallel with R22 for a 53 kHz pole if pre-filter
+approximately 1 nF C0G/NP0 in parallel with R8 for a 53 kHz pole if pre-filter
 ultrasonic pickup or overload appears. The following 40–100 Hz Sallen-Key
 already supplies the required bass-band roll-off, so this capacitor is not
 needed for the intended filter response. A signal-path feedback capacitor
@@ -305,8 +339,8 @@ independently by ±5%. If all three shift together, Q stays nominal while
 cutoff frequency changes by approximately −4.8% to +5.3%. These are bounds,
 not a prediction of actual assembled parts or pot-gang tracking.
 
-The current canonical XML identifies `C30`, `C37`, and `C41` as Panasonic
-`ECH-U1H823JX9` and maps them through `CompType49` to `PatType21`. Its pads
+The current canonical XML identifies `C2`, `C4`, and `C5` as Panasonic
+`ECH-U1H823JX9` and maps them through `CompType83` to `PatType36`. Its pads
 are 1.3 × 3.0 mm on 4.3 mm centres, giving a 5.6 × 3.0 mm land envelope;
 this matches Panasonic's recommended E2 land dimensions for the 4.8 × 3.3 mm
 body. Verify this mapping in the eventual PCB export. The component-style
@@ -314,9 +348,14 @@ name still contains `MLCC` although the manufacturer identity specifies PPS
 film; correct that misleading name before final BOM release.
 [Panasonic ECHU(X) data sheet](https://industrial.panasonic.com/content/data/CP/PDF/Film/film_echux_e.pdf).
 
+**2026-10-13 dielectric check.** These three placed parts are already PPS
+film chips, not MLCCs. Replacing them with through-hole polypropylene offers
+no established distortion benefit here. Preserve the selected PPS parts and
+the compact filter layout; the misleading library name remains a BOM task.
+
 J1 exposes three electrical nodes for the two external pot gangs: pin 3 is
-the first arm after R18, pin 2 is the junction of the gangs and C37/C41,
-and pin 1 leads through R19 to U6.1's non-inverting input. The external
+the first arm after R4, pin 2 is the junction of the gangs and C4/C5,
+and pin 1 leads through R5 to U2.1's non-inverting input. The external
 wiper/end straps described below must be made in the harness or at the pot.
 
 Wire each pot gang for **clockwise-increasing cutoff frequency**: strap terminal 1
@@ -386,17 +425,18 @@ TODO:
 - connected between LPF output and VMID
 - wiper feeds differential-driver stage
 
-In the current schematic J2 pin 1 is the U6.1 filter output, pin 3 is VMID,
-and pin 2 is the pot wiper. The wiper feeds only U6.4's high-impedance
-non-inverting input; R26 takes its signal from U6.4's output. The
+In the current schematic J2 pin 1 is the U2.1 filter output, pin 3 is VMID,
+and pin 2 is the pot wiper. The wiper feeds only U2.4's high-impedance
+non-inverting input; R11 takes its signal from U2.4's output. The
 previous 10 kΩ load on the pot wiper has therefore been removed. The exact
 level-pot part and panel-terminal mapping remain to be selected and checked.
 
-If the off-board wiper or its lead opens, `R20 = 1 MΩ` from `DIFF_IN` to
-VMID biases the driver input towards minimum output. At full level its loading
-of a nominal 10 kΩ pot changes the ideal maximum fraction from 1 to
-`1 MΩ / (1 MΩ + 10 kΩ) = 0.990`, or −0.086 dB. This robustness
-addition is present in the XML.
+If the off-board wiper or its lead opens, `R6 = 1 MΩ` from `DIFF_IN` to
+VMID biases the driver input towards minimum output. With an intact nominal
+10 kΩ pot, full level still connects the wiper directly to `FILT_OUT`, so its
+ideal fraction remains 1. At the electrical midpoint, the lower 5 kΩ half
+is shunted by 1 MΩ: `(5 kΩ || 1 MΩ) / (5 kΩ + (5 kΩ || 1 MΩ)) ≈ 0.4988`
+instead of 0.5. This robustness addition is present in the XML.
 
 ## 6 Polarity control
 
@@ -428,9 +468,9 @@ and speaker-terminal convention during schematic review and prototype
 validation; the switch action itself does not establish which panel label is
 connected to which contact.
 
-Current J3 pin 1 carries U6.4's non-inverted driver output through R21, and
-pin 2 carries U6.3's inverted driver output through R24. Pin 3 returns through
-C64/R35 to `INPUT_A`, and pin 4 through C65/R36 to `INPUT_B`; C62/C63 provide
+Current J3 pin 1 carries U2.4's non-inverted driver output through R7, and
+pin 2 carries U2.3's inverted driver output through R12. Pin 3 returns through
+C11/R16 to `INPUT_A`, and pin 4 through C15/R17 to `INPUT_B`; C14/C18 provide
 the local shunts. The external switch and harness must still provide and verify
 the intended 0°/180° mapping.
 
@@ -453,11 +493,11 @@ Preferred initial implementation:
   coefficient no worse than ±25 ppm/°C for both the inverter input and
   feedback resistors; and
 - route the two outputs through the polarity switch, then through matched
-  Würth `885012208124` 2.2 µF coupling capacitors and RF-isolation networks
+  Panasonic `ECW-FD2W225J4` 2.2 µF coupling capacitors and RF-isolation networks
   to TPA3251 `INPUT_A` and `INPUT_B`.
 
-The current partial schematic feeds U6.2's inverter through R26 from U6.4's
-buffered output and uses U6.3 as a final follower for the inverted leg. This
+The current partial schematic feeds U2.2's inverter through R11 from U2.4's
+buffered output and uses U2.3 as a final follower for the inverted leg. This
 leaves both J3 drive legs buffered and removes the old level-pot loading.
 
 If the level-pot wiper signal is `VMID + u`, the two outputs are
@@ -489,7 +529,7 @@ clipping and losses are included.
 Use this matched network on each TPA3251 input leg:
 
 ```text
-driver output -> polarity switch -> 885012208124 -> 100 Ω -> TPA3251 input
+driver output -> polarity switch -> ECW-FD2W225J4 -> 100 Ω -> TPA3251 input
                                                         |
                                                       100 pF
                                                         |
@@ -506,7 +546,8 @@ The 100 Ω series resistors and 100 pF shunt capacitors follow TI's
 [TPA3251 EVM](https://www.ti.com/lit/ug/slau751/slau751.pdf) input treatment.
 Their simple RC corner is approximately 15.9 MHz, so they
 provide RF isolation without affecting the audio-band response. Use generic
-100 Ω, ±1%, 0805 thin-film resistors and generic 100 pF, ±5%, C0G/NP0
+100 Ω, ±1% resistors; the existing 0603 footprints for R16/R17 are suitable.
+Use generic 100 pF, ±5%, C0G/NP0
 capacitors rated for at least 25 V. Keep both legs geometrically symmetric,
 place the 100 Ω resistors and 100 pF capacitors at the TPA3251 input pins, and
 return the capacitors locally on the amplifier side rather than to VMID.
@@ -519,32 +560,31 @@ small factor in the final gain simulation rather than increasing the nominal
 front-end gain to compensate for it.
 
 J3 drives an off-board polarity switch. The 100 Ω resistors at the
-TPA3251 pins lie beyond that cable and do not isolate U6.3/U6.4 from its
+TPA3251 pins lie beyond that cable and do not isolate U2.3/U2.4 from its
 capacitance. TI notes that a unity-gain OPA167x may lose phase margin with
 heavier capacitive loading and gives 50 Ω as an example series isolator.
-Fit matched approximately 47–51 Ω resistors close to the U6.3 and U6.4
-outputs, outside their feedback loops, before the J3 cable. Keep R26 connected
-on the U6.4 side of its isolator. With an assumed 24 kΩ amplifier-input load,
+Fit matched approximately 47–51 Ω resistors close to the U2.3 and U2.4
+outputs, outside their feedback loops, before the J3 cable. Keep R11 connected
+on the U2.4 side of its isolator. With an assumed 24 kΩ amplifier-input load,
 each 50 Ω isolator causes only about 0.018 dB passband loss; the actual
 harness capacitance and transient stability still need checking.
 [TI OPA1679 data sheet, Section 8.1.1](https://www.ti.com/lit/ds/symlink/opa1679.pdf).
 
-R21 and R24 are the matched 47 Ω output isolators. J3 carries the two outgoing
-driver legs and their two returns from the off-board switch. C64/C65 are the
+R7 and R12 are the matched 47 Ω output isolators. J3 carries the two outgoing
+driver legs and their two returns from the off-board switch. C11/C15 are the
 matched 2.2 µF series coupling capacitors on the amplifier side of J3;
-R35/R36 and C62/C63 form the two 100 Ω/100 pF receiving networks at the
+R16/R17 and C14/C18 form the two 100 Ω/100 pF receiving networks at the
 TPA3251 pins. The capacitors block the approximately 7.5 V driver DC level
 and let the amplifier establish its own input bias. The 47 Ω isolators serve
-a different purpose and do not replace the receiving networks. The exact
-R35/R36 0603 construction should be reconciled with the 0805 thin-film
-preference above before the BOM is frozen.
+a different purpose and do not replace the receiving networks. R16/R17 need
+no 0805 or thin-film requirement: their signal current and
+dissipation are negligible, and 0603 permits compact, symmetric placement at
+the amplifier inputs.
 
 TODO:
 
-- assess the assembled 20–100 Hz distortion and effective low-frequency
-  response with the selected Würth `885012208124` in all four coupling
-  positions; compare with a film reference and revisit the choice if the
-  capacitor contribution proves material;
+- check the four selected film capacitor footprints and clearance during PCB
+  layout, then assess the assembled low-frequency response;
 - confirm 15 V analogue-rail headroom and differential symmetry in simulation;
 - verify gain, clipping level, polarity switching, and quiescent differential
   DC during prototype validation.
@@ -563,7 +603,7 @@ TPA3251 input network. [TI OPA1679 data sheet](https://www.ti.com/lit/ds/symlink
 For an ordinary resistor, `eR = sqrt(4 k T R)` V/√Hz. A 23.7 kΩ complete
 filter arm therefore contributes about 19.8 nV/√Hz before the frequency-
 dependent Sallen-Key transfer. At 50 Hz, the two independent arm-noise
-contributions at U6.1's output are approximately 15.9 and 25.1 nV/√Hz;
+contributions at U2.1's output are approximately 15.9 and 25.1 nV/√Hz;
 their root-sum-square is 29.7 nV/√Hz. The differential driver doubles that
 shared signal, making about 59 nV/√Hz at J3 from the filter arms alone.
 Including the summer, filter op amp, and driver gives approximately

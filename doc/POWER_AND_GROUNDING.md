@@ -5,18 +5,20 @@
 > topology, and unfiltered-inlet decision remain locked. The auxiliary supply
 > is under redesign: the canonical partial schematic now includes an MP4541GN
 > candidate 36 V-to-approximately-17.36 V buck feeding a 15 V analogue LDO and
-> an NCP1117 12 V amplifier LDO. The NCP1117 pin and tab mapping is now
-> correct. Its output-capacitor stability, thermal design, and physical return
-> paths need resolution as described in Section 1. The proposed schematic
-> direction is one GND net with locally controlled analogue, buck, and
-> amplifier return copper; the canonical schematic still shows three nets.
+> an `L78M12ABDT-TR` 12 V amplifier regulator. Its DPAK pin and ground-tab
+> mapping, input bypass, thermal design, and physical return
+> paths need resolution as described in Section 1. The canonical schematic
+> now uses one `GND` net with no R1/R2 links. Analogue, buck, and amplifier
+> return-current regions remain to be defined in the PCB layout.
+> The six-position Mini-Fit Jr 36 V board-entry pair is selected; pin assignment,
+> footprint, and routing remain layout work.
 > The power tree is not approved for PCB implementation. The selected two-
 > supervisor RESET topology senses 36 V and `17V3` with a selected dedicated
 > divider; its headroom claim depends on the loaded buck trough and 12 V LDO
 > input in [Power amplifier](POWER_AMPLIFIER.md).
 > Earlier STH0548S15/LM2937 selections and their calculations below are
 > superseded context, not current implementation instructions. Last reviewed:
-> 2026-10-11.
+> 2026-10-13.
 
 ## 1 Power architecture
 
@@ -29,7 +31,7 @@
   |
   +--> MP4541GN ~17.36 V buck (candidate partial schematic)
          |
-         +--> NCP1117ST12T3G 12 V LDO (drawn, not approved)
+         +--> L78M12ABDT-TR 12 V regulator (drawn, not approved)
          |      |
          |      +--> TPA3251 VDD/GVDD (drawn; loaded rail unverified)
          |
@@ -42,49 +44,91 @@
 
 Requirements:
 
-- keep the amplifier and analogue supply domains separate
-- deliberate grounding/star connection
+- keep the amplifier and analogue supply loads in their appropriate physical
+  regions, with locally controlled return paths
 - resolve the MP4541GN implementation issues below and the 12 V
   amplifier supply faults in Section 1.2, then recalculate noise, load, heat,
   grounding, and RESET sequencing; confirm the lowest loaded `17V3` trough
   against the selected buck supervisor's release threshold
 
-### 1.1 MP4541GN candidate schematic review (2026-10-06)
+### 1.1 MP4541GN candidate schematic review (2026-10-06; references refreshed 2026-10-12)
 
-The canonical partial schematic uses `R6 = 180 kΩ` and `R10 = 11 kΩ` at FB,
-giving a nominal `1 V × (1 + 180/11) ≈ 17.36 V` output. `R5 = 47 kΩ` sets
+The canonical partial schematic uses `R24 = 180 kΩ` and `R28 = 11 kΩ` at FB,
+giving a nominal `1 V × (1 + 180/11) ≈ 17.36 V` output. `R26 = 47 kΩ` sets
 approximately 674 kHz in the manufacturer's nominal frequency equation.
-With 36 V input and `L1 = 47 µH`, ideal nominal inductor ripple is about
+With 36 V input and `L5 = 47 µH`, ideal nominal inductor ripple is about
 0.28 A peak-to-peak. The Bourns `SRN8040-470M` has 1.4 A rated RMS current,
 1.5 A saturation current, and 0.19 Ω maximum DCR; the current rating is
 plausible for the auxiliary load, subject to its completed load budget.
 
-The revised canonical XML shows a nine-pad SOIC-8EP pattern for `U2` and
-1210 patterns for `C7`–`C9`. U2 has symbol pad 9 assigned to `PGND`.
+**2026-10-13 setpoint review — 18 V remains a candidate, not a schematic
+change.** Changing only R28 from 11 kΩ to 10.6 kΩ with R24 = 180 kΩ would
+give `1 V × (1 + 180/10.6) ≈ 17.98 V` nominal. With the MP4541's
+0.985 V minimum feedback reference and opposed 1% divider tolerances, the
+calculated lowest static output would rise from about 16.78 V to 17.38 V,
+before loaded ripple, transient sag, feed drop or return offset. The maximum
+static output would be about 18.60 V, within the L78M12A's 27 V specified
+input range and the XC6701's 28 V operating range. At the provisional
+120 mA amplifier load, U9's pass loss plus typical 6 mA ground-current loss
+would rise from about 0.75 W to 0.83 W: approximately 0.08 W more, or 8 °C
+more rise on ST's 100 °C/W reference thermal arrangement. The 15 V LDO's
+pass loss would rise by 0.013 W at 20 mA or 0.064 W at 100 mA.
+
+Raising the buck setpoint alone does not change the existing supervisor's
+13.97 V lowest calculated falling threshold, which remains below the L78M12A's
+14.5 V specified input minimum. It would increase the calculated static
+healthy-rail margin above the highest RESET release threshold from about
+1.00 V to 1.60 V. A separate **unselected** 150 kΩ/8.2 kΩ, 1% supervisor
+divider would instead move the nominal falling trip to 15.43 V, with
+approximately 14.70–16.21 V falling corners and 16.61 V maximum rising
+release under the same 2% resistor, ±0.9% threshold, ±200 nA sense-current
+and 2.5% hysteresis assumptions used in [Power amplifier](POWER_AMPLIFIER.md).
+At the 17.38 V calculated lowest healthy buck output, that leaves only
+0.77 V before loaded ripple and feed/return offsets; its lowest falling
+trip is just 0.20 V above the L78M12A's specified input minimum. It therefore
+does not establish guaranteed pre-dropout RESET assertion. Retain the drawn
+17.36 V feedback and 130 kΩ/7.5 kΩ supervisor divider for now. Reconsider
+18 V after the loaded buck trough, analogue load/headroom, and U9 temperature
+are known; do not change either divider to claim a protection guarantee from
+nominal values alone.
+
+The revised canonical XML shows a nine-pad SOIC-8EP pattern for `U5` and
+1210 patterns for `C42`–`C44`. U5 has symbol pad 9 assigned to `GND`.
 Verify the actual land dimensions against the chosen parts and the resulting
 PCB netlist before layout.
 
-The current XML assigns `C5`–`C7` (36 V input capacitors), `C9`–`C11`
-(buck output capacitors), `C14` (U2 VCC decoupling), `R8` (FREQ), `R4/R9` (EN
-divider), `R6/R10` (FB divider), and U2 GND pin 7 and exposed pad 9 to `PGND`.
-The 15 V LDO U3 and its local bypass capacitors remain on `AGND`.
-Connect R10 to a quiet PGND sense point near the output-capacitor return, not
+The current XML assigns `C38`–`C40` (36 V input capacitors), `C42`–`C44`
+(buck output capacitors), `C46` (U5 VCC decoupling), `R26` (FREQ), `R23/R27` (EN
+divider), `R24/R28` (FB divider), and U5 GND pin 7 and exposed pad 9 to `GND`.
+The 15 V LDO U6 and its local bypass capacitors also return to `GND`.
+Connect R28 to a quiet local GND sense point near the output-capacitor return, not
 through the high-current switching return. Keep the VIN/input-capacitor and
 SW/inductor/output-capacitor current loops compact; a new net name alone does
 not control their physical paths. Lay out the buck-to-analogue return region so
 the buck's pulsed current does not flow through quiet analogue copper.
 The TPA3251's PVDD and 12 V VDD/GVDD returns use one local amplifier ground.
-The 12 V branch takes its input from the buck's `17V3` net and returns it on
-`GNDAMP`. The current schematic joins `PGND` to `GNDAMP` through R1 (0 Ω)
-and `AGND` to `GNDAMP` through R2 (0 Ω). These parts will not be populated, so
-the proposed schematic revision merges the three nets into `GND` and removes
-R1/R2. Keep the amplifier return out of quiet analogue copper. Final 12 V
+The 12 V branch takes its input from the buck's `17V3` net and returns it to
+the local amplifier-side `GND` region. The canonical schematic now uses a
+single `GND` net; unpopulated R1/R2 placeholders have been removed. Keep the
+amplifier return out of quiet analogue copper. Final 12 V
 supply placement and return routing remain open.
 
-The three output capacitors total 30 µF by nameplate value; their effective
-capacitance at approximately 17.36 V bias is unverified. The output net remains
-named `17V3`. The 12 V LDO is sourced from this rail; at the previous
-120 mA amplifier-rail allocation its pass loss is approximately
+The three output capacitors total 30 µF by nameplate value. A user-supplied
+Samsung simulator plot for the placed `CL32A106KBJNNNE` reports a typical
+−31.92% capacitance change at 17.592 V, 25 °C, 1 kHz and 1 V RMS. Applying
+that factor to all three gives approximately 20.4 µF at that condition, before
+initial tolerance, temperature and ageing. This is simulation data, not a
+guaranteed minimum or a measurement of the assembled bank. With the nominal
+0.28 A peak-to-peak inductor ripple and 674 kHz switching estimate above,
+`ΔV ≈ ΔI/(8 f C)` gives about 2.5 mV capacitive ripple at 20.4 µF, versus
+1.7 mV at an ideal 30 µF; ESR and pulse-skip behaviour are excluded. A fourth
+identical part would give about 27.2 µF at the same bias and reduce this
+idealised ripple to 1.9 mV. On 2026-10-13 the user chose to add a fourth
+identical schematic position as an unpopulated option; this saved XML snapshot
+still has only C42–C44. Populate the fourth only if loaded ripple, start-up or
+meaningful load transients show a material need. The output net remains named
+`17V3`. The 12 V LDO is sourced from this rail; at the previous 120 mA
+amplifier-rail allocation its pass loss is approximately
 `(17.36 V - 12 V) × 0.12 A ≈ 0.64 W`, before ground-current loss. The MP4541
 may enter pulse-skip operation at light load, so assess rail ripple and
 analogue noise at the actual idle and operating loads. These are design
@@ -95,18 +139,14 @@ Manufacturer sources: [MP4541GN data sheet](https://www.monolithicpower.com/en/d
 [SRN8040 data sheet](https://www.bourns.com/docs/product-datasheets/srn8040.pdf),
 and [Samsung capacitor identity](https://product.samsungsem.com/mlcc/CL32A106KBJNNN.do).
 
-### 1.2 NCP1117 12 V branch review (2026-10-06)
+### 1.2 12 V and 15 V linear-regulator branches (reviewed 2026-10-13)
 
-The placed `U1 = NCP1117ST12T3G` maps VIN/pin 3 to `17V3`, VSS/pin 1 to
-`GNDAMP`, and VOUT/pin 2 and tab pad 4 to `12VAMP`. This matches onsemi's
-pinout, including its tab-to-output connection. Verify all four pads in the
-PCB netlist before layout; this closes the earlier schematic tab-net error.
-
-The NCP1117 input maximum is 20 V. For assumed 1% R6/R10 resistors and
-MPS's 0.985–1.015 V feedback-reference limits, the 17.36 V target spans about
-16.78–17.96 V in steady-state tolerance. That leaves about 2.04 V to the
-NCP1117 input limit at the high end; resistor tolerance is not specified in
-the schematic, and startup/load transients still need to remain within 20 V.
+The saved schematic now places `U9 = L78M12ABDT-TR`: VIN/pin 1 is on
+`17V3`, GND/pin 2 and DPAK tab pad 4 are on `GND`, and VOUT/pin 3 is on
+`12VAMP`. Verify the transferred PCB netlist, land pattern, and thermal copper
+before layout release. The former `U4 = NCP1117ST12T3G` and its SOT-223
+output-tab mapping, 20 V input limit, and output-capacitor ESR requirement are
+superseded by this substitution.
 
 The `XC6701DF02FR-G` 15 V output may be as high as 15.30 V. Torex's
 25 °C voltage chart specifies maximum dropout of 0.17 V at 20 mA and
@@ -121,20 +161,82 @@ buck supervisor threshold in [Power amplifier](POWER_AMPLIFIER.md) permits
 analogue-rail droop during a buck fault; it does not guarantee RESET before
 this 15 V LDO leaves regulation.
 
-`C4` is a nominal 10 µF ceramic at the NCP1117 output, now paralleled with
-`C19 = 470 µF` electrolytic and `C20 = 100 nF`. Onsemi requires at
-least 4.7 µF *effective* output capacitance and a specified ESR stability
-range (typically 33 mΩ to 2.2 Ω); the bank's effective capacitance under 12 V
-bias and ESR have not been verified to satisfy those limits. Its input capacitor
-`C3` is also nominally 10 µF. At 120 mA, the 0.64 W pass loss implies about
-103 °C junction rise using the data sheet's 160 °C/W SOT-223 minimum-pad
-reference, before ground-current loss. This is not the actual board's thermal
-resistance, but demands a deliberate copper/thermal design or a lower-loss
-regulator. The TPA3251 12 V VDD/GVDD feeds and local bypasses are now drawn;
-their actual load and U1 stability/thermal behaviour remain unverified.
+The saved U6 `XC6701DF02FR-G` symbol now maps VIN/pad 3 to `17V3`, VSS/pad 2
+and tab pad 4 to `GND`, and VOUT/pad 1 to `15VA`. Torex identifies the SOT-223
+tab as VSS. Verify the transferred PCB netlist and provide suitable thermal
+copper before layout release; this closes the earlier missing schematic tab
+mapping.
 
-Manufacturer sources: [onsemi NCP1117 data sheet](https://www.onsemi.com/download/data-sheet/pdf/ncp1117-d.pdf)
-and [Torex XC6701 data sheet](https://product.torexsemi.com/system/files/series/xc6701.pdf).
+The saved XML now shows `C36 = Murata GRJ21BC72A105ME11L`, a nominal 1 µF,
+100 V X7S ceramic from U9's `17V3` input to `GND`, and `C37 = 100 nF` from
+its `12VAMP` output to `GND`. The user reports that C36 retains more than
+0.33 µF at 17.3 V DC bias; this closes the input-bypass *value* concern on
+that supplied part data, while short local placement remains a PCB check.
+ST recommends at least 0.33 µF low-impedance input bypass near the regulator
+when output capacitance is large. At the output, C37 is paralleled with
+`C8 = 470 µF` electrolytic and `C9 = 100 nF`; ST's example uses 0.1 µF
+output bypass. ST states that
+the L78M does not need an output capacitor for stability, so the former NCP1117
+output-bank ESR-floor issue is closed by the regulator change. ST
+specifies 11.5–12.5 V at 5–350 mA and 14.5–27 V input across its AB operating
+temperature range; this fits the TPA3251's 10.8–13.2 V VDD/GVDD operating
+range under those stated conditions. Its 35 V absolute input limit offers
+more transient headroom than the former NCP1117's 20 V limit, but is not a
+continuous operating target. Place C36 close to U9's input and ground pins.
+At 17.36 V input and the
+provisional 120 mA load, `(17.36 − 12) V × 0.12 A ≈ 0.64 W` heats the pass
+element, while ST's
+typical 6 mA ground current adds about 0.10 W of regulator dissipation. Its
+100 °C/W DPAK junction-to-ambient figure would imply roughly 75 °C rise on
+the reference arrangement; actual PCB copper, enclosure ambient and measured
+load must be checked before approving the placed part.
+
+The selected buck supervisor's `17V3` falling threshold is 14.67 V nominal
+and about 13.97 V at the calculated low corner. The L78M12A is specified
+to regulate down to 14.5 V input at 5–350 mA; its 2 V dropout is *typical*
+at 25 °C and the 350 mA table condition, not a guaranteed maximum at this
+board's load and temperature. Thus the lowest supervisor trip can fall
+0.53 V below the regulator's specified input range, and a brief 12 V rail
+sag before RESET assertion cannot be excluded. At 13.97 V input, the 12 V
+rail would have to fall by more than 1.2 V, equivalent to an input/output
+difference greater than 3.17 V, to cross the TPA3251's 10.8 V recommended
+minimum. This is unlikely at the provisional 120 mA load but is not a
+guarantee from ST's data. A short dip may affect audio or invoke the
+TPA3251's internal undervoltage protection; it is not, by itself, an
+expected damage mechanism. During a rapid input collapse, the VOUT-to-VIN
+diode can discharge the large output bank into `17V3`, so C8 must not be
+counted as guaranteed hold-up. RESET-before-any-12 V-sag is no longer a design
+claim; check the actual
+`17V3`, `12VAMP` and RESET waveforms and the audible start/stop behaviour
+on the prototype.
+
+The saved `D1 = Yageo S1B` has its anode on `12VAMP` and cathode on `17V3`.
+C8 alone stores `½ × 470 µF × (12 V)² ≈ 34 mJ`. If the 17 V input is suddenly
+shorted or collapses faster than the 12 V output, D1 offers that charge an
+external path around U9. The L78M data sheet does not call for this diode or
+specify reverse-current tolerance; ST's related L78 data sheet explicitly
+recommends an output-to-input diode for high-capacitance loads under an input
+short. Retain D1 as proportionate protection, and verify its polarity, pattern,
+and pulse path in the PCB. D1 also prevents counting C8 as assured 12 V
+hold-up during an input fault.
+
+U6's saved `15VA` output capacitors C48/C54/C55 total 1.2 µF nominal,
+storing `½ × 1.2 µF × (15 V)² ≈ 0.135 mJ` at that capacitance.
+Torex's XC6701D absolute maximum limits VOUT to VIN + 0.3 V; it does not
+specify reverse-current tolerance or request an external diode. The `17V3`
+rail has a much larger local capacitor bank than `15VA`, and the 15 V load
+also drains the small output bank, making output-above-input during ordinary
+shutdown unlikely. There is no compelling reason to add a second diode now.
+A standard silicon rectifier would not guarantee the +0.3 V limit
+on a sudden input short. Reassess a low-forward-voltage external bypass if
+15VA gains substantial stored capacitance or an independently powered load
+that can hold it up while `17V3` falls.
+
+Manufacturer sources: [onsemi NCP1117 data sheet](https://www.onsemi.com/download/data-sheet/pdf/ncp1117-d.pdf),
+[Torex XC6701 data sheet](https://product.torexsemi.com/system/files/series/xc6701.pdf),
+[ST L78M data sheet](https://www.st.com/resource/en/datasheet/l78m.pdf),
+[ST L78 data sheet](https://www.st.com/resource/en/datasheet/CD00000444.pdf),
+and [TI TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf).
 
 ### 1.3 Locked 36 V supply: Mean Well RSP-200-36
 
@@ -375,20 +477,29 @@ Requirements:
 - Use suitably heavy conductors for the amplifier branch.
 - TPA3251 PCB must use a compact, low-impedance ground plane rather than star traces.
 
-Earlier candidate amplifier-branch connector (2026-10-06): Molex Micro-Fit+
-`218216-0400` four-contact right-angle SMT header with mating
-`226263-1043` 300 mm, 16 AWG, factory-terminated female-to-free-end cable.
-That candidate assigned two contacts to +36 V and two to return; these are two electrical nets,
-regardless of the RSP-200's three parallel screw terminals per net. At the
-36 V/5.56 A PSU limit, each connector contact is individually rated above the
-whole branch current, so safe operation does not rely on equal current sharing.
-This is a procurement candidate, not an approved PCB footprint or harness:
-confirm pin numbering, pad/anchor geometry, cable reach, wire-end termination,
-strain support, and polarity marking during layout. This four-contact candidate
-does not implement the newly proposed six-conductor arrangement; select a
-suitable connector or connector set before layout. Keep the buck's separate
-feed and return as shown above. Mouser UK listed both parts as in stock,
-normally stocked, active, and MOQ 1 at the review date; recheck before order.
+Selected 36 V board-entry pair (2026-10-12): Molex Mini-Fit Jr
+`39-28-1063` six-position, vertical through-hole, tin-plated PCB header and
+`215326-1063` six-position female-to-pigtail assembly. The latter has six
+factory-terminated 16 AWG (approximately 1.31 mm²), 600 mm conductors and
+requires no user crimping or separately purchased contacts. Assign two
+feed/return pairs to the amplifier and one pair to the buck as shown above;
+the three PSU `+V` screws are common, as are the three `-V` screws. Molex's
+Mini-Fit Jr product specification gives an 8 A per-contact guideline for a
+six-position assembly with 16 AWG brass contacts, subject to board copper and
+ambient temperature. This exceeds the PSU's 5.56 A total rating even if one
+amplifier contact carries the whole branch current; the wiring plan does not
+depend on equal sharing. Confirm the exact pin numbering, PCB footprint,
+connector clearance, cable reach, strain support, and polarity marking during
+layout. Recheck Mouser UK price, stock, normal-stock status, and MOQ for both
+parts before ordering; the six-position pigtail's UK listing was not confirmed
+at selection.
+
+The earlier four-contact SMT Micro-Fit+ candidate (`218216-0400` with
+`226263-1043`) is superseded by this through-hole, six-conductor selection.
+
+Manufacturer sources: [Mini-Fit Jr product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/555/5556/PS-5556-001-001.pdf),
+[header](https://www.molex.com/en-us/products/part-detail/39281063), and
+[pigtail series](https://www.molex.com/en-us/products/series-chart/215326).
 
 ---
 
@@ -396,8 +507,9 @@ normally stocked, active, and MOQ 1 at the review date; recheck before order.
 
 Sections 5.1 and 5.2 retain the earlier 15 V converter and two 12 V
 post-regulator analysis for provenance. They do not define the current power
-tree or its bill of materials. The separate-domain principle remains current;
-the exact new branching and return junction await the complete schematic.
+tree, bill of materials, or grounding junctions. The current design uses one
+electrical GND net with physically controlled return regions; its detailed
+branch routing awaits the PCB layout.
 
 The 15 V buck output is the branching/reference point for the two 12 V rails.
 
@@ -697,7 +809,7 @@ The aluminium rear plate acts as:
 The TPA3251 heatsink/PowerPAD arrangement requires the amplifier ground to be intentionally referenced to the rear plate.
 
 ```text
-TPA3251 GNDAMP
+TPA3251-side GND copper
   |
 controlled low-impedance bond
   |
@@ -710,17 +822,17 @@ Requirements:
 
 - Use one intentional amplifier-ground-to-chassis bond.
 - Locate this bond close to the TPA3251/heatsink region.
-- Avoid additional unintended low-impedance GNDAMP-to-chassis connections elsewhere.
+- Avoid additional unintended low-impedance GND-to-chassis connections elsewhere.
 - Treat the Mean Well `-V` rail as earth-referenced once the completed amplifier/chassis bonding is installed.
 
 ---
 
 ## 7 Analogue ground
 
-The analogue domain uses a dedicated quiet ground plane:
+The analogue domain uses a quiet region of the common `GND` copper:
 
 ```text
-AGND
+analogue-side GND copper
   |
 analogue-domain ground plane
   |
@@ -731,7 +843,8 @@ Requirements:
 
 - Keep analogue ground currents local to the analogue domain.
 - Do not intentionally route Class-D or PSU switching currents through this plane.
-- Connection to the wider DC return system occurs through the defined auxiliary-supply return path.
+- Connect this region to the wider board return without bringing buck or
+  amplifier switching current through it; settle the exact geometry in layout.
 - Any future analogue-ground-to-chassis network must be deliberate and added only if prototype EMC/hum testing justifies it.
 
 ---
@@ -756,18 +869,37 @@ Reason:
 
 ## 9 Grounding topology summary
 
-The current partial schematic uses `GNDAMP`, `PGND`, and `AGND`, joined through
-R1/R2 0 Ω links that are not intended to be populated. These links do not
-represent a completed-board connection. The proposed revision uses one
-electrical `GND` net and controls analogue, buck, and amplifier return paths by
-placement and copper geometry. The six Mean Well output terminals are three
-connections to each of its common +V and -V rails, not isolated outputs.
-Separate amplifier and buck 36 V wire branches remain intended; their return
-paths also connect on the PCB through the buck-fed 12 V amplifier rail and its
-local decoupling. Do not claim a single physical ground junction or use the
+The canonical partial schematic now uses one electrical `GND` net, with the
+unpopulated R1/R2 links removed. This closes the conceptual split-net versus
+single-net decision. The board layout must control analogue, buck, and
+amplifier return paths by placement and copper geometry. The six Mean Well
+output terminals are three connections to each common +V and -V rail, not
+isolated outputs. Separate amplifier and buck 36 V wire branches remain
+intended; their returns also share the PCB `GND` net. Do not claim a single
+physical ground junction or use the
 TPA3251's internal ground connections as a PCB return conductor. Keep the
 12 V amplifier return out of quiet analogue copper. The exact board-current
-paths and connector assignment remain to be settled in layout.
+paths and the selected connector's pin assignment remain to be settled in
+layout.
+
+### 9.1 Remaining grounding implementation gates
+
+- Assign the selected six-position 36 V connector's two amplifier feed/return
+  pairs and one buck pair, and lay out their board entry.
+  The schematic also has one `36V` net. Decide how the amplifier and buck
+  positive-feed copper is distributed in the layout. The
+  wires share common rails at the PSU and their current division is not
+  guaranteed by the terminal assignment.
+- Place the buck, both LDOs, TPA3251, local capacitors, and analogue section;
+  then trace the actual `17V3` supply and return loops, the local analogue
+  reference, and any parallel return path to the PSU. Select the four-layer
+  stack-up and copper weights from those routes. A 35 µm (1 oz) starting point
+  is provisional, not a finished-board current or thermal qualification.
+- Define the one intentional board-GND-to-rear-plate bond near the TPA3251 and
+  account for possible additional contacts through the thermal interface,
+  mounting hardware, connectors, and PSU. Verify the independent PE conductors
+  and finished bonds during assembly as specified in Sections 3 and 6 and in
+  [Prototype validation](VALIDATION.md).
 
 ---
 
@@ -791,10 +923,10 @@ paths and connector assignment remain to be settled in layout.
 - Connect the quiet analogue return region to the wider board return outside
   the buck's pulsed current paths.
 
-### 10.3 Combined-PCB partition under grounding review
+### 10.3 Combined-PCB grounding and placement
 
 Rev A uses one four-layer PCB with physically partitioned analogue and
-Class-D domains. A common schematic `GND` net is proposed; it does not require
+Class-D domains. The schematic uses a common `GND` net; it does not require
 uniform ground copper across the entire board.
 
 Partition rules:
@@ -891,12 +1023,14 @@ Treat the following as fixed unless prototype evidence requires revision:
 - IEC inlet PE connects by one short conductor to the dedicated M4 plate stud;
   a separate conductor runs from that stud to RSP terminal 3 `FG`.
 - Amplifier and buck receive separate 36 V feed/return branches from the Mean Well PSU.
+- Use one electrical `GND` net in the main-board schematic; control
+  analogue, buck, and amplifier return currents through placement and copper.
 - TPA3251 uses a solid local power-ground plane.
-- Analogue circuitry uses a separate quiet ground plane.
+- Analogue circuitry uses a quiet local region of the common GND copper.
 - TPA3251 amplifier ground is intentionally bonded to the aluminium rear plate at one controlled point.
 - RCA sockets are electrically isolated from the aluminium panel.
 - No additional chassis/signal-ground bonds are permitted unless explicitly added after prototype testing.
 - Protective-earth continuity must not depend on PCB mounting or signal connectors.
-- Rev A uses one four-layer PCB with electrically partitioned analogue and
+- Rev A uses one four-layer PCB with physically partitioned analogue and
   amplifier domains. There is no two-layer fallback; four layers are a project
   robustness requirement, not a TPA3251 functional requirement.

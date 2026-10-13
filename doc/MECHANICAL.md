@@ -1,11 +1,12 @@
 # Mechanical design
 
-> **State — current mechanical authority; reviewed 2026-10-10.** Owns cabinet,
+> **State — current mechanical authority; reviewed 2026-10-13.** Owns cabinet,
 > rear-plate and PCB/plate fit; electrical bonds are owned by
 > [power and grounding](POWER_AND_GROUNDING.md), and heat-load acceptance by
 > [thermal design](THERMAL.md). Read for plate or PCB packaging changes.
-> Current direction: CNC-relieved nominal 6 mm plate, with JLCCNC 6061 and
-> matt-black anodising preferred provisionally. Next gate: confirmed material,
+> Current direction: CNC-relieved nominal 6 mm plate, with approximately 4 mm
+> local component clearance planned; JLCCNC 6061 and matt-black anodising
+> preferred provisionally. Next gate: confirmed material,
 > selective finish, finished contact/clearance stack and thermal budget. No
 > final plate drawing or assembled thermal result is yet approved.
 
@@ -155,6 +156,13 @@ clear selected same-side SMD parts, through-hole terminations, copper, and
 assembly tolerances. The land and substantial surrounding plate remain one
 continuous thermal spreader; do not create a narrow thermal neck merely to
 gain component clearance.
+
+The intended local pocket clearance from the rear PCB surface to the finished
+plate is approximately 4 mm, subject to the actual PCB/plate stack-up and
+machined drawing. This makes a 1206 PVDD ceramic of at most 1.9 mm body
+height plausible on the plate-facing side, with approximately 2.1 mm nominal
+remaining for its solder stand-off, tolerances and electrical clearance. Keep
+the pocket local to the parts and do not sacrifice the TPA3251 thermal land.
 
 The TPA3251 must not become a mechanical spacer. Set PCB supports and the land
 height from the actual package height, PCB thickness/bow, TIM compression, and
