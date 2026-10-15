@@ -2,7 +2,7 @@
 
 > **Lifecycle:** Current tooling and evidence route  
 > **Owns:** Locations, authority boundaries, and inspection rules for DipTrace
-> project data and the retained Plugin & XML AI Context Pack  
+> project data and the shared Hub SDK route
 > **Does not own:** Circuit values, PCB design decisions, manufacturing approval,
 > measured results, or the source schematic/layout themselves  
 > **Read when:** Inspecting, comparing, parsing, exporting, or proposing tooling
@@ -11,55 +11,45 @@
 > partial schematic; inspect it read-only for circuit questions
 > **Next gate:** Complete the schematic, then validate its electrical details and
 > any future PCB export against the selected design
-> **Limitations:** No PCB design export or live plug-in exchange has been
-> inspected, and no parser or plug-in has been qualified
-> **Last reviewed:** 2026-10-11
+> **Limitations:** An untracked PCB XML file is present but has not been reviewed
+> or made authoritative; no live plug-in exchange has been inspected, and no
+> parser or plug-in has been qualified
+> **Last reviewed:** 2026-10-15
 
 ## 1 Authority and retained resources
 
-The project uses DipTrace 5.3.0.3. By the user's 2026-10-04 decision,
+The canonical schematic XML declares DipTrace version `5.3.0.3`. By the user's
+2026-10-04 decision,
 `diptrace/main_board.dchxml` is the canonical source for the current partial
 schematic. It is a DipTrace schematic XML file with root type
 `DipTrace-Schematic`, version `5.3.0.3`, and units `inch`. There is presently no
 matching `.dch` file in `diptrace/`; do not require one as schematic authority.
-For future PCB work, decide the `.dip`/`.dipxml` authority when those files
-exist. PDF, BOM, pick-and-place, Gerber X2, and drill exports remain secondary
+An untracked `diptrace/main_board.dipxml` is now present; a root-only check on
+15 October 2026 found `DipTrace-PCB`, version `5.3.5.1`, and units `mm`.
+Its source, design state, and authority have not been reviewed. There is no
+matching `.dip` file. Establish the PCB design authority before using this XML
+as more than an unreviewed snapshot. PDF, BOM, pick-and-place, Gerber X2, and
+drill exports remain secondary
 evidence for their specific visual, assembly, or manufacturing purposes.
 
-The retained DipTrace Plugin & XML AI Context Pack is at:
-
-`tools/diptrace/plugin_sdk/`
-
-Its dispatcher is `tools/diptrace/plugin_sdk/README.md`. The retained pack is
-version `2026.08.06-r7`, contract date 2026-08-06. It is reference material and
-templates, not an installed plug-in. Retain it as project source/reference data;
-do not ignore it as a generated dependency tree.
+The shared DipTrace Plugin & XML AI Context Pack now lives in the Hub. Start
+with the [Hub DipTrace tooling route](../../Hub/tools/diptrace/README.md),
+which selects the relevant SDK reference for saved XML, libraries, or plug-in
+work. The pack is reference material and templates, not an installed plug-in.
+This project retains only its design data and project-specific decisions.
 
 The complete official field catalogues also ship with DipTrace under
-`C:\Program Files\DipTrace\Docs`. The context pack is the first source for the
-contracts and operations it covers; use those PDFs for fields or enums absent
-from the pack. Do not guess an undocumented field or runtime behaviour.
+`C:\Program Files\DipTrace\Docs`. Use them for fields or enums absent from
+the pack. Do not guess an undocumented field or runtime behaviour.
 
 ## 2 Minimal reading route
 
-Load only the files needed for the task:
-
-1. For any saved XML inspection, start with
-   `tools/diptrace/plugin_sdk/02_diptrace_xml_conventions.md`.
-2. For PCB data, then read
-   `tools/diptrace/plugin_sdk/10_pcb_xml_reference.md`.
-3. For schematic data, instead read
-   `tools/diptrace/plugin_sdk/20_schematic_xml_reference.md`.
-4. For a real DipTrace plug-in, also read `01_plugin_architecture.md`,
-   `05_production_plugin_workflow.md`, the matching manifest under `templates/`,
-   `50_common_operations.md`, and `60_common_mistakes.md`.
-5. Read `12_pcb_text_geometry.md` and `56_shape_geometry_foundations.md` only
-   for PCB text/placement geometry. Add `55_heavy_geometry_optimization.md` and
-   `70_complex_plugin_review.md` for a complex geometry plug-in.
-6. Read the CompEdit or PattEdit references only when the task concerns reusable
-   component or pattern libraries rather than the placed project design.
-
-This routing keeps the large pack out of routine electrical-design context.
+For DipTrace XML, first read the [Hub task dispatcher](../../Hub/tools/diptrace/README.md)
+and only its selected SDK pages. Then read this project's relevant design
+authority. For the current partial schematic, the needed dialect is schematic
+XML; the PCB and reusable-library dialects are for their respective future
+files. This routing keeps the large SDK out of routine electrical-design
+context.
 
 ## 3 Read-only inspection workflow
 
@@ -93,29 +83,14 @@ placeholders were removed. The canonical schematic now uses one `GND` net;
 control local return copper in layout. Check completed copper and net
 connectivity, and review its high-current return paths explicitly.
 
-## 4 Important interpretation rules learned from the pack
+## 4 Interpretation rule ownership
 
-- A missing XML attribute normally means the documented default, not zero.
-- Root units apply to ordinary geometry, but not to every font scalar.
-- Project objects and embedded symbol/footprint objects use different
-  coordinate frames; angles are normally radians, while some orientations and
-  3D rotations use other conventions.
-- PCB embedded footprint geometry is an exchange-time variant. Bottom-side
-  placement requires the documented side transform, but `Flip`/`HorzFlip` must
-  not be applied a second time.
-- Pad mask/paste `Top*` and `Bot*` fields describe the pad's near and far faces,
-  not unconditionally the physical top and bottom of the assembled PCB.
-- PCB trace and schematic wire segment properties belong to the segment's
-  ending point, not its starting point.
-- Saved XML and a live plug-in exchange use the same dialect but may not have
-  identical payloads or embedded styles. A plug-in must be tested against a
-  captured real exchange with the intended export scope.
-- Unknown attributes and elements must be preserved. Full-file generation also
-  requires dense, ordered identifiers; plug-in edits follow different ID and
-  merge rules.
-
-These rules make the pack immediately usable for a read-only extractor. They
-also explain why a writer or optimizer needs substantially more qualification.
+The [Hub SDK route](../../Hub/tools/diptrace/README.md) and its selected
+references own the reusable XML conventions: omitted defaults, units, frames,
+transforms, segment properties, unknown data, and live-exchange merge rules.
+Apply them to this project's saved schematic rather than maintaining a second
+copy of those rules here. A read-only extractor needs substantially less
+qualification than a writer or optimiser.
 
 ## 5 Future parser and plug-in boundary
 
@@ -147,9 +122,8 @@ Those behaviours make casual XML rewriting inappropriate for the live project.
 
 ## 6 Refresh and reconstruction
 
-The context pack came from the official DipTrace Tutorials and Docs page under
-“DipTrace Plugin & XML. AI Context Pack”. To refresh it, download the archive
-again, compare its stated pack version and contents with the retained copy, and
-replace the project copy only as an intentional reviewed update. Reconfirm its
-contracts against the DipTrace version then in use; the pack explicitly does
-not guarantee every older or future build.
+The [Hub SDK route](../../Hub/tools/diptrace/README.md) owns pack provenance,
+refresh, and compatibility. Reconfirm its contracts against the DipTrace
+version then in use; the pack explicitly does not guarantee every older or
+future build. This project's reconstruction depends on the retained Hub pack
+and its own `diptrace/main_board.dchxml` source.

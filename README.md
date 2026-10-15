@@ -33,7 +33,7 @@ specification first only when a decision could affect more than one subsystem.
 | What constrains the cabinet, PCB, and rear plate? | [Mechanical design](doc/MECHANICAL.md) | PCB clearance, aluminium plate, thermal interface, and rear-panel structure |
 | What heat load must passive cooling handle? | [Thermal design](doc/THERMAL.md) | Present thermal assumptions and cooling requirement |
 | What must the prototype prove? | [Prototype validation](doc/VALIDATION.md) | Electrical, thermal, and acoustic measurements |
-| How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Canonical partial schematic XML, AI context-pack route, read-only inspection workflow, and future parser/plugin gates |
+| How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Canonical partial schematic XML, shared Hub SDK route, read-only inspection workflow, and future parser/plugin gates |
 | Which shared resources, environment facts, or general procedures apply? | [Hub index](../Hub/README.md) | Open only the relevant Hub topic; retain this project's design and evidence here |
 | How should a schematic review be run and reported? | [Shared Hub index](../Hub/README.md) | Open its schematic-review procedure; use this project's saved schematic and current design authorities as the review inputs |
 | What work remains? | [Action list](doc/TODO.md) | Ordered design, construction, and validation tasks |
@@ -55,8 +55,8 @@ specification first only when a decision could affect more than one subsystem.
   [prototype validation](doc/VALIDATION.md).
 - **DipTrace schematic or PCB inspection:** [DipTrace data and
   tooling](doc/DIPTRACE.md), then only the affected electrical, grounding, or
-  mechanical authority. Load the bundled context-pack files selected by that
-  route rather than the whole pack.
+  mechanical authority. Load only the shared Hub SDK files selected by that
+  route.
 - **Schematic review:** whenever asked to review this project's schematic,
   open the [shared Hub index](../Hub/README.md) and follow its schematic-review
   procedure. Then use the DipTrace inspection route above and the affected
