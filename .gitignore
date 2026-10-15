@@ -3,3 +3,6 @@
 
 # Other temp files
 *.*#
+
+# tmp/ directory
+tmp/**
