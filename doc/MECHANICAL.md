@@ -7,7 +7,8 @@
 > Current direction: CNC-relieved nominal 6 mm plate, with approximately 4 mm
 > local component clearance planned; JLCCNC 6061 and matt-black anodising
 > preferred provisionally. Next gate: confirmed material,
-> selective finish, finished contact/clearance stack and thermal budget. No
+> selective finish, bulk-capacitor edge/fastener clearance, finished
+> contact/clearance stack and thermal budget. No
 > final plate drawing or assembled thermal result is yet approved.
 
 ## 1 Two-chamber cabinet architecture
@@ -177,6 +178,17 @@ under board bow and loose or mis-trimmed leads. Insulate only where a verified
 clearance and thermal design calls for it. Keep analogue-domain mounting
 points isolated from the plate and do not bridge the PCB-domain partition with
 mounting hardware.
+
+The 17 October saved PCB geometry places the C26 470 µF capacitor's 17 mm
+footprint/courtyard only 0.2 mm inside the board edge. C20 and C26 each have
+about 0.3 mm nominal courtyard clearance to a 6 mm-diameter TPA3251
+mounting-hole envelope. Panasonic lists a 16.0 mm nominal body diameter for
+`EEVFK1J471M`, implying about 0.7 mm nominal lower board-edge clearance and
+about 1 mm body-to-hole-envelope clearance. This is a placement observation,
+not a measured collision. Verify the body tolerance, fastener/washer swept
+area and assembly access; increase margin before approving the board/plate
+package. The [current amplifier layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
+records the saved-XML coordinates.
 
 ### 2.1 Aluminium heatsink/control plate
 

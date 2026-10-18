@@ -24,8 +24,8 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   insulation/segregation, strain relief, protective-earth hardware, and
   enclosure-access assumptions.
 - [x] Define the amplifier protection and fault policy: use the TPA3251's
-  internal protection, permit user power-cycling for latched faults, provide no
-  visible fault indicator or automatic retry, retain diagnostic test points,
+  internal protection, permit user power-cycling for latched faults, add
+  board-level diagnostic LEDs and retain test points without automatic retry,
   accept the residual PBTL DC-fault risk without an external disconnect, and
   use analogue RESET supervision for thump-controlled startup and shutdown.
 
@@ -45,18 +45,26 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   peak input common-mode margin for a 3 V RMS source at the first buffer.
 - [ ] Finalise the TPA3251 surrounding passives from the TI PBTL reference
   design, including the `OC_ADJ` CB3C threshold resistor.
-- [ ] Qualify the now-placed C21/C22/C24/C25 Murata
-  `GRJ21BC72A105ME11L` 1 µF, 100 V X7S PVDD bypass parts on `CAP_0805`:
-  Murata's 25 °C, 1 V RMS model predicts only about 0.42 µF at 36 V.
-  The 2.2 µF, 100 V, 0805 `GRM21BD72A225KE01L` model gives approximately
-  0.7 µF at 36 V. Compare exact 1206 candidates against both 0805 parts using
-  their own DC-bias and impedance data. The provisional Würth
-  `885012208124` 2.2 µF, 100 V 1206 part predicts about 1.13 µF at 36 V,
-  or 1.02 µF if −10% initial tolerance is applied to its typical bias curve.
-  Check switching peaks, ripple suitability, short-loop placement, new pad
-  geometry and the proposed 4 mm CNC-pocket clearance. TI's EVM uses nominal 1 µF 1206
-  MLCCs, so no 1 µF *effective* threshold is established. The earlier Würth
-  0805-on-0603 mismatch is no longer present in the saved schematic.
+- [ ] Complete the U4/U10 status-LED review in the PCB: confirm Kingbright
+  physical polarity marks and pad geometry, onsemi SC-88 pad dimensions,
+  routing and LED visibility. The revised R36/R37 1.5 kΩ TE parts calculate
+  to about 77 mW at the 12.5 V rail, 1.8 V LED, 1%-low resistor corner;
+  confirm the local hot-ambient margin if an LED could remain on continuously.
+  Correct the separate R2/R10 1 kΩ TE manufacturer/SKU fields, which omit the
+  final `0` in that part number. Check DVDD under controlled asserted-status conditions
+  because the selected 130 kΩ pull-downs draw approximately 0.055 mA
+  externally from this internal reference when both LEDs are on. Retain
+  TP1/TP2 for short assertions and for FAULT's forced-high state during RESET; see
+  [power amplifier](POWER_AMPLIFIER.md).
+- [ ] Verify the operating margin of the selected C21/C22/C24/C25 Würth
+  `885012208124` 2.2 µF, 100 V X7R PVDD bypass parts on 1206 patterns.
+  The user's target is at least 1 µF each at 36 V DC bias; the supplied
+  typical curve suggests 1.13 µF, or about 1.02 µF after −10% initial
+  tolerance, but does not guarantee that minimum across temperature and
+  ageing. Check switching peaks, exact-part impedance/ripple, the complete
+  short-loop placement, pad geometry and proposed 4 mm CNC-pocket clearance.
+  Retain the selected MPN unless a material electrical or mechanical issue
+  emerges. See [power amplifier](POWER_AMPLIFIER.md#52-ceramics).
 - [ ] Qualify the now-drawn pair of TDK `B32701P4684K000` 680 nF film
   output-filter capacitors C17/C30, one per combined speaker-output side, as
   described in [power amplifier](POWER_AMPLIFIER.md). Their saved pattern has
@@ -177,6 +185,26 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
 - [ ] Select the exact fabricator stack-up, copper weights, dielectric spacing,
   finished thickness, via construction/plating, and detailed layer usage for
   the rear-mounted TPA3251 and whichever support parts are placed on each side.
+  The saved C20/C26 bulk-capacitor feed and return now join the 36 V and GND
+  planes. Check the resulting filled copper, C21/C22/C24/C25
+  supply/return loops, output-via transitions and complete bootstrap loops
+  without imposing a length-matching requirement. Recheck whether the two
+  now-17-via `SPK+` fields or local 19-via `36V` field materially narrow either inner
+  plane; trim only where copper continuity benefits. Check the close
+  C20/C26 via-to-solder-land mask geometry and the C26 board-edge and both
+  bulk-capacitor mounting-hole clearances. The Bottom same-priority
+  `36V`/`AMP_OUT_B,C` and `AMP_OUT_A`/`GND` pour warning cleared after
+  reprioritising the output pours; verify that this did not narrow the U3
+  supply or output paths, and complete DRC/connectivity checks; see the
+  [focused priority check](POWER_AMPLIFIER.md#116-bottom-copper-pour-priority-warning-18-october-2026).
+  Validate the finished via
+  construction and selected JLCPCB order stack, then run connectivity/DRC
+  before release.
+  See the [current PCB layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
+  and [via-field review](POWER_AMPLIFIER.md#113-via-field-current-and-plane-review-17-october-2026).
+  The [local ceramic copper estimate](POWER_AMPLIFIER.md#114-local-pvdd-ceramic-copper-parasitic-estimate-17-october-2026)
+  supports retaining C21/C22/C24/C25 while the final filled copper and
+  prototype switching waveform remain open checks.
 - [ ] Finalise the aluminium-plate dimensions, mounting, finish exclusions,
   connector/control locations, and sealing details.
 - [ ] Obtain JLCCNC confirmation of 6061 temper/6 mm stock, pocket and web

@@ -10,27 +10,33 @@
 > **Current approved action:** Treat `diptrace/main_board.dchxml` as the canonical
 > partial schematic; inspect it read-only for circuit questions
 > **Next gate:** Complete the schematic, then validate its electrical details and
-> any future PCB export against the selected design
-> **Limitations:** An untracked PCB XML file is present but has not been reviewed
-> or made authoritative; no live plug-in exchange has been inspected, and no
+> the early PCB layout XML against the selected design
+> **Limitations:** The PCB XML has a scoped review of the current U3 supply and
+> output layout; it is not a qualified matched design. No live plug-in exchange has been inspected, and no
 > parser or plug-in has been qualified
-> **Last reviewed:** 2026-10-15
+> **Last reviewed:** 2026-10-17
 
 ## 1 Authority and retained resources
 
-The canonical schematic XML declares DipTrace version `5.3.0.3`. By the user's
+The canonical schematic XML now declares DipTrace version `5.3.5.1`. By the user's
 2026-10-04 decision,
 `diptrace/main_board.dchxml` is the canonical source for the current partial
 schematic. It is a DipTrace schematic XML file with root type
-`DipTrace-Schematic`, version `5.3.0.3`, and units `inch`. There is presently no
+`DipTrace-Schematic`, version `5.3.5.1`, and units `inch`. There is presently no
 matching `.dch` file in `diptrace/`; do not require one as schematic authority.
-An untracked `diptrace/main_board.dipxml` is now present; a root-only check on
-15 October 2026 found `DipTrace-PCB`, version `5.3.5.1`, and units `mm`.
-Its source, design state, and authority have not been reviewed. There is no
-matching `.dip` file. Establish the PCB design authority before using this XML
-as more than an unreviewed snapshot. PDF, BOM, pick-and-place, Gerber X2, and
-drill exports remain secondary
-evidence for their specific visual, assembly, or manufacturing purposes.
+The committed `diptrace/main_board.dipxml` is the beginning of the PCB layout
+associated with this schematic (user confirmation, 15 October 2026). A
+root-only check found `DipTrace-PCB`, version `5.3.5.1`, and units `mm`.
+Its U3-side placement, local routes, vias and filled copper were reviewed on
+17 October 2026 against the then-saved snapshot in the
+[power-amplifier authority](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026).
+An 18 October saved snapshot received a focused
+[Bottom copper-pour warning check](POWER_AMPLIFIER.md#116-bottom-copper-pour-priority-warning-18-october-2026).
+The rest of its contents and full schematic correspondence have not been
+reviewed, and no matching `.dip` file was present at that check. Validate the layout before
+treating it as a matched design. PDF, BOM, pick-and-place, Gerber X2, and drill
+exports remain secondary evidence for their specific visual, assembly, or
+manufacturing purposes.
 
 The shared DipTrace Plugin & XML AI Context Pack now lives in the Hub. Start
 with the [Hub DipTrace tooling route](../../Hub/tools/diptrace/README.md),
@@ -47,9 +53,9 @@ the pack. Do not guess an undocumented field or runtime behaviour.
 For DipTrace XML, first read the [Hub task dispatcher](../../Hub/tools/diptrace/README.md)
 and only its selected SDK pages. Then read this project's relevant design
 authority. For the current partial schematic, the needed dialect is schematic
-XML; the PCB and reusable-library dialects are for their respective future
-files. This routing keeps the large SDK out of routine electrical-design
-context.
+XML; the PCB dialect applies to the early layout XML, while the reusable-library
+dialects are for their respective future files. This routing keeps the large
+SDK out of routine electrical-design context.
 
 ## 3 Read-only inspection workflow
 
@@ -65,6 +71,14 @@ For each design checkpoint:
    before treating the two snapshots as a matched design state.
 6. Use PDFs when visual organisation or placement matters and manufacturing
    outputs only for the particular fabrication checks they can establish.
+
+For a local PCB review, saved `.dipxml` can provide exact net, layer, pad,
+track, via and stored copper-fill geometry. A small set of DipTrace screenshots
+still helps check the rendered result, visible layer state, placement context
+and physical clearance: use the same framing for top, both inner layers and
+bottom, with fills visible, plus a 3D or side view when height matters.
+Screenshots complement the saved XML; neither replaces a current connectivity
+check, DRC or the final fabrication outputs.
 
 Keep the present canonical XML at its existing path. If future design files
 justify a directory split, update this authority and the project index as part

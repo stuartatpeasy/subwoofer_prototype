@@ -1,6 +1,6 @@
 # Prototype validation
 
-> **State — current prototype checks; reviewed 2026-10-13.** Owns practical
+> **State — current prototype checks; reviewed 2026-10-18.** Owns practical
 > build verification. The auxiliary buck and 15 V regulator remain to be
 > qualified; the L78M12 12 V regulator is placed but not yet approved;
 > the two-supervisor RESET topology and dedicated buck divider are selected;
@@ -75,8 +75,10 @@ additional protection and does not replace the PE inspection and bond test.
   regulator outputs and RESET assertion; allow for a brief 12 V sag because
   the lowest calculated 13.97 V trip is below the L78M12's 14.5 V specified
   input minimum
-- correct diagnostic states at the `FAULT` and `CLIP_OTW` test points for safe,
-  non-destructive conditions available during bring-up; do not inject a
+- correct diagnostic states at the `FAULT` and `CLIP_OTW` test points and
+  corresponding board LEDs for safe, non-destructive conditions available
+  during bring-up; note that RESET low forces FAULT high. Check DVDD remains
+  stable with the indicators asserted; do not inject a
   destructive output fault merely to exercise protection
 - analogue-output and loudspeaker-output noise with the Class-D stage disabled,
   idle, and driven, to expose coupling across the combined-PCB partition

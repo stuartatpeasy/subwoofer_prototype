@@ -1,6 +1,6 @@
 # System specification
 
-> **State — current system authority; reviewed 2026-10-12.** Owns locked
+> **State — current system authority; reviewed 2026-10-18.** Owns locked
 > architecture and cross-subsystem constraints; detailed plate geometry and
 > finish belong to [mechanical design](MECHANICAL.md). Read for system-level
 > changes. Current direction permits CNC plate reliefs, components on both
@@ -34,8 +34,8 @@ Do not revisit without measured/simulation evidence:
   case without claiming continuous full-power operation above 35 °C
 - use the TPA3251's internal protection and latched-fault behaviour; serious
   faults may require a user power cycle
-- no normally visible fault indicator; retain `FAULT` and `CLIP_OTW` only as
-  diagnostic test points
+- add board-level `FAULT` and `CLIP_OTW` diagnostic LEDs for testing while
+  retaining both test points; no front-panel indicator is required
 - no external differential-DC detector, speaker relay, output MOSFET
   disconnect, or switched-PVDD DC-fault protection; accept the residual risk
   to the internally connected driver from a PBTL output fault

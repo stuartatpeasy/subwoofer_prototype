@@ -177,8 +177,26 @@ when output capacitance is large. At the output, C37 is paralleled with
 `C8 = 470 µF` electrolytic and `C9 = 100 nF`; ST's example uses 0.1 µF
 output bypass. ST states that
 the L78M does not need an output capacitor for stability, so the former NCP1117
-output-bank ESR-floor issue is closed by the regulator change. ST
-specifies 11.5–12.5 V at 5–350 mA and 14.5–27 V input across its AB operating
+output-bank ESR-floor issue is closed by the regulator change.
+
+The saved C8 is Panasonic FK `EEV-FK1J471M` (catalogue
+`EEVFK1J471M`), 470 µF/63 V, in a 16.0 mm
+diameter × 16.5 mm body. For this 12 V rail, Panasonic FK
+`EEEFK1E471GP` is a **preferred size-reduction candidate**, not yet a
+selected substitution: 470 µF/25 V, 10.0 × 10.2 mm body, 0.85 A RMS rated
+ripple at 100 kHz and 105 °C, and 5,000 h specified endurance. The present
+63 V part is rated 1.41 A RMS at 100 kHz and 105 °C. The 25 V rating leaves
+12.5 V above the regulator's 12.5 V high specified output; it also exceeds
+the nominal 17V3 input if a regulator fault passed that rail through. A
+16 V/470 µF FK part exists in an 8.0 × 10.5 mm body, but leaves only 3.5 V
+above the specified 12.5 V output and is below the nominal 17V3 input, so
+25 V is the more comfortable candidate. Check the candidate's exact pad
+pattern, polarity, local placement and capacitor ripple-current demand before
+changing C8 in DipTrace. [Panasonic 25 V part](https://industrial.panasonic.com/ww/products/pt/aluminum-cap-smd/models/EEEFK1E471GP);
+[Panasonic 16 V comparison](https://industrial.panasonic.com/ww/products/pt/aluminum-cap-smd/models/EEEFK1C471V);
+[Panasonic current 63 V part](https://industrial.panasonic.com/ww/products/pt/aluminum-cap-smd/models/EEVFK1J471M).
+
+ST specifies 11.5–12.5 V at 5–350 mA and 14.5–27 V input across its AB operating
 temperature range; this fits the TPA3251's 10.8–13.2 V VDD/GVDD operating
 range under those stated conditions. Its 35 V absolute input limit offers
 more transient headroom than the former NCP1117's 20 V limit, but is not a
@@ -893,8 +911,9 @@ layout.
 - Place the buck, both LDOs, TPA3251, local capacitors, and analogue section;
   then trace the actual `17V3` supply and return loops, the local analogue
   reference, and any parallel return path to the PSU. Select the four-layer
-  stack-up and copper weights from those routes. A 35 µm (1 oz) starting point
-  is provisional, not a finished-board current or thermal qualification.
+  stack-up and copper weights from those routes. The current 1 oz outer /
+  0.5 oz inner starting point is provisional, not a finished-board current
+  or thermal qualification.
 - Define the one intentional board-GND-to-rear-plate bond near the TPA3251 and
   account for possible additional contacts through the thermal interface,
   mounting hardware, connectors, and PSU. Verify the independent PE conductors
@@ -1000,11 +1019,48 @@ Provisional layer intent, subject to the exact fabricator and thermal stack:
   TPA3251 and a quiet `GND` region for front-side analogue circuitry; reserve
   the remaining area for supply distribution without severing critical
   return paths; and
-- begin with approximately 35 µm (1 oz) copper on all four layers. Upgrade
-  selected outer layers to approximately 70 µm (2 oz) only if actual route
-  width, length, RMS current, voltage drop, heating, or fabrication constraints
-  justify the extra cost. Confirm the fabricator's finished stack-up before
-  routing.
+- begin with approximately 35 µm (1 oz) outer and 17 µm (0.5 oz) inner
+  copper. Upgrade selected layers only if actual route width, length, RMS
+  current, voltage drop, heating, or fabrication constraints justify the
+  extra cost. Confirm the fabricator's finished stack-up before release.
+
+The saved DipTrace PCB stack now uses 1 oz outer / 0.5 oz inner copper and
+0.2104/1.065/0.2104 mm dielectric spacing, matching JLCPCB's published
+1.6 mm `JLC04161H-7628` / no-impedance-requirement example at the nominal
+design level. This supersedes the earlier saved default with 1 oz on all
+four layers. The via-barrel resistance table in the
+[power-amplifier review](POWER_AMPLIFIER.md#112-via-barrel-resistance-estimate-17-october-2026)
+uses JLCPCB's published finished-layer figures; confirm the actual ordered
+stack and copper weight before board release. If 1 oz inner planes are later
+needed for current distribution, select them deliberately and update the
+DipTrace stack and resistance estimate. The current saved via land is 0.45 mm,
+and the [via-field review](POWER_AMPLIFIER.md#113-via-field-current-and-plane-review-17-october-2026)
+identifies the `SPK+` and `36V` fields as the principal places to inspect
+plane clearance against useful via count.
+[JLCPCB layer stack](https://jlcpcb.com/impedance).
+
+**Optional Bottom GND extension, 18 October 2026:** The saved Inner 2 (layer 3)
+`GND` pour spans most of the 54 × 61 mm board; existing Bottom (layer 4)
+`GND` pours are local patches around U3 and other connections. Adding useful
+Bottom `GND` copper in the amplifier region is reasonable where it joins
+nearby ground pads and the Inner 2 plane through existing or deliberate,
+well-spaced GND vias. Do not copy the plane outline as a goal in itself: a
+slotted or weakly connected outer fill offers little parallel conductance, and
+extra through-vias can perforate the 36 V plane. Keep the Bottom U3 PVDD and
+GND ceramic paths, switching-node/output copper and quiet input return
+geometry intact; avoid making a narrow Bottom GND bridge that offers amplifier
+switching or filter-capacitor return current a route through the analogue
+region. Remove isolated islands, then inspect filled copper, DRC and net
+connectivity. This is layout guidance, not an approved additional pour.
+
+At 20 °C, copper sheet resistance `rho/t` is about 1.15 mΩ/square for a
+15 µm inner layer and 0.49 mΩ/square for a 35 µm outer layer. If both layers
+offered the *same continuous path* and were adequately stitched, their
+parallel sheet resistance would be about 0.34 mΩ/square. Actual extra Bottom
+copper will be slotted and current will enter/leave through discrete pads and
+vias, so this is an optimistic illustration, not a predicted board resistance.
+The TPA3251's principal heat route is to the rear aluminium plate; Bottom
+copper may spread local component heat but is not a substitute for that path.
 
 The former requirement that every TPA3251 support part crosses the PCB is
 superseded. Put the high-frequency local decoupling on the IC side where the
