@@ -188,6 +188,14 @@ distortion improvement in this circuit has not yet been established. Verify
 the four through-hole patterns and rear-plate clearance during PCB layout.
 [Panasonic part data](https://industrial.panasonic.com/ww/products/pt/film-cap-electroequip/models/ECWFD2W225J4).
 
+**First-prototype RCA protection decision, 26 October 2026.** Retain the
+saved coupling, input bias and RF network without adding a dedicated RCA
+input ESD suppressor before bare-board fabrication. The capacitor blocks
+steady external DC and the series/RF parts limit high-frequency coupling,
+but these functions do not establish a quantified ESD immunity level.
+Revisit protection if prototype handling or susceptibility observations
+show a material problem.
+
 The previously considered Rubycon `16MF225KA23216` and Kyocera AVX
 `CB162D0225JBC` film alternatives remain unselected; their different land
 patterns would need checking before substitution.
@@ -343,15 +351,16 @@ The current canonical XML identifies `C2`, `C4`, and `C5` as Panasonic
 `ECH-U1H823JX9` and maps them through `CompType83` to `PatType36`. Its pads
 are 1.3 × 3.0 mm on 4.3 mm centres, giving a 5.6 × 3.0 mm land envelope;
 this matches Panasonic's recommended E2 land dimensions for the 4.8 × 3.3 mm
-body. Verify this mapping in the eventual PCB export. The component-style
-name still contains `MLCC` although the manufacturer identity specifies PPS
-film; correct that misleading name before final BOM release.
+body. The saved PCB has the corresponding 1.3 × 3.0 mm lands on 4.3 mm centres;
+its internal pattern number differs but the geometry matches. The saved
+component-style name now identifies PPS film rather than MLCC.
 [Panasonic ECHU(X) data sheet](https://industrial.panasonic.com/content/data/CP/PDF/Film/film_echux_e.pdf).
 
 **2026-10-13 dielectric check.** These three placed parts are already PPS
 film chips, not MLCCs. Replacing them with through-hole polypropylene offers
 no established distortion benefit here. Preserve the selected PPS parts and
-the compact filter layout; the misleading library name remains a BOM task.
+the compact filter layout. The 26 October saved library/CAD update closed
+the misleading-name task; this dated dielectric conclusion remains unchanged.
 
 J1 exposes three electrical nodes for the two external pot gangs: pin 3 is
 the first arm after R4, pin 2 is the junction of the gangs and C4/C5,
@@ -388,6 +397,21 @@ supports the body without stressing the pins. Keep the wiring short if used
 and away from Class-D switching nodes. The manufacturer's +50 °C
 maximum operating temperature applies at the pot body and must be confirmed by
 the thermal/mechanical layout.
+
+For a temperature-induced fractional change `x` in both pot gangs' resistance
+at a fixed shaft position, with the PCB resistors and capacitors unchanged,
+the equal-arm cutoff changes by the exact factor
+`(13.7 kΩ + Rp)/(13.7 kΩ + Rp(1 + x))`, where `Rp` is that position's nominal
+pot resistance. For small `x`, `Δf/f ≈ -[Rp/(13.7 kΩ + Rp)]x`.
+The factor is 0.593 at the 40.7 Hz end (`Rp = 20 kΩ`) and falls to zero at
+the 100.2 Hz end (`Rp = 0`). For illustration only, a 1% track-resistance
+change would move the 40.7 Hz end by approximately 0.24 Hz. The
+[Bourns PDB18 data sheet](https://www.bourns.com/docs/product-datasheets/pdb18.pdf)
+specifies no track temperature coefficient or thermal gang-tracking limit.
+This is a sensitivity calculation, not a predicted drift or guaranteed bound. The
+actual pot-body temperature, PCB component temperatures, and assembled response
+remain to be checked. The 50 °C body limit leaves 15 K above the 35 °C rated
+room ambient, or 10 K above the 40 °C thermal-margin case.
 
 For unity gain, the nominal relationships are:
 
@@ -437,6 +461,14 @@ VMID biases the driver input towards minimum output. With an intact nominal
 ideal fraction remains 1. At the electrical midpoint, the lower 5 kΩ half
 is shunted by 1 MΩ: `(5 kΩ || 1 MΩ) / (5 kΩ + (5 kΩ || 1 MΩ)) ≈ 0.4988`
 instead of 0.5. This robustness addition is present in the XML.
+
+At a fixed wiper position, a uniform temperature-driven change of the entire
+track resistance cancels from an ideal unloaded voltage-divider ratio. With
+the present 1 MΩ bias resistor, loading is small: at the electrical midpoint
+of a nominal 10 kΩ track, a 1% uniform track-resistance change alters the
+output fraction by approximately 0.0000124, or 0.0025% of the half-level
+output. This is an illustrative circuit sensitivity, not a bound on the
+unselected pot's temperature-dependent taper or contact behaviour.
 
 ## 6 Polarity control
 

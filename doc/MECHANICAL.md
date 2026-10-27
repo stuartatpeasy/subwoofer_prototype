@@ -1,14 +1,14 @@
 # Mechanical design
 
-> **State — current mechanical authority; reviewed 2026-10-13.** Owns cabinet,
+> **State — current mechanical authority; reviewed 2026-10-25.** Owns cabinet,
 > rear-plate and PCB/plate fit; electrical bonds are owned by
 > [power and grounding](POWER_AND_GROUNDING.md), and heat-load acceptance by
 > [thermal design](THERMAL.md). Read for plate or PCB packaging changes.
 > Current direction: CNC-relieved nominal 6 mm plate, with approximately 4 mm
 > local component clearance planned; JLCCNC 6061 and matt-black anodising
 > preferred provisionally. Next gate: confirmed material,
-> selective finish, bulk-capacitor edge/fastener clearance, finished
-> contact/clearance stack and thermal budget. No
+> selective finish, bulk-capacitor edge clearance, finished
+> contact/clearance stack, control mounting temperature and thermal budget. No
 > final plate drawing or assembled thermal result is yet approved.
 
 ## 1 Two-chamber cabinet architecture
@@ -186,9 +186,14 @@ mounting-hole envelope. Panasonic lists a 16.0 mm nominal body diameter for
 `EEVFK1J471M`, implying about 0.7 mm nominal lower board-edge clearance and
 about 1 mm body-to-hole-envelope clearance. This is a placement observation,
 not a measured collision. Verify the body tolerance, fastener/washer swept
-area and assembly access; increase margin before approving the board/plate
-package. The [current amplifier layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
-records the saved-XML coordinates.
+area and assembly access in that earlier board state. The later saved PCB and
+the user's selected hardware supersede its fastener concern: the 5 mm maximum
+washer diameter fits the 6 mm keep-out, giving 0.5 mm nominal radial margin.
+This closes [PR-003](PCB_LAYOUT.md#2-findings); retain the selected fastener
+geometry. The separate C26 body-to-board-edge observation remains subject to
+the actual component tolerance and final fabrication preview. The
+[17 October amplifier layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
+records the earlier saved-XML coordinates.
 
 ### 2.1 Aluminium heatsink/control plate
 
@@ -199,6 +204,19 @@ earlier flat-plate choice; its higher thermal conductivity does not resolve the
 PCB-side placement problem by itself. Verify JLCCNC's available 6061 temper and
 stock thickness, final machined web, panel stiffness, and passive-cooling
 budget before approving production geometry.
+
+No final plate width, height, or control positions are locked. Its role as a
+control carrier remains conditional: a metal panel bushing can conduct plate
+heat into a potentiometer. The provisionally selected crossover pot is rated
+only to +50 °C at its body, leaving 15 K over the 35 °C rated room ambient.
+Keep plate mounting provisional until the thermal budget supports a pot-body
+temperature at or below +50 °C at the proposed location; check the body in
+the prototype's defined continuous thermal test. If that cannot be met, use a
+separate, thermally isolated control carrier while keeping the signal harness
+short and clear of switching nodes. The level-pot and polarity-switch parts
+are not yet selected, so check their own operating-temperature limits when
+chosen. The cutoff and
+level sensitivities are in [Analogue front end](FRONT_END.md).
 
 At roughly 20 °C, published representative conductivities are 222 W/(m·K)
 for 1050A-H14, 166 W/(m·K) for 6061-T6, and 130 W/(m·K) for 7075. For an
@@ -285,7 +303,8 @@ Reasons:
 - plywood provides cabinet stiffness/damping
 - aluminium handles heat spreading/rejection
 - smaller aluminium span reduces resonance risk
-- plate also carries controls/connectors/PCB
+- plate carries the PCB and selected connectors; control mounting remains
+  conditional on the thermal budget
 
 The acoustic partition, rather than this outer rear wall, now contains the
 driver pressure. The rear structure must still carry the electronics safely,

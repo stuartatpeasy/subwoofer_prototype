@@ -1,6 +1,6 @@
 # System specification
 
-> **State — current system authority; reviewed 2026-10-18.** Owns locked
+> **State — current system authority; reviewed 2026-10-26.** Owns locked
 > architecture and cross-subsystem constraints; detailed plate geometry and
 > finish belong to [mechanical design](MECHANICAL.md). Read for system-level
 > changes. Current direction permits CNC plate reliefs, components on both
@@ -21,6 +21,10 @@ Do not revisit without measured/simulation evidence:
   intrusions and before assigning any apparent-volume benefit to wadding
 - 36 V main rail
 - Mean Well `RSP-200-36` main PSU
+- first-prototype auxiliary supply selection: MP4541GN buck at approximately
+  17.36 V, `XC6701DF02FR-G` 15 V analogue regulator, and
+  `L78M12ABDT-TR` 12 V amplifier regulator; change these only if built-prototype
+  measurements justify it
 - Schurter `DD11.0111.1111` C14 inlet with two-pole switch, one-pole line fuse,
   and no additional Rev-A inlet filter
 - Schurter `T2AH250V` 2 A time-lag ceramic appliance fuse
@@ -89,12 +93,11 @@ through-hole film is permitted, with exact selection still provisional in
 [Power amplifier](POWER_AMPLIFIER.md).
 
 The previous 15 V converter feeding separate 12 V amplifier and analogue
-post-regulators is superseded by the current power-plan revision. The partial
-[canonical schematic](../diptrace/main_board.dchxml) now shows an MP4541GN
-candidate 36 V-to-approximately-17.36 V buck feeding an `XC6701DF02FR-G` 15 V
-analogue regulator and the now-placed `L78M12ABDT-TR` 12 V amplifier regulator.
-The buck exposed pad and the 12 V regulator's ground tab are drawn; verify the
-transferred PCB netlist and land pattern.
+post-regulators is superseded by the selected first-prototype supply in the
+[canonical schematic](../diptrace/main_board.dchxml). The buck exposed pad
+and the 12 V regulator's ground tab are drawn; check final footprint geometry,
+fabrication outputs, and the assembled rail and thermal behaviour. This
+selection is final for the prototype, not a measured qualification.
 The former `PGND`, `AGND`, and `GNDAMP` nets have been merged into one `GND`
 net, and the unpopulated R1/R2 links have been removed. The TPA3251's 12 V
 feeds are drawn, but their loaded current, L78M12 thermal behaviour, and the
@@ -111,9 +114,10 @@ an active procurement or assembly instruction.
   Class-D power-amplifier domains
 - four copper layers for Rev A
 - physically controlled analogue and amplifier return regions; the schematic
-  uses one common `GND` net, with the actual copper topology open
-- separate power and return entries for the two domains, preserving the
-  deliberate external branching defined in
+  uses one common `GND` net, and the current PCB review records the joined
+  local ground copper beneath U3
+- a common 36 V/GND board entry at J6, with three paired positive/return
+  cables planned to the common Mean Well terminals as described in
   [Power and grounding](POWER_AND_GROUNDING.md)
 - selected through-hole, latching board connections for the 36 V input and
   driver output; exact pairs and remaining harness/layout gates are owned by
@@ -124,11 +128,14 @@ an active procurement or assembly instruction.
   return references for any crossing
 
 The one-board, four-layer architecture remains locked; the common `GND` net
-supersedes the earlier split-net scheme, while return-copper geometry remains
-to be designed. Four layers are a project requirement even though they are not a functional
-requirement of the TPA3251 itself. The exact fabricator stack-up, component
-placement, milled plate reliefs, and thermal interface between the rear-mounted
-top-exposed PowerPAD and aluminium plate remain to be finalised before layout.
+supersedes the earlier split-net scheme. The current saved copper and its
+remaining assembly checks are in [PCB layout review](PCB_LAYOUT.md).
+Four layers are a project requirement even though they are not a functional
+requirement of the TPA3251 itself. For the first bare-board order, JLCPCB
+standard four-layer, 1.6 mm construction is selected; the final export and
+order-option comparison remains open. The milled plate reliefs and thermal
+interface between the rear-mounted top-exposed PowerPAD and aluminium plate
+remain separate assembly design tasks.
 
 ## 2 Driver
 

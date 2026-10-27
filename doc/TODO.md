@@ -4,6 +4,16 @@ Complete these in dependency order. Items described as locked in the
 [system specification](SPECIFICATION.md) should be reopened only if analysis,
 simulation, or measurement shows that they cannot meet the acceptance criteria.
 
+The `rev0` bare-board design and export are frozen for prototype fabrication.
+The user reports zero DRC and net-connectivity errors after the final trace/via
+tidying and repour; the unchanged schematic previously passed ERC. The remaining
+bare-board purchase gate is JLCPCB's rendered four-layer/NPTH upload preview
+and selected standard 1.6 mm order options. Open items below concerning
+component fit, harness, rear plate, mains assembly, rail noise, temperatures
+and measured behaviour are deferred to assembly or prototype validation unless
+their order-preview evidence reveals a bare-board defect. See [PCB layout
+review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
+
 ## 1 Complete the system specification
 
 - [x] Confirm the SB23MFCL45-4 nominal parameters and physical envelope from the
@@ -25,7 +35,7 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   enclosure-access assumptions.
 - [x] Define the amplifier protection and fault policy: use the TPA3251's
   internal protection, permit user power-cycling for latched faults, add
-  board-level diagnostic LEDs and retain test points without automatic retry,
+  board-level diagnostic LEDs and plan test access without automatic retry,
   accept the residual PBTL DC-fault risk without an external disconnect, and
   use analogue RESET supervision for thump-controlled startup and shutdown.
 
@@ -43,19 +53,26 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   sensitivity, common-mode conditions, symmetry, and 15 V analogue-rail
   headroom in simulation. The revised 7.5 V VMID gives approximately 1.26 V
   peak input common-mode margin for a 3 V RMS source at the first buffer.
-- [ ] Finalise the TPA3251 surrounding passives from the TI PBTL reference
-  design, including the `OC_ADJ` CB3C threshold resistor.
-- [ ] Complete the U4/U10 status-LED review in the PCB: confirm Kingbright
+- [x] Retain the saved TPA3251 surrounding-passive selection for the first
+  bare-board prototype, including R18 = 22 kΩ on `OC_ADJ`. The actual
+  overcurrent behaviour remains a built-prototype check; a saved resistor
+  value alone does not qualify the protection threshold.
+- [ ] Complete the U4/U10/U11 status-LED review in the PCB: confirm Kingbright
   physical polarity marks and pad geometry, onsemi SC-88 pad dimensions,
-  routing and LED visibility. The revised R36/R37 1.5 kΩ TE parts calculate
+  routing and LED visibility. The R36/R37/R40 1.5 kΩ TE parts calculate
   to about 77 mW at the 12.5 V rail, 1.8 V LED, 1%-low resistor corner;
   confirm the local hot-ambient margin if an LED could remain on continuously.
-  Correct the separate R2/R10 1 kΩ TE manufacturer/SKU fields, which omit the
-  final `0` in that part number. Check DVDD under controlled asserted-status conditions
-  because the selected 130 kΩ pull-downs draw approximately 0.055 mA
-  externally from this internal reference when both LEDs are on. Retain
-  TP1/TP2 for short assertions and for FAULT's forced-high state during RESET; see
-  [power amplifier](POWER_AMPLIFIER.md).
+  The R2/R10 1 kΩ TE purchasing fields and R19/R27/R30/R33/R34 10 kΩ Yageo
+  manufacturer-part fields have been corrected in both saved CAD files.
+  Check DVDD under controlled D2/D3 asserted-status conditions
+  because each asserted 130 kΩ pull-down draws up to approximately 0.028 mA
+  externally from this internal reference. The revised ACTIVE branch uses no
+  external static DVDD current. The current schematic and PCB place TP1–TP11, including
+  Top-side `AMP_nFAULT`, `AMP_nCLIP_OTW`, and `AMP_nRESET` pads. Verify probe
+  access after assembly. The [SR-001
+  RESET-indicator off-state concern](POWER_AMPLIFIER.md#12-protection-fault-response-and-reset-control)
+  is closed in the saved design by the direct N-channel green ACTIVE circuit;
+  confirm actual LED polarity, visibility and RESET truth on the prototype.
 - [ ] Verify the operating margin of the selected C21/C22/C24/C25 Würth
   `885012208124` 2.2 µF, 100 V X7R PVDD bypass parts on 1206 patterns.
   The user's target is at least 1 µF each at 36 V DC bias; the supplied
@@ -65,26 +82,33 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   short-loop placement, pad geometry and proposed 4 mm CNC-pocket clearance.
   Retain the selected MPN unless a material electrical or mechanical issue
   emerges. See [power amplifier](POWER_AMPLIFIER.md#52-ceramics).
-- [ ] Qualify the now-drawn pair of TDK `B32701P4684K000` 680 nF film
+- [ ] Validate the selected first-prototype pair of TDK `B32701P4684K000` 680 nF film
   output-filter capacitors C17/C30, one per combined speaker-output side, as
   described in [power amplifier](POWER_AMPLIFIER.md). Their saved pattern has
   the manufacturer-confirmed 10 mm lead pitch; check carrier ripple, capacitor
   temperature, peak voltage, response/damping and final physical placement
-  before locking the BOM.
-- [ ] Decide whether to retain the 250 V C19/C28 1 nF shunts and C16/C31
-  10 nF Zobel capacitors or use suitable 100 V parts; confirm the final
-  post-inductor voltage peaks and Zobel resistor/capacitor heating. Select
-  the exact Zobel parts and check pulse/continuous dissipation.
-- [ ] Resolve the MP4541GN candidate buck review in
-  [power and grounding](POWER_AND_GROUNDING.md): verify the U5 SOIC-8EP
-  and C42–C44 1210 land dimensions; verify U5 pad 9 in the PCB netlist; define
-  the buck's local switching-current return and verify the approximately
-  20.4 µF typical bias-adjusted C42–C44 bank estimate against loaded ripple,
-  start-up and meaningful load transients. Add the user-selected fourth
-  identical schematic position as unpopulated; fit it only if those checks
-  show a material need. The current XML still contains only C42–C44.
+  on the built prototype; the first-prototype part selection and 10 mm land
+  pitch are settled for bare-board release.
+- [x] Select the first-prototype output damping parts: C19/C28 are Würth
+  `885012207116` 1 nF, 100 V; C16/C31 are Würth `885012207122` 10 nF,
+  100 V; R20/R21 are Yageo `RC2512FK-7W3R3L` 3.3 Ω, 2.2 W. Measure
+  post-inductor peaks and Zobel temperature on the built prototype before
+  treating the network as qualified for sustained high output.
+- [x] Select the first-prototype auxiliary supply in
+  [power and grounding](POWER_AND_GROUNDING.md): keep the present MP4541GN
+  approximately 17.36 V buck, C42–C44, XC6701 15 V and L78M12 12 V branches.
+  Do not redesign them unless built-prototype measurements justify a change.
+- [ ] Check the selected U5 SOIC-8EP, C42–C44 1210 and U9 DPAK land dimensions,
+  U5 exposed-pad net, and local switching-current return before fabrication;
+  measure the loaded ripple, start-up and meaningful load transients on the
+  prototype. The fourth buck-output capacitor is an unimplemented option,
+  to add only if measurements show a material need.
 - [ ] Verify the now-placed `U9 = L78M12ABDT-TR` DPAK footprint, pin mapping,
-  ground tab, and thermal copper for the actual 12 V load. The selected C36
+  ground tab, and thermal result for the actual 12 V load. The 25 October saved
+  PCB has an approximately 544 mm² Top GND-pour outline, local copper on all
+  four layers, and 19 GND vias within 10 mm of the tab centre. Inspect final
+  filled connectivity and measure tab/copper and local air at the continuous
+  load; see the [current PCB review](PCB_LAYOUT.md). The selected C36
   Murata 1 µF, 100 V input ceramic exceeds 0.33 µF at 17.3 V bias on the
   user's part data; place it locally at U9's input and ground. C37 = 100 nF
   at the output is sensible alongside C8 = 470 µF and C9 = 100 nF.
@@ -130,10 +154,11 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   identify a material need.
 - [x] Remove the unnecessary VMID series paths and reference-filter capacitors;
   the current XML references U1.4 and U2.2 directly to VMID.
-- [ ] Verify that the corrected C2/C4/C5 `PatType36` land pattern transfers
-  to the PCB for the selected Panasonic `ECH-U1H823JX9` PPS-film part. Correct
-  the misleading `MLCC` component-style name before BOM release; check ±5%
-  capacitance tolerance and pot-gang tracking.
+- [x] Verify that the corrected C2/C4/C5 Panasonic `ECH-U1H823JX9`
+  PPS-film land pattern transferred to the PCB. Its 1.3 × 3.0 mm lands on
+  4.3 mm centres match the selected E2 geometry; the saved component-style
+  name now says `PPS` rather than `MLCC`. Check capacitor tolerance and
+  pot-gang tracking during prototype characterisation.
 - [x] Feed U2.2's R11 from U2.4's output rather than the level-pot wiper; the
   current XML has removed the 10 kΩ wiper load.
 - [x] Add the nominal 1 MΩ `DIFF_IN`-to-VMID wiper-fault bias (R6) and
@@ -147,10 +172,9 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   release; current RCA coupling is C1/C6 and amplifier-input coupling C11/C15.
 - [x] Correct J5's placed purchasing fields: `Mfr part` is now
   `39-28-1023`, and Mouser `SKU` is `538-39-28-1023`.
-- [ ] Run and inspect DipTrace ERC before PCB release, with unconnected-pin and
-  short checks enabled where applicable. Both checks are now enabled in the
-  saved XML, but it contains no ERC result; classify expected unused pins rather
-  than treating every warning as a fault.
+- [x] Run DipTrace ERC before bare-PCB release. After the current refill,
+  the user reports zero ERC, DRC and connectivity errors; the reports were not
+  independently inspected. Repeat affected checks after electrical or layout changes.
 - [ ] Verify actual J3 harness load, physical DPDT 0°/180° mapping, and
   terminal identification.
 - [ ] Verify the Sallen-Key filter transfer function, Q, adjustment range,
@@ -159,7 +183,10 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
   crossover potentiometer by measuring both gangs and confirming that the
   panel-wired installation and +50 °C pot-body limit are met; select the level
   potentiometer.
-- [ ] Finalise the input ESD/RF protection.
+- [x] Retain the saved RCA input coupling and RF network for the first
+  bare-board prototype without adding a dedicated input ESD suppressor.
+  This is a prototype design choice, not an ESD immunity qualification;
+  revisit protection if handling or susceptibility testing reveals a problem.
 - [ ] Extend the provisional white-noise review in
   [analogue front end](FRONT_END.md) after the TPA3251 input network is fixed:
   include real VMID/rail noise, the source, pot contact/excess noise, amplifier
@@ -171,36 +198,60 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
 - [ ] Implement and validate the selected common-`GND` layout, the one
   intended board-to-chassis bond, and the independent protective-earth paths.
   Account for intentional and incidental conductive contacts in the assembly;
-  the conceptual single-net decision is closed.
+  the conceptual single-net decision is closed. The earlier High
+  [U3 local ground-seam finding](PCB_LAYOUT.md#2-findings) is resolved in
+  saved copper; preserve that connection and verify current connectivity.
+  Decide the remaining PSU return-loop question before fixing the harness.
 - [x] Lock the PCB architecture and layer count: one physically partitioned
   four-layer board, with no two-layer fallback.
 - [x] Select the latching, through-hole 36 V input and speaker-output
   connector pairs documented in [power and grounding](POWER_AND_GROUNDING.md)
   and [power amplifier](POWER_AMPLIFIER.md).
-- [ ] Verify that the saved J6 three 36 V contacts and three GND contacts are
-  allocated to the two amplifier pairs and one buck pair in the PCB and harness;
-  verify both connector footprints, cable routes and clearances,
-  strain support, polarity, and driver-end termination before PCB release.
-  Recheck Mouser availability and purchasing terms before ordering.
-- [ ] Select the exact fabricator stack-up, copper weights, dielectric spacing,
-  finished thickness, via construction/plating, and detailed layer usage for
-  the rear-mounted TPA3251 and whichever support parts are placed on each side.
+- [ ] Verify the joined 36 V and GND entry at J6 with the actual three closely
+  paired feed/return cables and common Mean Well terminals. The saved board
+  now takes the buck branch locally, resolving the previous asymmetric
+  feed/return arrangement; see [PR-005](PCB_LAYOUT.md#2-findings). Parallel
+  cables need not share current equally. Check the J6 contact and local copper
+  capacity, the corrected Molex 7 A per-contact guideline with enclosure
+  derating, both connector footprints, cable routes and clearances, strain
+  support, polarity, and driver-end termination before assembly. Recheck
+  Mouser availability and purchasing terms before ordering.
+- [ ] Confirm the replacement Gerber ZIP's rendered layers, NPTH mounting
+  holes and mask/silk alignment in JLCPCB's upload preview, then confirm the
+  selected standard four-layer, 1.6 mm order options before payment. The
+  read-only archive inspection found no remaining bare-board data defect
+  ([PR-010](PCB_LAYOUT.md#2-findings)). The saved nominal stack uses 35 µm
+  outer / 15.2 µm inner copper
+  and 0.2104/1.065/0.2104 mm dielectric spacing, matching JLCPCB's published
+  no-impedance-requirement example. The saved U9 now uses the larger `M` DPAK
+  lands; inspect its solder joints and temperature on the built prototype
+  ([PR-012](PCB_LAYOUT.md#2-findings)). If ordering a stencil, suppress paste
+  on TP1–TP11 ([PR-013](PCB_LAYOUT.md#2-findings)).
+  The [19 October power-stage review](POWER_AMPLIFIER.md#117-power-stage-copper-review-19-october-2026)
+  provisionally supports JLCPCB's standard 35 µm outer / 15.2 µm inner copper
+  at 150 W into 4 Ω. The current saved inner entry is 15.2 µm; revisit
+  weight only if final routes or prototype results justify it.
   The saved C20/C26 bulk-capacitor feed and return now join the 36 V and GND
   planes. Check the resulting filled copper, C21/C22/C24/C25
   supply/return loops, output-via transitions and complete bootstrap loops
   without imposing a length-matching requirement. Recheck whether the two
   now-17-via `SPK+` fields or local 19-via `36V` field materially narrow either inner
   plane; trim only where copper continuity benefits. Check the close
-  C20/C26 via-to-solder-land mask geometry and the C26 board-edge and both
-  bulk-capacitor mounting-hole clearances. The Bottom same-priority
+  C20/C26 via-to-solder-land mask geometry and the C26 board-edge clearance;
+  the selected 5 mm maximum fastener fits its 6 mm keep-out, closing
+  [PR-003](PCB_LAYOUT.md#2-findings). The Bottom same-priority
   `36V`/`AMP_OUT_B,C` and `AMP_OUT_A`/`GND` pour warning cleared after
   reprioritising the output pours; verify that this did not narrow the U3
-  supply or output paths, and complete DRC/connectivity checks; see the
+  supply or output paths. The latest inner-layer swap restores GND adjacent
+  to U3 ([PR-006](PCB_LAYOUT.md#2-findings)); inspect the low-priority
+  [PR-007](PCB_LAYOUT.md#2-findings) analogue reference trade-off if refining
+  that region or investigating measured noise. The user reports passing DRC
+  and net-connectivity checks on this board; see the
   [focused priority check](POWER_AMPLIFIER.md#116-bottom-copper-pour-priority-warning-18-october-2026).
-  Validate the finished via
-  construction and selected JLCPCB order stack, then run connectivity/DRC
-  before release.
-  See the [current PCB layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
+  Validate the finished via construction and JLCPCB order options;
+  rerun affected connectivity/DRC checks after any electrical, layout or rule change.
+  See the [current whole-board review](PCB_LAYOUT.md) and earlier
+  [power-stage layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
   and [via-field review](POWER_AMPLIFIER.md#113-via-field-current-and-plane-review-17-october-2026).
   The [local ceramic copper estimate](POWER_AMPLIFIER.md#114-local-pvdd-ceramic-copper-parasitic-estimate-17-october-2026)
   supports retaining C21/C22/C24/C25 while the final filled copper and
@@ -229,8 +280,12 @@ simulation, or measurement shows that they cannot meet the acceptance criteria.
 
 ## 4 Build and validate
 
-- [ ] Conduct design-rule reviews for schematic, PCB layout, mechanical fit,
-  mains safety, grounding, and thermal design before fabrication.
+- [ ] After bare-board fabrication, conduct the remaining proportionate
+  assembly-fit, grounding, thermal and mains-construction reviews before
+  energising the complete prototype. The user reports zero ERC, DRC and
+  connectivity errors after the current refill; rerun affected checks if the
+  electrical or PCB design changes. The bare-board data inspection passed;
+  JLCPCB's rendered upload preview remains under [PR-010](PCB_LAYOUT.md#2-findings).
 - [ ] Build the Rev-A prototype and perform the documented electrical, thermal,
   and acoustic validation.
 - [ ] Record measured results, deviations, corrective actions, and final

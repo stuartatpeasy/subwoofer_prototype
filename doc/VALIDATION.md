@@ -1,8 +1,8 @@
 # Prototype validation
 
-> **State — current prototype checks; reviewed 2026-10-18.** Owns practical
-> build verification. The auxiliary buck and 15 V regulator remain to be
-> qualified; the L78M12 12 V regulator is placed but not yet approved;
+> **State — current prototype checks; reviewed 2026-10-26.** Owns practical
+> build verification. The auxiliary buck, 15 V regulator and L78M12 12 V
+> regulator are selected for the first prototype but not yet measured;
 > the two-supervisor RESET topology and dedicated buck divider are selected;
 > 12 V LDO headroom remains to be checked at the loaded buck trough.
 
@@ -52,10 +52,15 @@ additional protection and does not replace the PE inspection and bond test.
 - clipping level into 4 Ω
 - output noise
 - PWM residual
-- MP4541GN candidate `17V3` output regulation, minimum loaded trough, ripple,
+- selected MP4541GN `17V3` output regulation, minimum loaded trough, ripple,
   load-step response, and switching spectrum at representative reset, idle,
   and driven auxiliary loads, including
   any interaction products with the TPA3251's nominal 600 kHz switching
+- compare `17V3` and `15VA` ripple at their local decouplers, then check
+  analogue-output noise at idle and representative load. Use a short local
+  ground return so the probe loop does not dominate an apparent buck-noise
+  result; investigate a material excess before changing the continuous
+  ground pours beneath L5
 - measure the actual 15 V analogue-rail load and XC6701 dropout/headroom at
   that load and the expected warm operating condition; note any analogue-rail
   droop before RESET without treating pre-dropout muting as a requirement
@@ -75,10 +80,13 @@ additional protection and does not replace the PE inspection and bond test.
   regulator outputs and RESET assertion; allow for a brief 12 V sag because
   the lowest calculated 13.97 V trip is below the L78M12's 14.5 V specified
   input minimum
-- correct diagnostic states at the `FAULT` and `CLIP_OTW` test points and
-  corresponding board LEDs for safe, non-destructive conditions available
-  during bring-up; note that RESET low forces FAULT high. Check DVDD remains
-  stable with the indicators asserted; do not inject a
+- correct diagnostic states at `RESET`, `FAULT` and `CLIP_OTW` and their
+  corresponding board LEDs under safe, non-destructive conditions available
+  during bring-up; the current PCB has TP9/TP10/TP11 for these nodes. Confirm
+  that green D4 `ACTIVE` lights when RESET is released and stays dark when
+  RESET is asserted, including warm and low-12-V conditions. The LED reports
+  RESET release, not fault-free output. Note that RESET low forces FAULT
+  high. Check DVDD remains stable with the indicators asserted; do not inject a
   destructive output fault merely to exercise protection
 - analogue-output and loudspeaker-output noise with the Class-D stage disabled,
   idle, and driven, to expose coupling across the combined-PCB partition

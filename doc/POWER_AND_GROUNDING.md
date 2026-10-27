@@ -3,22 +3,28 @@
 > **State:** Current authority for mains entry, protective earth, DC
 > distribution, and grounding. The RSP-200-36, inlet, fuse, M4 protective-earth
 > topology, and unfiltered-inlet decision remain locked. The auxiliary supply
-> is under redesign: the canonical partial schematic now includes an MP4541GN
-> candidate 36 V-to-approximately-17.36 V buck feeding a 15 V analogue LDO and
-> an `L78M12ABDT-TR` 12 V amplifier regulator. Its DPAK pin and ground-tab
-> mapping, input bypass, thermal design, and physical return
-> paths need resolution as described in Section 1. The canonical schematic
+> selection is final for the first prototype: the canonical schematic uses an
+> MP4541GN 36 V-to-approximately-17.36 V buck feeding an
+> `XC6701DF02FR-G` 15 V analogue LDO and an `L78M12ABDT-TR` 12 V amplifier
+> regulator. The 25 October PCB snapshot
+> carries the intended DPAK pad nets and a four-layer local GND spreader;
+> its land dimensions, loaded thermal result, and physical return paths still
+> need checking as described in Section 1 and the
+> [current PCB review](PCB_LAYOUT.md). The canonical schematic
 > now uses one `GND` net with no R1/R2 links. Analogue, buck, and amplifier
-> return-current regions remain to be defined in the PCB layout.
-> The six-position Mini-Fit Jr 36 V board-entry pair is selected; pin assignment,
-> footprint, and routing remain layout work.
-> The power tree is not approved for PCB implementation. The selected two-
+> return-current regions are now joined across U3 in the later 25 October
+> routed PCB. The six-position Mini-Fit Jr 36 V board-entry pair is selected;
+> its PSU wiring topology, harness implementation, and footprint fit remain
+> open checks.
+> Do not redesign the selected auxiliary supply unless measurements of a built
+> prototype justify a change. This selection is not a claim that the rails,
+> thermal behaviour, or final fabrication outputs have been qualified. The two-
 > supervisor RESET topology senses 36 V and `17V3` with a selected dedicated
 > divider; its headroom claim depends on the loaded buck trough and 12 V LDO
 > input in [Power amplifier](POWER_AMPLIFIER.md).
 > Earlier STH0548S15/LM2937 selections and their calculations below are
 > superseded context, not current implementation instructions. Last reviewed:
-> 2026-10-13.
+> 2026-10-26.
 
 ## 1 Power architecture
 
@@ -29,13 +35,13 @@
   |
   +--> TPA3251 PVDD
   |
-  +--> MP4541GN ~17.36 V buck (candidate partial schematic)
+  +--> MP4541GN ~17.36 V buck (selected for first prototype)
          |
-         +--> L78M12ABDT-TR 12 V regulator (drawn, not approved)
+         +--> L78M12ABDT-TR 12 V regulator (selected)
          |      |
-         |      +--> TPA3251 VDD/GVDD (drawn; loaded rail unverified)
+         |      +--> TPA3251 VDD/GVDD (loaded rail unverified)
          |
-         +--> XC6701DF02FR-G 15 V analogue LDO (partial schematic)
+         +--> XC6701DF02FR-G 15 V analogue LDO (selected)
                 |
                 +--> analogue front end
                 |
@@ -46,10 +52,20 @@ Requirements:
 
 - keep the amplifier and analogue supply loads in their appropriate physical
   regions, with locally controlled return paths
-- resolve the MP4541GN implementation issues below and the 12 V
-  amplifier supply faults in Section 1.2, then recalculate noise, load, heat,
-  grounding, and RESET sequencing; confirm the lowest loaded `17V3` trough
-  against the selected buck supervisor's release threshold
+- check the selected parts' physical footprints, local return paths, and final
+  fabrication outputs before ordering; measure loaded rail levels, ripple,
+  heat, and RESET sequencing on the built prototype, including the lowest
+  `17V3` trough against the buck supervisor's release threshold
+
+**26 October 2026 selection decision.** The MP4541GN and its present
+feedback/output-capacitor implementation, U6 15 V analogue branch, and U9
+12 V amplifier branch are final for this prototype. Earlier candidate and
+alternative-setpoint calculations below are retained as dated analysis; they
+do not authorise a pre-build redesign. The fourth buck-output capacitor
+position discussed below is an option only if prototype measurements show a
+material need. Correctness checks for the selected PCB footprints, pin nets,
+local copper and manufacturing files still apply; loaded voltage and thermal
+performance must be measured after assembly.
 
 ### 1.1 MP4541GN candidate schematic review (2026-10-06; references refreshed 2026-10-12)
 
@@ -143,8 +159,9 @@ and [Samsung capacitor identity](https://product.samsungsem.com/mlcc/CL32A106KBJ
 
 The saved schematic now places `U9 = L78M12ABDT-TR`: VIN/pin 1 is on
 `17V3`, GND/pin 2 and DPAK tab pad 4 are on `GND`, and VOUT/pin 3 is on
-`12VAMP`. Verify the transferred PCB netlist, land pattern, and thermal copper
-before layout release. The former `U4 = NCP1117ST12T3G` and its SOT-223
+`12VAMP`. The 24 October saved PCB carries these pad nets, but verify the land
+pattern dimensions and completed thermal copper before layout release. The
+former `U4 = NCP1117ST12T3G` and its SOT-223
 output-tab mapping, 20 V input limit, and output-capacitor ESR requirement are
 superseded by this substitution.
 
@@ -208,6 +225,73 @@ typical 6 mA ground current adds about 0.10 W of regulator dissipation. Its
 100 °C/W DPAK junction-to-ambient figure would imply roughly 75 °C rise on
 the reference arrangement; actual PCB copper, enclosure ambient and measured
 load must be checked before approving the placed part.
+
+**24 October 2026 U9 PCB thermal checkpoint (provisional).** The saved
+`diptrace/main_board.dipxml` (SHA-256
+`45FE65236B2B1EA68EB9F5CC34BEE44550DD954FE301C733DB515B7A8B11C152`,
+`DipTrace-PCB` 5.3.5.1, mm) places U9 on Top at (27.2, 85.5) mm. Its placed
+footprint has physical pads 1=`17V3`, 3=`12VAMP`, and tab 4=`GND`; the omitted
+lead 2 is the DPAK ground/tab connection, not an output-tab mapping. The Top
+`GND` pour ID 34 reaches the tab and has a 499 mm² outline area before pad,
+hole and clearance cut-outs. Its useful thermal area is therefore smaller
+than 499 mm². The nearest saved `GND` vias are about 5.5–7.8 mm from the tab
+centre; there are none immediately beside it. The present Inner 2 `GND` pour ends
+around x=22.2 mm, to the left of the tab, while Inner 1 and Bottom have no
+local `GND` pour under U9. The planned four-layer heat-spreading structure is
+not yet implemented. Adjacent `17V3` and `12VAMP` copper is electrically
+separate and should not be counted as a directly joined tab heat spreader.
+The screenshots agree with this saved geometry; neither
+is an assembled thermal result or current DipTrace connectivity/DRC pass.
+
+**25 October 2026 superseding geometry checkpoint.** The
+[current routed-board review](PCB_LAYOUT.md) identifies a roughly 544 mm² Top
+GND-pour outline joined to U9's tab, further local GND fills on Inner 1,
+Inner 2 and Bottom, and 19 GND vias within 10 mm of the tab centre. The
+24 October statement that the planned four-layer structure was absent remains
+a dated description of that earlier file. The present geometry now implements
+the intended spreader, subject to connectivity/DRC and a temperature check at
+the actual continuous load. The dissipation model below remains provisional.
+
+For a linear regulator, input power is `VIN × (IOUT + IQ)` and delivered
+output power is `VOUT × IOUT`, so
+`PD = (VIN − VOUT) × IOUT + VIN × IQ`. With the provisional 120 mA load,
+17.36 V input, 12 V output, and ST's *typical* 6 mA ground current, this is
+`(5.36 V × 0.120 A) + (17.36 V × 0.006 A) = 0.747 W`. At the unselected 18 V
+buck setting it would be 0.828 W. At 17.36 V, 200 mA would dissipate about
+1.18 W. These are operating-point estimates, not maximum device losses: the
+12 V load, input voltage under load, ground current and local air temperature
+are unmeasured. ST specifies 125 °C maximum operating junction temperature
+for the AB grade, 8 K/W DPAK junction-to-case and 100 K/W junction-to-ambient
+in its thermal table; the latter is not a prediction for this PCB. With
+illustrative 50 °C local air,
+0.747 W at 100 K/W would put the junction near 125 °C; 70 K/W would put it
+near 102 °C. At 1.18 W, even 70 K/W would put it near 133 °C. This makes
+the actual continuous 12 V current as important as the copper outline.
+
+ST's [DPAK copper-area illustration](https://www.st.com/resource/en/application_note/an1703-guidelines-for-using-sts-mosfet-smd-packages-stmicroelectronics.pdf)
+shows roughly 62 K/W at a 45 mm² recommended pad and about 50 K/W at
+600 mm² on its 70 µm copper test board. It uses a MOSFET and different board
+conditions, so these figures are **scale guidance**, not U9's thermal
+resistance. The existing approximately 5 cm² Top outline is already in the
+right area range for a 120 mA first layout; do not assert that it is inadequate
+from appearance alone. Preserve a broad, directly joined tab-to-Top-GND
+connection. Add connected `GND` spreading copper on the other layers where it
+does not cut the buck's 36 V or 17V3 distribution, amplifier return, or quiet
+analogue paths. Begin with roughly 8–12 well-spaced through-vias immediately
+around the tab and its copper extension (the present style is 0.45 mm land /
+0.20 mm hole); inspect the filled clearances and add more only where useful.
+Keep ordinary open vias out of the soldered tab pad to avoid solder wicking,
+unless a filled/capped via-in-pad process is deliberately selected. A target
+of roughly 5–10 cm² of *well-connected local spreader*, counting overlapping
+layers as coupled paths rather than independent free-air surfaces, is a
+layout starting point, not a guaranteed minimum. Measure U9 tab/copper and
+local air temperature at the actual continuous 12 V load during prototype
+thermal testing; if the load approaches 200 mA or temperature margin is poor,
+revisit the regulator or heat path before relying on extra distant copper.
+As a first interpretation of a tab/case measurement, add approximately
+`8 K/W × PD` (about 6 K at 0.747 W) to estimate junction temperature; the
+case-temperature measurement point and contact must be credible for this
+estimate.
 
 The selected buck supervisor's `17V3` falling threshold is 14.67 V nominal
 and about 13.97 V at the calculated low corner. The L78M12A is specified
@@ -473,7 +557,21 @@ Requirements:
 
 ## 4 36 V distribution
 
-The Mean Well PSU output is the primary DC branching point.
+The existing wiring proposal uses the Mean Well PSU output as the primary DC
+branching point.
+
+**Later 25 October PCB review:** The proposal below records the previous
+dedicated-branch wiring plan, not the present saved copper. The current PCB
+joins all three J6 `36V` pads into a broad Inner 1 feed and all three J6
+`GND` pads into common GND; no ratline is visible. The six selected conductors
+can therefore form three closely paired parallel feed/return paths between
+the common PSU rails and J6, with the buck branch taken locally from the board
+entry. This removes the former mismatch in which a buck-labelled return could
+carry amplifier current without a matching positive conductor. Actual harness
+pairing, PSU terminations, connector/copper capacity and temperature derating
+still need verification. Parallel cables need not share current equally.
+The [current PCB review](PCB_LAYOUT.md#3-engineering-interpretation) gives the
+electrical interpretation. Preserve the contiguous U3 GND plane.
 
 ```text
 Mean Well +V (three common terminals)
@@ -487,11 +585,11 @@ Mean Well -V (three common terminals)
 
 Requirements:
 
-- Amplifier and buck currents must not share significant wiring impedance.
-- The buck-fed 12 V amplifier rail also connects the PCB return regions;
-  do not assume the PSU terminals are their only connection. Keep each
-  outgoing feed close to its corresponding return and review the resulting
-  parallel paths.
+- Keep the buck's fast input-current loop local to its capacitors and avoid
+  significant shared feed/return impedance between that loop and U3's PVDD
+  capacitors. The board now joins the return regions; do not assume the PSU
+  terminals are their only connection. Keep each fitted outgoing feed close
+  to its corresponding return and review parallel cable paths.
 - Use suitably heavy conductors for the amplifier branch.
 - TPA3251 PCB must use a compact, low-impedance ground plane rather than star traces.
 
@@ -499,14 +597,18 @@ Selected 36 V board-entry pair (2026-10-12): Molex Mini-Fit Jr
 `39-28-1063` six-position, vertical through-hole, tin-plated PCB header and
 `215326-1063` six-position female-to-pigtail assembly. The latter has six
 factory-terminated 16 AWG (approximately 1.31 mm²), 600 mm conductors and
-requires no user crimping or separately purchased contacts. Assign two
-feed/return pairs to the amplifier and one pair to the buck as shown above;
-the three PSU `+V` screws are common, as are the three `-V` screws. Molex's
-Mini-Fit Jr product specification gives an 8 A per-contact guideline for a
-six-position assembly with 16 AWG brass contacts, subject to board copper and
-ambient temperature. This exceeds the PSU's 5.56 A total rating even if one
-amplifier contact carries the whole branch current; the wiring plan does not
-depend on equal sharing. Confirm the exact pin numbering, PCB footprint,
+requires no user crimping or separately purchased contacts. The original
+assignment was two feed/return pairs to the amplifier and one to the buck;
+the current PCB instead joins all three pairs at J6 and takes the buck branch
+locally. The three PSU `+V` screws are common, as are the three `-V` screws. Molex's
+Mini-Fit Jr [product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/555/5556/PS-5556-001-001.pdf)
+gives a **7 A per-contact guideline** for a six-position assembly with 16 AWG
+brass contacts (correcting the earlier 8 A figure), subject to board copper
+and ambient temperature derating. This exceeds the PSU's 5.56 A rated output
+under the specification's reference conditions, but a one-pair alternative
+would need a board-entry and enclosure-temperature check. The three-pair
+arrangement must not rely on equal sharing. Confirm the exact pin numbering,
+PCB footprint,
 connector clearance, cable reach, strain support, and polarity marking during
 layout. Recheck Mouser UK price, stock, normal-stock status, and MOQ for both
 parts before ordering; the six-position pigtail's UK listing was not confirmed
@@ -892,28 +994,32 @@ unpopulated R1/R2 links removed. This closes the conceptual split-net versus
 single-net decision. The board layout must control analogue, buck, and
 amplifier return paths by placement and copper geometry. The six Mean Well
 output terminals are three connections to each common +V and -V rail, not
-isolated outputs. Separate amplifier and buck 36 V wire branches remain
-intended; their returns also share the PCB `GND` net. Do not claim a single
+isolated outputs. The earlier dedicated amplifier and buck 36 V wire-branch
+plan is superseded in the current saved PCB by a common J6 entry and local
+buck branch; the selected six conductors remain available as three paired
+paths. Their returns also share the PCB `GND` net. Do not claim a single
 physical ground junction or use the
 TPA3251's internal ground connections as a PCB return conductor. Keep the
-12 V amplifier return out of quiet analogue copper. The exact board-current
-paths and the selected connector's pin assignment remain to be settled in
-layout.
+12 V amplifier return out of quiet analogue copper. The 25 October saved board
+assigns J6 pins 1–3 to the common `36V` field and pins 4–6 to common `GND`.
+The [current PCB review](PCB_LAYOUT.md#2-findings) finds both U3 GND and the
+36 V board entry joined locally, with no visible ratline. The former ground
+seam and asymmetric positive/return connection are resolved in saved copper;
+the physical PSU harness pairing and termination remain to be verified.
 
 ### 9.1 Remaining grounding implementation gates
 
-- Assign the selected six-position 36 V connector's two amplifier feed/return
-  pairs and one buck pair, and lay out their board entry.
-  The schematic also has one `36V` net. Decide how the amplifier and buck
-  positive-feed copper is distributed in the layout. The
-  wires share common rails at the PSU and their current division is not
-  guaranteed by the terminal assignment.
-- Place the buck, both LDOs, TPA3251, local capacitors, and analogue section;
-  then trace the actual `17V3` supply and return loops, the local analogue
-  reference, and any parallel return path to the PSU. Select the four-layer
-  stack-up and copper weights from those routes. The current 1 oz outer /
-  0.5 oz inner starting point is provisional, not a finished-board current
-  or thermal qualification.
+- Verify the now-joined six-position J6 pads against the actual mating
+  harness and Mean Well terminations. Use three closely paired feed/return
+  cable paths with the buck branch local to the common board entry. A single
+  pair would require further contact, copper and enclosure-temperature
+  checks. Parallel conductors' current division is not guaranteed by terminal
+  assignment alone.
+- Trace the actual `17V3` supply and return loops, U3 local GND connection,
+  analogue reference, and any parallel return path to the PSU. Select the
+  ordered four-layer stack-up and copper weights from those routes. The
+  current 1 oz outer / 0.5 oz inner starting point is provisional, not a
+  finished-board current or thermal qualification.
 - Define the one intentional board-GND-to-rear-plate bond near the TPA3251 and
   account for possible additional contacts through the thermal interface,
   mounting hardware, connectors, and PSU. Verify the independent PE conductors
@@ -958,10 +1064,10 @@ Partition rules:
   switching nodes. Route the balanced audio pair together across it. Determine
   other crossings from the finished placement and supply/return loops; do not
   leave a signal or power trace crossing a reference-plane gap.
-- Bring amplifier and buck 36 V feeds and returns from separate Mean Well
-  terminal pairs. The PSU terminals share common rails, and the buck-fed 12 V
-  amplifier branch also connects the returns on the PCB. Review parallel
-  return paths rather than assuming the PSU is their sole meeting point.
+- Bring the three paired 36 V feeds and returns from the common Mean Well
+  rails to J6; branch to the buck locally. The buck-fed 12 V amplifier branch
+  also connects to board GND. Review parallel cable paths and local return
+  geometry rather than assuming the PSU is the sole meeting point.
 - Put the TPA3251 input side at the corridor edge. Put its switching nodes,
   PVDD commutation loops, output inductors, and speaker connection on the far
   side, away from the analogue domain.
@@ -1009,7 +1115,7 @@ This choice reduces EMC, noise, and layout-rework risk. It does not imply that
 a competent 2-layer implementation would necessarily sound worse or measure
 worse in-band.
 
-Provisional layer intent, subject to the exact fabricator and thermal stack:
+Current layer intent for the first-prototype bare board:
 
 - front outer layer: analogue components and amplifier parts best placed away
   from the plate, with broad high-current copper where appropriate;
@@ -1019,19 +1125,36 @@ Provisional layer intent, subject to the exact fabricator and thermal stack:
   TPA3251 and a quiet `GND` region for front-side analogue circuitry; reserve
   the remaining area for supply distribution without severing critical
   return paths; and
-- begin with approximately 35 µm (1 oz) outer and 17 µm (0.5 oz) inner
-  copper. Upgrade selected layers only if actual route width, length, RMS
-  current, voltage drop, heating, or fabrication constraints justify the
-  extra cost. Confirm the fabricator's finished stack-up before release.
+- begin with approximately 35 µm (1 oz) outer and 15.2 µm (0.5 oz) inner
+  copper for the published JLCPCB stack. The
+  [19 October power-stage review](POWER_AMPLIFIER.md#117-power-stage-copper-review-19-october-2026)
+  provisionally supports this for the 150 W / 4 Ω design point. Upgrade
+  selected layers only if final route width, length, RMS current, voltage
+  drop, heating, or fabrication constraints justify the extra cost. The user
+  selected JLCPCB standard four-layer, 1.6 mm construction on 26 October;
+  confirm its options in the actual order before release.
+
+The latest 25 October saved board restores broad GND to Inner 2, next to the
+rear-mounted U3, and broad 36 V to Inner 1. Bottom GND remains local at U3.
+This resolves the preceding revision's adjacent-ground concern in saved
+geometry. The reciprocal trade-off is on the Top analogue side: some
+buffered/filter and `VMID` traces overlie Inner 1 `15VA` rather than GND,
+with their GND reference on Inner 2. The raw input traces by J4 remain over
+local Inner 1 GND. See [PR-006 and PR-007](PCB_LAYOUT.md#2-findings); retain
+the present layer order unless a targeted route or prototype noise check
+gives a reason to change the local analogue reference.
 
 The saved DipTrace PCB stack now uses 1 oz outer / 0.5 oz inner copper and
 0.2104/1.065/0.2104 mm dielectric spacing, matching JLCPCB's published
 1.6 mm `JLC04161H-7628` / no-impedance-requirement example at the nominal
 design level. This supersedes the earlier saved default with 1 oz on all
-four layers. The via-barrel resistance table in the
+four layers. The 25 October saved entries are 34.8 µm outer and 15.2 µm
+inner copper, so the inner entry now matches the published selected example.
+The via-barrel resistance table in the
 [power-amplifier review](POWER_AMPLIFIER.md#112-via-barrel-resistance-estimate-17-october-2026)
-uses JLCPCB's published finished-layer figures; confirm the actual ordered
-stack and copper weight before board release. If 1 oz inner planes are later
+uses JLCPCB's published finished-layer figures; the user selected JLCPCB
+standard four-layer, 1.6 mm construction for the first bare-board order.
+Confirm the actual order options before release. If 1 oz inner planes are later
 needed for current distribution, select them deliberately and update the
 DipTrace stack and resistance estimate. The current saved via land is 0.45 mm,
 and the [via-field review](POWER_AMPLIFIER.md#113-via-field-current-and-plane-review-17-october-2026)
@@ -1039,19 +1162,23 @@ identifies the `SPK+` and `36V` fields as the principal places to inspect
 plane clearance against useful via count.
 [JLCPCB layer stack](https://jlcpcb.com/impedance).
 
-**Optional Bottom GND extension, 18 October 2026:** The saved Inner 2 (layer 3)
-`GND` pour spans most of the 54 × 61 mm board; existing Bottom (layer 4)
-`GND` pours are local patches around U3 and other connections. Adding useful
-Bottom `GND` copper in the amplifier region is reasonable where it joins
-nearby ground pads and the Inner 2 plane through existing or deliberate,
-well-spaced GND vias. Do not copy the plane outline as a goal in itself: a
+**Bottom GND extension:** On 18 October the saved Inner 2 (layer 3) `GND`
+pour spanned most of the 54 × 61 mm amplifier area, while Bottom (layer 4)
+`GND` pours were local patches. In the 19 October saved layout a broad Bottom
+GND pour now fills much of that area, below the local 36 V and switching-node
+pours in priority. In that revision it joined nearby ground pads and the then
+Inner 2 GND plane through existing or deliberate, well-spaced GND vias. The
+immediately preceding revision carried broad 36 V on Inner 2; the current
+revision restores Inner 2 GND. Check its actual Bottom-to-Inner 2 stitching.
+Do not copy the plane outline as a goal in itself: a
 slotted or weakly connected outer fill offers little parallel conductance, and
 extra through-vias can perforate the 36 V plane. Keep the Bottom U3 PVDD and
 GND ceramic paths, switching-node/output copper and quiet input return
 geometry intact; avoid making a narrow Bottom GND bridge that offers amplifier
 switching or filter-capacitor return current a route through the analogue
 region. Remove isolated islands, then inspect filled copper, DRC and net
-connectivity. This is layout guidance, not an approved additional pour.
+connectivity. The fill is present in saved geometry but remains subject to
+finished connectivity and return-path checks.
 
 At 20 °C, copper sheet resistance `rho/t` is about 1.15 mΩ/square for a
 15 µm inner layer and 0.49 mΩ/square for a 35 µm outer layer. If both layers
@@ -1078,7 +1205,9 @@ Treat the following as fixed unless prototype evidence requires revision:
 - Mean Well FG/chassis is connected to PE.
 - IEC inlet PE connects by one short conductor to the dedicated M4 plate stud;
   a separate conductor runs from that stud to RSP terminal 3 `FG`.
-- Amplifier and buck receive separate 36 V feed/return branches from the Mean Well PSU.
+- The selected six-conductor harness provides three 36 V feed/return pairs
+  from the common Mean Well rails to J6; the current PCB joins them at entry
+  and branches to the buck locally. Verify physical pairing and termination.
 - Use one electrical `GND` net in the main-board schematic; control
   analogue, buck, and amplifier return currents through placement and copper.
 - TPA3251 uses a solid local power-ground plane.

@@ -9,12 +9,18 @@
 > for DipTrace schematic, PCB, component-library, or pattern-library data  
 > **Current approved action:** Treat `diptrace/main_board.dchxml` as the canonical
 > partial schematic; inspect it read-only for circuit questions
-> **Next gate:** Complete the schematic, then validate its electrical details and
-> the early PCB layout XML against the selected design
-> **Limitations:** The PCB XML has a scoped review of the current U3 supply and
-> output layout; it is not a qualified matched design. No live plug-in exchange has been inspected, and no
+> **Next gate:** Check the `rev0` fabrication ZIP in JLCPCB's rendered
+> upload preview and confirm the standard four-layer, 1.6 mm order options
+> **Limitations:** The `rev0` schematic is unchanged since the earlier
+> ACTIVE-indicator mapping check. The latest PCB has matching placed references,
+> values, update IDs and net names. The user reports zero DRC and connectivity
+> errors after the latest refill; the earlier ERC was zero. Reports were not
+> independently inspected. The prior replacement ZIP passed read-only layer,
+> drill and alignment checks; the `rev0` ZIP passed bounded format and hole-count checks;
+> the online CAM preview and order options have not yet been observed.
+> No live plug-in exchange has been inspected, and no
 > parser or plug-in has been qualified
-> **Last reviewed:** 2026-10-17
+> **Last reviewed:** 2026-10-27
 
 ## 1 Authority and retained resources
 
@@ -24,7 +30,7 @@ The canonical schematic XML now declares DipTrace version `5.3.5.1`. By the user
 schematic. It is a DipTrace schematic XML file with root type
 `DipTrace-Schematic`, version `5.3.5.1`, and units `inch`. There is presently no
 matching `.dch` file in `diptrace/`; do not require one as schematic authority.
-The committed `diptrace/main_board.dipxml` is the beginning of the PCB layout
+The saved `diptrace/main_board.dipxml` is the now-routed PCB layout
 associated with this schematic (user confirmation, 15 October 2026). A
 root-only check found `DipTrace-PCB`, version `5.3.5.1`, and units `mm`.
 Its U3-side placement, local routes, vias and filled copper were reviewed on
@@ -32,9 +38,15 @@ Its U3-side placement, local routes, vias and filled copper were reviewed on
 [power-amplifier authority](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026).
 An 18 October saved snapshot received a focused
 [Bottom copper-pour warning check](POWER_AMPLIFIER.md#116-bottom-copper-pour-priority-warning-18-october-2026).
-The rest of its contents and full schematic correspondence have not been
-reviewed, and no matching `.dip` file was present at that check. Validate the layout before
-treating it as a matched design. PDF, BOM, pick-and-place, Gerber X2, and drill
+The 19 October saved board received a focused
+[power-stage copper review](POWER_AMPLIFIER.md#117-power-stage-copper-review-19-october-2026).
+The 24 October saved board received a focused
+[U9 regulator thermal-copper checkpoint](POWER_AND_GROUNDING.md#12-12-v-and-15-v-linear-regulator-branches-reviewed-2026-10-13).
+The 25 October saved schematic and PCB received a read-only
+[whole-board layout review](PCB_LAYOUT.md), including pad/net comparison.
+That comparison establishes matched net assignments but not live copper
+connectivity, suitable land patterns, or fabrication readiness. No matching
+`.dip` file was present at the earlier check. PDF, BOM, pick-and-place, Gerber X2, and drill
 exports remain secondary evidence for their specific visual, assembly, or
 manufacturing purposes.
 
@@ -53,7 +65,7 @@ the pack. Do not guess an undocumented field or runtime behaviour.
 For DipTrace XML, first read the [Hub task dispatcher](../../Hub/tools/diptrace/README.md)
 and only its selected SDK pages. Then read this project's relevant design
 authority. For the current partial schematic, the needed dialect is schematic
-XML; the PCB dialect applies to the early layout XML, while the reusable-library
+XML; the PCB dialect applies to the routed layout XML, while the reusable-library
 dialects are for their respective future files. This routing keeps the large
 SDK out of routine electrical-design context.
 
@@ -66,7 +78,7 @@ For each design checkpoint:
 2. Record or compute a SHA-256 hash for every inspected input.
 3. Validate the XML root `Type`, `Version`, and `Units` before interpreting it.
 4. Parse locally and return a bounded, task-specific report rather than loading
-   the complete XML into conversational context.
+the complete XML into conversational context.
 5. Compare schematic and PCB component, footprint, pin/pad, and net identities
    before treating the two snapshots as a matched design state.
 6. Use PDFs when visual organisation or placement matters and manufacturing

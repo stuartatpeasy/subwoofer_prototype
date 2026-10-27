@@ -1,6 +1,6 @@
 # Power amplifier
 
-> **State — current amplifier authority; reviewed 2026-10-18.** Owns the
+> **State — current amplifier authority; reviewed 2026-10-26.** Owns the
 > TPA3251 stage and RESET topology. Two 36 V-powered TPS3762-Q1 supervisors
 > monitoring PVDD and `17V3` are selected. The dedicated 130 kΩ/7.5 kΩ,
 > 1% E24 buck SENSE divider is selected. The now-placed L78M12 12 V regulator
@@ -9,10 +9,17 @@
 > bypass capacitors are selected. Their 36 V biased performance remains a
 > model-based estimate. The current saved U3 output and supply copper has a
 > promising scoped layout review: C20/C26 now feed broad 36 V and GND planes,
-> while their solder-mask and mechanical clearances, finished connectivity and
-> switching behaviour remain open. The 18 October Bottom-layer same-priority
+> while their solder-mask and mechanical clearances and prototype switching
+> behaviour remain open. The 18 October Bottom-layer same-priority
 > copper-pour warning cleared after the output pours were reprioritised;
-> finished DRC and connectivity checks remain open.
+> the 19 October power-stage copper review provisionally supports standard
+> 35 µm outer / 15.2 µm inner copper for the 150 W into 4 Ω design point;
+> the user reports that final-board DRC and net-connectivity checks pass;
+> the reports were not independently inspected.
+> D4 is now a green `ACTIVE` indicator driven by U11's N-channel directly
+> from `AMP_nRESET`: lit when RESET is released and dark when it is asserted.
+> The former false RESET-indication issue SR-001 is closed in the saved design;
+> assembled brightness and polarity remain checks.
 > The two-position Mini-Fit Jr speaker-output pair is selected; placement and
 > finished harness routing remain open.
 
@@ -473,6 +480,83 @@ and `GND` pours at priority 0. This confirms the saved priority arrangement
 and the user's observed warning result; it does not establish a DRC pass or
 prove that every output and supply neck retained adequate copper.
 
+#### 1.1.7 Power-stage copper review, 19 October 2026
+
+**Saved evidence:** `diptrace/main_board.dipxml`, SHA-256
+`CB3261210CCF36BA2C1D5AD9CF3072E0B054400B01D0324119B4BC37FF434839`,
+`DipTrace-PCB` 5.3.5.1, millimetres, and the user's four same-scale screenshots
+with filled Top, Inner 1, Inner 2 and Bottom layers. This is a focused
+power-stage review, not a live DRC, connectivity result, Gerber inspection or
+assembled thermal measurement. The rest of the PCB remains in progress.
+
+The retained same-side U3 PVDD ceramics C21/C22/C24/C25 and short Bottom
+PVDD/GND paths still provide the closest commutation loops. C20/C26 feed a
+broad Inner 1 `36V` pour and Inner 2 `GND` pour through distributed vias. The
+new broad Bottom GND pour adds a parallel local return without an apparent
+severance of either inner pour in the screenshots. Each U3 switching output
+still uses six or eight Bottom-to-Top vias into a broad Top path to L1–L4.
+`SPK+` uses two 17-via transitions and a roughly 9.5 mm-wide Bottom trunk;
+`SPK-` remains on a broad Top pour with a roughly 4.5 mm-wide longitudinal
+section beside the SPK+ transition. The 0.4 mm Bottom `AMP_OUT` traces are
+bootstrap pickoffs, not the sole inductor-current paths. These geometric
+observations require confirmation against the final filled Gerbers if the
+pours change again.
+
+At 150 W into a resistive 4 Ω load, `sqrt(P/R) = 6.12 A RMS` in the speaker
+pair; ideal sharing gives `3.06 A RMS` per inductor. The selected 36 V source
+is rated 5.56 A continuously. Using copper resistivity
+`rho = 1.724e-8 ohm m` at 20 °C and `R = (rho/t)(length/width)`, JLCPCB's
+published 35 µm outer / 15.2 µm inner construction gives approximately
+0.493 / 1.134 mΩ per square. The following are deliberately conservative
+*strip illustrations*, not extraction of the actual non-uniform pours:
+
+| Path illustration | Assumed length × width | Current | R at 20 °C | Drop / loss |
+| --- | ---: | ---: | ---: | ---: |
+| Bottom `SPK+` trunk | 25 × 9.5 mm, 35 µm | all 6.12 A RMS | 1.30 mΩ | 7.9 mV / 49 mW |
+| Top `SPK-` corridor | 30 × 4.5 mm, 35 µm | all 6.12 A RMS | 3.28 mΩ | 20 mV / 123 mW |
+| Inner 1 `36V` feed scale check | 40 × 5 mm, 15.2 µm | all 5.56 A | 9.07 mΩ | 50 mV / 281 mW |
+
+The complete speaker current does not traverse either output illustration
+for its full assumed length: the two parallel branches join near J5. The
+actual 36 V pour is much broader over most of the route and divides current
+between C20/C26 and the local ceramics. The last row therefore checks the
+scale of a deliberately narrow hypothetical feed rather than the plane's
+measured resistance. Copper at 80 °C would raise these resistances by about
+23%; the illustrated losses would still be small and spread over broad copper.
+The current via fields also have low calculated barrel losses (§1.1.3).
+At the 600 kHz carrier, copper skin depth is about 85 µm, greater than either
+specified foil thickness, so the simple sheet-resistance estimate remains
+useful at the fundamental; faster edge harmonics and loop inductance need
+separate treatment.
+
+**Copper-weight judgement:** Standard 35 µm outer / 15.2 µm inner copper is
+the preferred starting construction for this approximately 150 W / 4 Ω,
+four-layer, plate-cooled board. The present visible widths do not show a
+resistive or Joule-heating reason to purchase heavier copper. TI nevertheless
+recommends 70 µm copper generally for the TPA3251 to improve output-power,
+thermal and EMI margin. That recommendation is relevant but is not an
+absolute minimum for this lower-power, four-layer implementation. Reopen the
+weight only if a final filled neck is materially narrower than the
+illustrations, the intended continuous load/current rises, or prototype
+temperature/rail/ringing evidence calls for it. JLCPCB also specifies a
+larger 0.16 mm minimum line/space for its 70 µm process, so an upgrade would
+need a design-rule check. The saved DipTrace stack still names 17.4 µm on
+each inner layer; JLCPCB's published `JLC04161H-7628` construction shows
+15.2 µm. Use the latter for conservative resistance estimates and reconcile
+the design stack with the actual order before fabrication. Via-barrel plating
+is a separate specification; changing layer copper weight does not by itself
+establish a thicker via barrel.
+
+| ID | Finding | State | Next check |
+| --- | --- | --- | --- |
+| PA-19-1 | The nearest bulk-capacitor via-to-pad copper gap is now about 0.225 mm at both C20 and C26, up from the earlier 0.125 mm geometry. | Confirmed in saved pad/via geometry; solder-mask result unverified | Inspect the final top mask and drill/Gerber outputs for solder wicking or an inadequate mask bridge. |
+| PA-19-2 | C26's 17 mm footprint/courtyard still reaches about 0.2 mm from the lower board edge; the earlier drawing inspection estimated at least 0.7 mm for the capacitor body itself. | Confirmed nominal geometry; physical fit unverified | Inspect the board outline, actual body envelope and mounting-hardware clearance with the final fabrication outputs under PR-010. Do not treat the courtyard line alone as a physical interference. |
+| PA-19-3 | The four Top switching-node pour outlines cover roughly 107–141 mm² each above the 36 V inner pour. They are functional current paths, and extra area could increase switching displacement current. | Geometry confirmed; EMI/ringing effect unverified | Avoid enlarging them for copper-weight reasons; use the planned prototype waveform/EMI checks if symptoms arise. |
+
+[TI TPA3251 data sheet, §§10.2.1.2.3 and 12](https://www.ti.com/lit/ds/symlink/tpa3251.pdf);
+[JLCPCB published four-layer stack-up](https://jlcpcb.com/impedance);
+[JLCPCB copper-weight and minimum-line guide](https://jlcpcb.com/help/article/jlcpcb-copper-weight).
+
 ### 1.2 Protection, fault response, and RESET control
 
 Use the TPA3251's internal undervoltage, overcurrent, short-circuit, and thermal
@@ -504,10 +588,14 @@ options against the finished output stage. The
 [TPA3251EVM guide](https://www.ti.com/lit/ug/slau751/slau751.pdf) lists
 24, 27, and 30 kΩ as progressively lower nominal CB3C thresholds.
 
-The former test-point-only indicator plan is superseded: the current partial
-schematic adds board-level diagnostic LEDs D2 (red, `FAULT`) and D3 (orange,
-`CLIP_OTW`) while retaining TP1/TP2. No front-panel indicator is required.
-Each active-low output drives the gate of a P-channel half of an onsemi
+The former test-point-only indicator plan is superseded: the current saved
+schematic and PCB have board-level diagnostic LEDs D2 (red, `FAULT`), D3
+(orange, `CLIP_OTW`) and D4 (green, `ACTIVE`). No front-panel indicator is
+required. The current board also has Top-side TP9/TP10/TP11 on
+`AMP_nRESET`/`AMP_nFAULT`/`AMP_nCLIP_OTW`, with local rail and ground pads;
+see the [current PCB review](PCB_LAYOUT.md#1-reviewed-design-state-and-scope).
+The LEDs do not themselves qualify short-pulse diagnostics.
+Each active-low FAULT and CLIP_OTW output drives the gate of a P-channel half of an onsemi
 `NTJD4105CT2G` complementary pair (U4/U10). Its source is on `AMP_DVDD`; its
 drain drives the paired N-channel gate and a 130 kΩ pull-down to GND. When the
 status pin falls, the P-channel turns on, raising the N-channel gate and
@@ -515,12 +603,22 @@ sinking LED current from `12VAMP` through a 1.5 kΩ resistor. Saved net and
 symbol numbering matches onsemi's S1/G1/D1 = 1/2/6 and S2/G2/D2 = 4/5/3;
 the selected six-pad pattern has 0.65 mm pitch. The chosen Kingbright LED
 symbols put anode on pad 1 and cathode on pad 2; confirm the actual package
-polarity mark and land geometry before assembly. The saved PCB XML inspected
-on 18 October does not yet contain U4/U10, R35–R38 or D2/D3, so this is
-schematic connectivity, not a matched PCB review.
+polarity mark and land geometry before assembly. The earlier 18 October PCB
+did not yet contain those indicators; the current saved PCB does.
+
+**26 October ACTIVE revision:** D4 is Kingbright green
+`APHCM2012CGCK-F01`. R40 connects `12VAMP` to its anode (pad 1); its cathode
+(pad 2) connects to U11's N-channel drain (pad 6). U11's N-channel source
+(pad 1) is at GND and gate (pad 2) is directly on `AMP_nRESET`. The unused
+P-channel's source, gate and drain (pads 4, 5 and 3) are all at GND. R39 has
+been removed. These nets and physical pad numbers agree in the saved
+schematic and PCB, and Top silkscreen reads `ACTIVE`. RESET released turns on
+the sink and lights D4; RESET asserted leaves it dark. `ACTIVE` reports RESET
+release, not proof of fault-free operation or amplifier output. Confirm the
+actual LED polarity mark, land dimensions and visible brightness on assembly.
 
 The earlier 1 kΩ/100 mW selection exceeded its continuous rating at a
-plausible high regulated rail, so the user selected 1.5 kΩ in R36/R37. The
+plausible high regulated rail, so the user selected 1.5 kΩ in R36/R37/R40. The
 placed part is TE `CRGCQ0603F1K5`, 0603, 1%, 100 mW; its manufacturer and
 Mouser part fields match the published identity. At a nominal 12 V rail and
 illustrative 2 V LED drop, each branch draws `(12 − 2) / 1.5 kΩ ≈ 6.67 mA`
@@ -537,21 +635,28 @@ above that temperature. The selection is reasonable if the local resistor
 ambient stays within the un-derated range; check the eventual hot local
 temperature if an indicator may remain continuously lit during a fault. The Kingbright
 parts' intensity specifications are given at 20 mA, so actual board-level
-visibility at 6–7 mA remains to be checked. The remaining placed 1 kΩ parts
-R2/R10 still have `Mfr part` and Mouser `SKU` fields without the final `0`:
-TE and Mouser identify them as `CRGCQ0603F1K0` and
-`279-CRGCQ0603F1K0`. Correct those procurement fields before ordering.
+visibility at 6–7 mA remains to be checked. The 26 October saved schematic
+and PCB agree on the corrected R2/R10 `Mfr part` `CRGCQ0603F1K0` and Mouser
+SKU `279-CRGCQ0603F1K0`. They also agree on Yageo `Mfr part`
+`RC0603FR-0710KL` and Mouser SKU `603-RC0603FR-0710KL` for all five 10 kΩ
+parts R19/R27/R30/R33/R34. The former purchasing-identity mismatches are
+closed; these metadata edits did not change their electrical values.
 The MOSFET ratings have ample voltage and current margin in the drawn circuit:
 N-channel `VDS` is at most approximately the 12 V rail versus 20 V rating;
 P-channel `VDS` and both `VGS` values remain within the roughly 3.3 V DVDD
 domain versus the P-channel's 8 V limits. Both channels' guaranteed
 `RDS(on)` points at 2.5 V gate drive are adequate for these small currents.
 
-When both outputs are low, the extra external steady load on DVDD is at most
-approximately `2 × 3.6 V / 130 kΩ = 0.055 mA` at nominal resistor values;
-the two built-in pull-ups can each draw up to `3.6 V / 20 kΩ = 0.180 mA`,
-giving approximately 0.415 mA total DVDD-sourced status-circuit current. In
-the high state there is no intentional steady LED-driver load, only leakage.
+Each of the D2/D3 asserted branches adds up to
+`3.6 V / 130 kΩ ≈ 0.028 mA` of external DVDD draw at nominal resistance.
+With both status outputs low, their pull-down load is about 0.055 mA; the
+two built-in pull-ups can each draw up to `3.6 V / 20 kΩ = 0.180 mA`, giving
+approximately 0.415 mA total DVDD-sourced status-circuit current. The new
+U11/D4 ACTIVE branch has no external static DVDD connection; the user's
+earlier risk acceptance of the additional RESET-branch DVDD load is no longer
+needed for this circuit. D4's approximately 6–7 mA LED current is sourced
+from `12VAMP` and adds roughly 35 mW to U9's pass loss at the nominal
+17.36 V input, subject to the actual LED voltage and load.
 The selected 130 kΩ value supersedes both the original 47 kΩ and the examined
 180 kΩ candidate. At the specified 25 °C P-channel off-leakage test value of
 1 µA, it would develop 0.13 V versus 0.18 V for 180 kΩ. The built-in
@@ -569,7 +674,7 @@ hot corner is not formally excluded by these data. The N-channel's specified
 46 pF maximum input capacitance at its 20 V test point gives an illustrative
 `130 kΩ × 46 pF ≈ 6 µs` discharge constant; actual capacitance and PCB
 coupling can differ. For diagnostic LEDs the selected value appears reasonable,
-subject to checking that both LEDs remain dark in the inactive state on the
+subject to checking that D2/D3 remain dark in the inactive state on the
 assembled board, including when warm.
 TI nevertheless says DVDD/AVDD are not external supplies, and gives no
 guaranteed external-load allowance. Treat this small draw as an explicit
@@ -579,10 +684,88 @@ current, which comes from `12VAMP`, with the DVDD load. Also, TI forces
 `FAULT` high while RESET is low; D2 therefore cannot show a supervisor-held
 reset or every protection event. D3 combines clipping and overtemperature
 warning, and brief assertions may be too short for the eye without a latch.
+
+**SR-001 — Medium, closed in saved schematic and PCB on 26 October:** The
+original P-channel RESET LED could light while RESET was released. The saved
+ACTIVE revision uses the N-channel connection described above, so a high
+`AMP_nRESET` lights D4 and a low one extinguishes it. R31/R34 remain
+30 kΩ/10 kΩ. At the 11.5 V rail, opposing 1% divider tolerances and a
+conservative 100 µA sinking RESET-pin leakage give approximately 2.086 V at
+the released node, above the TPA3251's 1.9 V high threshold. LED brightness
+at that extreme is not guaranteed by the transistor's 2.5 V on-resistance
+specification; check it on the prototype. Physical LED polarity and changed-
+board DRC/connectivity remain separate fabrication checks.
+
+**Superseded 25 October analysis of the former RESET-indicator circuit:**
+The D4 RESET indicator has a distinct off-state margin problem. R31/R34 form
+a 30 kΩ/10 kΩ divider from `12VAMP`, so released `AMP_nRESET` is nominally
+`12 V × 10/(30+10) = 3.0 V`. U11's P-channel source is the internal DVDD,
+nominally 3.3 V; its gate therefore sits 0.3 V below its source even when
+RESET is high. At 11.5 V on the regulated 12 V rail, 1% resistor extremes
+and 3.6 V DVDD, the high RESET node can be
+`11.5 × 9.9/(30.3+9.9) = 2.832 V`, making `VGS ≈ −0.768 V`. The onsemi
+P-channel threshold spans −0.45 to −1.0 V at the specified 250 µA test
+current. This divider-only estimate omits the TPA3251 RESET input's specified
+leakage, so it is not a guaranteed lower bound on the high level. The MOSFET
+threshold test does not establish the drain current at this particular
+gate bias, but partial turn-on and a false RESET indication while the TPA3251
+remains enabled are plausible. The RESET input's specified 1.9 V high
+threshold is satisfied; the concern is D4's diagnostic truth, not amplifier
+reset itself. Check the released LED state across practical rail and thermal
+corners, or alter the indicator bias/topology before fabrication if a reliable
+RESET indication is required. Do not interpret the user's acceptance of the
+small DVDD load as acceptance of a misleading indication.
+
+**Provisional resolution options, 25 October:** The smallest circuit change
+that retains a useful LED is to make D4 indicate `RESET RELEASED`: connect
+the existing U11 N-channel gate directly to `AMP_nRESET`, retain its
+grounded source and LED-sinking drain, and isolate the unused P-channel
+(tie its gate to its source). R39 is then unnecessary because R34 already
+pulls `AMP_nRESET` low. Keep R31/R34 unchanged until the full RESET-node
+corner is checked: TI specifies up to 100 µA RESET input leakage, whose
+direction is not stated. With the present 30 kΩ/10 kΩ divider and the
+11.5 V low rail/1% resistor corner, 100 µA sinking leakage could reduce
+released RESET from 2.832 V by about
+`100 µA × (30.3 kΩ || 9.9 kΩ) = 0.746 V`, to 2.086 V. This remains above
+TI's 1.9 V logic-high threshold, though it is below the 2.5 V N-channel
+gate-drive point at which onsemi specifies on-resistance, so LED brightness
+at that extreme is not yet guaranteed. Raising the divider output by
+lowering R31 alone is not a complete cure: an unknown-sign leakage current
+can also raise the high node towards the 4.2 V RESET absolute maximum.
+The active-high option removes this indicator's DVDD load; it requires a
+silkscreen/truth-table change and schematic/PCB checks after rework.
+If the LED must mean `RESET ASSERTED`, use a separate first transistor
+driven by `AMP_nRESET` to invert it before the existing N-channel LED sink;
+derive that stage from `12VAMP` with a gate voltage within the selected
+device's rating and check power-up states. This costs parts and routing.
+Deleting D4 and relying on the existing RESET test pad was the least complex
+diagnostic option. These were proposals for the former circuit; the direct
+N-channel ACTIVE circuit above is now implemented.
+
+**R34 = 11 kΩ candidate, 25 October:** The user's BOM-common substitution
+would raise the nominal released RESET level to
+`12 V × 11/(30 + 11) = 3.220 V`. It improves the nominal P-channel
+`VGS` from about −0.30 to −0.08 V, but does not close SR-001. At the
+11.5 V rail, R31 high by 1%, R34 low by 1%, and DVDD at 3.6 V, RESET is
+`11.5 × 10.89/(30.3 + 10.89) = 3.040 V`, giving `VGS = −0.560 V` even
+without RESET input leakage. That overlaps the P-channel's −0.45 to −1.0 V
+threshold range at its specified 250 µA test; the threshold figure cannot
+guarantee an extinguished LED at smaller drain currents. If the specified
+100 µA RESET input leakage sinks current, the divider's approximately
+8.01 kΩ Thevenin resistance could lower RESET by another 0.801 V to
+2.239 V, making `VGS ≈ −1.361 V`. Conversely, leakage sourcing 100 µA at
+the 12.5 V rail and opposite 1% resistor extremes could raise RESET from
+3.403 V by `0.100 mA × 8.085 kΩ ≈ 0.809 V` to 4.212 V, marginally above
+the TPA3251 RESET pin's 4.2 V absolute maximum. The data sheet does not
+state the leakage direction, so these are conservative independent corners,
+not a prediction that either will occur in the prototype. Retain 11 kΩ as
+an evaluated candidate only; prefer a topology change if reliable indication
+is needed.
 [TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf);
 [NTJD4105C data sheet](https://www.onsemi.com/pdf/datasheet/ntjd4105c-d.pdf);
 [red LED](https://www.kingbrightusa.com/images/catalog/spec/aphcm2012surck-f01.pdf);
 [orange LED](https://www.kingbrightusa.com/images/catalog/spec/aphcm2012seck-f01.pdf);
+[green LED](https://www.kingbrightusa.com/images/catalog/spec/aphcm2012cgck-f01.pdf);
 [TE CRGCQ resistor](https://www.te.com/en/product-2-2176339-5.html);
 [ST L78M regulator](https://www.st.com/resource/en/datasheet/l78m.pdf).
 
@@ -813,7 +996,7 @@ Prototype validation required:
 
 ## 3 Output capacitors
 
-> **State:** Provisional capacitor selection, reviewed 2026-10-12. Owns the
+> **State:** First-prototype capacitor selection, reviewed 2026-10-26. Owns the
 > output-filter capacitor choice. The 10 µH inductors are locked in Section 2.
 > The canonical schematic now draws two TDK `B32701P4684K000` film capacitors,
 > one on each combined speaker-output side. Next gate: check response/damping,
@@ -915,8 +1098,8 @@ Sources: [TDK B3270*P data sheet](https://www.tdk-electronics.tdk.com/inf/20/20/
 
 ## 4 Zobel/output damping network
 
-**2026-10-12 output-small-capacitor rating review (no part change yet).** In
-the current schematic C19/C28 are 1 nF directly from the two post-inductor
+**2026-10-12 output-small-capacitor rating review (historical analysis;
+selection updated 2026-10-26).** C19/C28 are 1 nF directly from the two post-inductor
 speaker-output nodes to GND. C16/C31 are 10 nF in series with R20/R21
 (3.3 Ω) from those same nodes to GND. Each capacitor therefore sees its
 own output-to-ground voltage, not the full differential speaker voltage.
@@ -924,16 +1107,15 @@ In an ideal symmetrical 36 V PBTL stage delivering 144 W into 4 Ω, the
 differential 24 V RMS output corresponds to about 12 V RMS per side around
 an 18 V midpoint: roughly 1–35 V per node. Add switching ripple and any
 LC/output-wiring overshoot to that estimate; the actual peak is unverified.
-Thus the drawn 250 V ratings are not required by the nominal waveform.
-100 V ceramic parts are a reasonable provisional rating with substantial
+Thus the formerly drawn 250 V ratings were not required by the nominal waveform.
+100 V ceramic parts provide substantial
 nominal margin, subject to the final voltage waveform, dielectric/impedance,
 and capacitor and resistor temperature. A 50 V 10 nF X7R/3.3 Ω pair is used
 in TI's output-network guidance, but choosing 100 V here leaves more room
 for post-filter ringing. The TPA3251's 50 V output-pin absolute maximum
-does not itself bound overshoot at the post-inductor nodes. Retain the 250 V
-parts if they are convenient and their electrical performance and footprints
-are suitable; lowering the rating is a cost/availability choice, not an
-electrical requirement. The 1 nF parts are small high-frequency shunts:
+does not itself bound overshoot at the post-inductor nodes. The earlier option
+to retain 250 V parts was superseded by the saved 100 V selection. The 1 nF
+parts are small high-frequency shunts:
 at 600 kHz their ideal reactance is about 265 Ω versus 0.39 Ω for the
 680 nF film shunts. The 10 nF/3.3 Ω branch starts to become resistive near
 4.8 MHz, making its high-frequency damping and heating more important than
@@ -941,16 +1123,11 @@ the nominal voltage rating alone.
 [TPA3251 data sheet](https://www.ti.com/lit/ds/symlink/tpa3251.pdf);
 [TI output-network guidance](https://e2e.ti.com/support/audio-group/audio/f/audio-forum/492175/question-about-tpa3251d2-diodes-at-output).
 
-Reference resistor:
-
-- 3.3 Ω
-
-Requirements:
-
-- non-inductive
-- SMD preferred; allow through-hole with justified layout and plate clearance
-- approximately 1–2 W class
-- 1206/2010/2512 depending selected series
+**First-prototype saved selection, 26 October 2026:** C19/C28 use Würth
+`885012207116` 1 nF, 100 V; C16/C31 use Würth `885012207122` 10 nF,
+100 V. R20/R21 use Yageo `RC2512FK-7W3R3L` 3.3 Ω, 2.2 W, 2512.
+The nominal voltage argument supports trying these values; it does not
+establish the actual overshoot, high-frequency damping or heat dissipation.
 
 Prototype validation:
 
