@@ -404,15 +404,15 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="0" Type="File" KeepPins="N">
 <Filename>
-<Path>ECW-FD2W225J4.stp</Path>
-<Var>ECW-FD2W225J4.stp</Var>
+<Path>C:\Program Files\DipTrace\models3d\ECW-FD2W225J4.stp</Path>
+<Var>C:\Program Files\DipTrace\models3d\ECW-FD2W225J4.stp</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="0" />
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType1" Id="1" RefDes="C" Mounting="None" Width="5.60001" Height="3.50002" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType1" Id="1" RefDes="C" Mounting="None" Width="5.60002" Height="3.50002" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>CAP_2416</Name>
 <Value>82n 50V</Value>
 <Manufacturer>Panasonic Industry</Manufacturer>
@@ -562,7 +562,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType3" Id="3" RefDes="C" Mounting="Through" Width="19.61606" Height="17.00002" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType3" Id="3" RefDes="C" Mounting="Through" Width="19.61607" Height="17.00002" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>CAP_EEEFK0J682AM</Name>
 <Value>470u 63V</Value>
 <Manufacturer>Panasonic</Manufacturer>
@@ -836,8 +836,8 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>cap_0805.step</Path>
-<Var>cap_0805.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
@@ -996,15 +996,15 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>cap_0805.step</Path>
-<Var>cap_0805.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType8" Id="8" RefDes="C" Mounting="Through" Width="13.60002" Height="5.99999" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType8" Id="8" RefDes="C" Mounting="Through" Width="13.60002" Height="5.99998" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>CAP_B32701P4684K000</Name>
 <Value>680nF 450V PP</Value>
 <Manufacturer>TDK</Manufacturer>
@@ -1183,15 +1183,15 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>cap_0805.step</Path>
-<Var>cap_0805.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType10" Id="10" RefDes="C" Mounting="SMD" Width="4.39999" Height="1.8" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType10" Id="10" RefDes="C" Mounting="SMD" Width="4.40001" Height="1.80001" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>CAP_1206</Name>
 <Value>2u2 100V</Value>
 <Manufacturer>Wurth Elektronik</Manufacturer>
@@ -1266,8 +1266,8 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>C:\Program Files (x86)\DipTrace\models3d\cap_1206.wrl</Path>
-<Var>C:\Program Files (x86)\DipTrace\models3d\cap_1206.wrl</Var>
+<Path>C:\Program Files\DipTrace\models3d\_VRML\Cap SMD\cap_1206.wrl</Path>
+<Var>C:\Program Files\DipTrace\models3d\_VRML\Cap SMD\cap_1206.wrl</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
@@ -1331,15 +1331,15 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>cap_0805.step</Path>
-<Var>cap_0805.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType12" Id="12" RefDes="C" Mounting="SMD" Width="5.11998" Height="3.62001" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType12" Id="12" RefDes="C" Mounting="SMD" Width="5.11998" Height="3.62" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>CAP_3225_M</Name>
 <Name_Unique>CAP_3225_METRIC</Name_Unique>
 <Value>10u 50V</Value>
@@ -1574,8 +1574,8 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>cap_0805.step</Path>
-<Var>cap_0805.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
@@ -1639,15 +1639,15 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>cap_0805.step</Path>
-<Var>cap_0805.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Cap SMD\cap_0805.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType16" Id="16" RefDes="D" Mounting="SMD" Width="6.14995" Height="2.90007" Orientation="0" LockTypeChange="Y" Type="Lines" Float1="3.89999" Float2="7.62" Float3="0" Int1="1" Int2="2">
+<Pattern PatternStyle="PatType16" Id="16" RefDes="D" Mounting="SMD" Width="6.14995" Height="2.90008" Orientation="0" LockTypeChange="Y" Type="Lines" Float1="3.89999" Float2="7.62" Float3="0" Int1="1" Int2="2">
 <Name>DIO_SMA</Name>
 <Value>S1B</Value>
 <Manufacturer>Yageo</Manufacturer>
@@ -1685,7 +1685,7 @@
 </AddFields>
 <DefPad Style="PadT13" />
 <Pads>
-<Pad Id="1" Style="PadT13" DefStyle="Y" X="-1.52489" Y="-0.00003" Angle="0" Locked="N" Side="Top">
+<Pad Id="1" Style="PadT13" DefStyle="Y" X="-1.5249" Y="-0.00003" Angle="0" Locked="N" Side="Top">
 <Number>1</Number>
 <Note>K</Note>
 </Pad>
@@ -1709,22 +1709,22 @@
 </Shape>
 <Shape Id="3" Type="FillObround" Locked="N" Layer="Top Silk" AllLayers="N">
 <Points>
-<Point X="-3.07497" Y="0.29987" />
-<Point X="-2.47472" Y="-0.30018" />
+<Point X="-3.07498" Y="0.29987" />
+<Point X="-2.47473" Y="-0.30018" />
 </Points>
 </Shape>
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>sma.step</Path>
-<Var>sma.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Diodes\sma.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Diodes\sma.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.05001" />
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType17" Id="17" RefDes="D" Mounting="SMD" Width="3.74999" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType17" Id="17" RefDes="D" Mounting="SMD" Width="3.75" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>LED_0805</Name>
 <Value>RED</Value>
 <Manufacturer>Kingbright</Manufacturer>
@@ -1819,7 +1819,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType18" Id="18" RefDes="D" Mounting="SMD" Width="3.74999" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType18" Id="18" RefDes="D" Mounting="SMD" Width="3.75" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>LED_0805</Name>
 <Value>ORANGE</Value>
 <Manufacturer>Kingbright</Manufacturer>
@@ -1914,7 +1914,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType19" Id="19" RefDes="D" Mounting="SMD" Width="3.74999" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType19" Id="19" RefDes="D" Mounting="SMD" Width="3.75" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>LED_0805</Name>
 <Value>GREEN</Value>
 <Manufacturer>Kingbright</Manufacturer>
@@ -2015,7 +2015,7 @@
 <Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
 <DefPad Style="PadT14" />
 <Holes>
-<Hole Id="1" Locked="N" X="0" Y="0" Diam="7" HoleDiam="3" />
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="7" HoleDiam="3.4" />
 </Holes>
 <Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Rotate X="0" Y="0" Z="0" />
@@ -2029,7 +2029,7 @@
 <Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
 <DefPad Style="PadT14" />
 <Holes>
-<Hole Id="1" Locked="N" X="0" Y="0" Diam="6" HoleDiam="2.5" />
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="6" HoleDiam="2.9" />
 </Holes>
 <Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Rotate X="0" Y="0" Z="0" />
@@ -2037,7 +2037,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType22" Id="22" RefDes="J" Mounting="Through" Width="10.39998" Height="9.22481" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType22" Id="22" RefDes="J" Mounting="Through" Width="10.39998" Height="9.22482" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>CONN_JST_S3BPHSM4TBLFSN</Name>
 <Manufacturer>JST (JAPAN SOLDERLESS TERMINALS)</Manufacturer>
 <Datasheet>https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/75c02eb1799788a6b14d7c521ee36df4.pdf</Datasheet>
@@ -2176,7 +2176,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType23" Id="23" RefDes="J" Mounting="Through" Width="12.39998" Height="9.81079" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType23" Id="23" RefDes="J" Mounting="Through" Width="12.39998" Height="9.81078" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>S4B-PH-SM4-TB</Name>
 <Manufacturer>JST (JAPAN SOLDERLESS TERMINALS)</Manufacturer>
 <Datasheet>http://uk.rs-online.com/web/p/products/6881366</Datasheet>
@@ -2321,7 +2321,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType24" Id="24" RefDes="J" Mounting="Through" Width="6.79999" Height="9.59998" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType24" Id="24" RefDes="J" Mounting="Through" Width="6.79998" Height="9.59998" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>39-28-1023</Name>
 <Value>Molex 39-28-1023</Value>
 <Manufacturer>Molex</Manufacturer>
@@ -2633,8 +2633,8 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="-3.49601" IPC_YOff="2.55359" AutoHeight="0" AutoColor="0" Type="File" KeepPins="N">
 <Filename>
-<Path>39-28-1063.stp</Path>
-<Var>39-28-1063.stp</Var>
+<Path>C:\Program Files\DipTrace\models3d\39-28-1063.stp</Path>
+<Var>C:\Program Files\DipTrace\models3d\39-28-1063.stp</Var>
 </Filename>
 <Rotate X="90" Y="0" Z="-180" />
 <Offset X="4.19999" Y="-2.54" Z="-0.01001" />
@@ -2720,7 +2720,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType27" Id="27" RefDes="L" Mounting="None" Width="7.90001" Height="8.00001" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType27" Id="27" RefDes="L" Mounting="None" Width="7.90002" Height="8.00001" Orientation="0" LockTypeChange="N" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>SRN8040</Name>
 <Value>47u</Value>
 <Manufacturer>Bourns</Manufacturer>
@@ -2961,7 +2961,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType30" Id="30" RefDes="R" Mounting="SMD" Width="3.20002" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType30" Id="30" RefDes="R" Mounting="SMD" Width="3.20003" Height="1.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>RES_0805</Name>
 <Value>13K7</Value>
 <Manufacturer>Yageo</Manufacturer>
@@ -3010,8 +3010,8 @@
 </Pads>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>C:\Program Files (x86)\DipTrace\models3d\res_0805.wrl</Path>
-<Var>C:\Program Files (x86)\DipTrace\models3d\res_0805.wrl</Var>
+<Path>C:\Program Files\DipTrace\models3d\_VRML\Resistors\res_0805.wrl</Path>
+<Var>C:\Program Files\DipTrace\models3d\_VRML\Resistors\res_0805.wrl</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
@@ -3489,7 +3489,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType36" Id="36" RefDes="R" Mounting="SMD" Width="7.39999" Height="3.19999" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Pattern PatternStyle="PatType36" Id="36" RefDes="R" Mounting="SMD" Width="7.39999" Height="3.2" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
 <Name>RES_2512</Name>
 <Value>3R3 2.2W</Value>
 <Manufacturer>Yageo</Manufacturer>
@@ -3552,8 +3552,8 @@
 </Shapes>
 <Model3D Mirror="N" NoSearch="N" Units="mm" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
 <Filename>
-<Path>res_2512.step</Path>
-<Var>res_2512.step</Var>
+<Path>C:\Program Files\DipTrace\models3d\Resistors\res_2512.step</Path>
+<Var>C:\Program Files\DipTrace\models3d\Resistors\res_2512.step</Var>
 </Filename>
 <Rotate X="0" Y="0" Z="0" />
 <Offset X="0" Y="0" Z="-0.01001" />
@@ -3675,7 +3675,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType39" Id="39" RefDes="U" Mounting="SMD" Width="9.32998" Height="7.33999" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType39" Id="39" RefDes="U" Mounting="SMD" Width="9.32998" Height="7.34" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>SOIC14P127_863X600X175L62X42N</Name>
 <Name_Description>SOIC (Small Outline Integrated Circuit), 14 pin, 1.27mm pitch, 8.63mm body length x 6mm lead span x 1.75mm height, 0.625mm lead length x 0.425mm lead width, nominal density</Name_Description>
 <Name_Unique>GAINSIL_SOP(SOIC)14</Name_Unique>
@@ -3820,7 +3820,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType40" Id="40" RefDes="U" Mounting="SMD" Width="14.5" Height="14.52001" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType40" Id="40" RefDes="U" Mounting="SMD" Width="14.5" Height="14.52002" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>SOP44P63_1400X810X120L62X22N</Name>
 <Name_Description>SOP (Small Outline Package), 44 pin, 0.635mm pitch, 14mm body length x 8.1mm lead span x 1.2mm height, 0.625mm lead length x 0.22mm lead width, nominal density</Name_Description>
 <Value>TPA3251D2DDVR</Value>
@@ -4116,7 +4116,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType41" Id="41" RefDes="U" Mounting="SMD" Width="2.76001" Height="3.31998" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType41" Id="41" RefDes="U" Mounting="SMD" Width="2.76002" Height="3.31998" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>SOT23-6P65_210X110L36X22N</Name>
 <Name_Description>SOT23, 6 pin, 0.65mm pitch, 2.1mm lead span x 1.1mm height, 0.36mm lead length x 0.225mm lead width, nominal density</Name_Description>
 <Name_Unique>ANALOG_KS-6</Name_Unique>
@@ -4236,7 +4236,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType42" Id="42" RefDes="U" Mounting="SMD" Width="5.53999" Height="7.31998" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType42" Id="42" RefDes="U" Mounting="SMD" Width="5.54" Height="7.31998" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>SOIC9P127_488X600X172L76X41T330X243N</Name>
 <Name_Description>SOIC (Small Outline Integrated Circuit), 8 pin, 1.27mm pitch, 4.889mm body length x 6.007mm lead span x 1.727mm height, 0.762mm lead length x 0.419mm lead width, 3.302mm thermal tab pad length x 2.438mm thermal tab pad width, nominal density</Name_Description>
 <Name_Unique>QORVO_SOIC-8</Name_Unique>
@@ -4371,7 +4371,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType43" Id="43" RefDes="U" Mounting="SMD" Width="7.10001" Height="8.22" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType43" Id="43" RefDes="U" Mounting="SMD" Width="7.10002" Height="8.22" Orientation="0" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>SOT223-4P230_700X180L100X70N</Name>
 <Name_Description>SOT223, 4 pin, 2.3mm pitch, 7mm lead span x 1.8mm height, 1mm lead length x 0.7mm lead width, nominal density</Name_Description>
 <Name_Unique>RENESAS_PRSP0004ZB-A</Name_Unique>
@@ -4604,7 +4604,7 @@
 <Zoom X="1" Y="1" Z="1" />
 </Model3D>
 </Pattern>
-<Pattern PatternStyle="PatType45" Id="45" RefDes="U" Mounting="SMD" Width="7.39999" Height="11.85001" Orientation="90" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
+<Pattern PatternStyle="PatType45" Id="45" RefDes="U" Mounting="SMD" Width="7.39998" Height="11.85002" Orientation="90" LockTypeChange="Y" Type="IPC-7351" Float1="0" Float2="0" Float3="0" Int1="1" Int2="0">
 <Name>DPAK3P228_972X240L100X77T510X540M_AP1</Name>
 <Name_Description>DPAK, 3 pin, 2.28mm pitch, 9.725mm lead span x 2.4mm height, 1mm lead length x 0.77mm lead width, 5.1mm thermal tab pad length x 5.4mm thermal tab pad width, most density, alternative pad 1</Name_Description>
 <Name_Unique>ST_DPAK</Name_Unique>
@@ -18257,9 +18257,9 @@
 <SheetSettings>
 <DisplayTitles>N</DisplayTitles>
 <DisplaySheet>N</DisplaySheet>
-<Xpos>28.57073</Xpos>
-<Ypos>44.74732</Ypos>
-<Scale>576</Scale>
+<Xpos>33.54858</Xpos>
+<Ypos>50.38389</Ypos>
+<Scale>633.6</Scale>
 <SheetWidth>297.002</SheetWidth>
 <SheetHeight>210.007</SheetHeight>
 <LeftMargin>19.99</LeftMargin>
