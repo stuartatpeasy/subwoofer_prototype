@@ -4,9 +4,11 @@
 > distribution, and grounding. The RSP-200-36, inlet, fuse, M4 protective-earth
 > topology, and unfiltered-inlet decision remain locked. The auxiliary supply
 > selection is final for the first prototype: the canonical schematic uses an
-> MP4541GN 36 V-to-approximately-17.36 V buck feeding an
+> MP4581GN-Z 36 V-to-approximately-17.36 V buck feeding an
 > `XC6701DF02FR-G` 15 V analogue LDO and an `L78M12ABDT-TR` 12 V amplifier
-> regulator. The 25 October PCB snapshot
+> regulator. MP4581GN-Z replaces the previously selected MP4541GN because of
+> sourcing; the published pin, package and circuit comparison is in Section 1.1.
+> The 25 October PCB snapshot
 > carries the intended DPAK pad nets and a four-layer local GND spreader;
 > its land dimensions, loaded thermal result, and physical return paths still
 > need checking as described in Section 1 and the
@@ -17,14 +19,17 @@
 > its PSU wiring topology, harness implementation, and footprint fit remain
 > open checks.
 > Do not redesign the selected auxiliary supply unless measurements of a built
-> prototype justify a change. This selection is not a claim that the rails,
+> prototype justify a change. The U5 sourcing substitution is now selected as
+> documented in Section 1.1. This selection is not a claim that the rails,
 > thermal behaviour, or final fabrication outputs have been qualified. The two-
 > supervisor RESET topology senses 36 V and `17V3` with a selected dedicated
 > divider; its headroom claim depends on the loaded buck trough and 12 V LDO
 > input in [Power amplifier](POWER_AMPLIFIER.md).
 > Earlier STH0548S15/LM2937 selections and their calculations below are
 > superseded context, not current implementation instructions. Last reviewed:
-> 2026-10-26.
+> 2026-11-02. The RSP-200-36 remains selected after review of the revised
+> sustained-music thermal duty; the 200 W rating is headroom for clean peaks,
+> not a claim of continuous music consumption at 200 W.
 
 ## 1 Power architecture
 
@@ -35,7 +40,7 @@
   |
   +--> TPA3251 PVDD
   |
-  +--> MP4541GN ~17.36 V buck (selected for first prototype)
+  +--> MP4581GN-Z ~17.36 V buck (selected for first prototype)
          |
          +--> L78M12ABDT-TR 12 V regulator (selected)
          |      |
@@ -57,17 +62,52 @@ Requirements:
   heat, and RESET sequencing on the built prototype, including the lowest
   `17V3` trough against the buck supervisor's release threshold
 
-**26 October 2026 selection decision.** The MP4541GN and its present
+**26 October selection, updated 2 November 2026.** The present
 feedback/output-capacitor implementation, U6 15 V analogue branch, and U9
-12 V amplifier branch are final for this prototype. Earlier candidate and
-alternative-setpoint calculations below are retained as dated analysis; they
-do not authorise a pre-build redesign. The fourth buck-output capacitor
+12 V amplifier branch remain final for this prototype. U5 is now MP4581GN-Z
+instead of MP4541GN, with the same circuit and footprint as assessed below.
+Earlier candidate and alternative-setpoint calculations remain dated analysis;
+they do not authorise a pre-build redesign.
+The fourth buck-output capacitor
 position discussed below is an option only if prototype measurements show a
 material need. Correctness checks for the selected PCB footprints, pin nets,
 local copper and manufacturing files still apply; loaded voltage and thermal
 performance must be measured after assembly.
 
-### 1.1 MP4541GN candidate schematic review (2026-10-06; references refreshed 2026-10-12)
+### 1.1 U5 buck selection and schematic review
+
+**2 November 2026 U5 sourcing substitution — MP4581GN-Z selected for rev0.**
+The [MP4581GN data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4581GN/document_id/6903/)
+and [MP4541GN data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4541GN/document_id/9688/)
+specify the same SOIC-8EP package and recommended land pattern, with the same
+EN/VCC/FREQ/FB/BST/SW/GND/VIN assignment to pins 1–8. Both specify a 1.000 V
+nominal FB reference (0.985–1.015 V over the stated temperature range), the
+same frequency-setting equation, 0.8 A output capability, 0.8 A nominal
+low-side valley current limit, and the same nominal switch resistances.
+MP4581GN raises the specified VIN ceiling from 80 V to 100 V; both encompass
+the project's 36 V rail. Thus the existing 180 kΩ/11 kΩ divider still gives
+approximately 17.36 V, and the 47 kΩ FREQ resistor still gives approximately
+674 kHz in the manufacturers' nominal equations. With the unchanged 47 µH
+inductor, the ideal 36 V-input ripple estimate remains approximately 0.28 A
+peak-to-peak. These are data-sheet comparisons and calculations, not a measured
+qualification of MP4581GN on this board. The saved schematic and PCB now
+identify MP4581GN-Z, Mouser `946-MP4581GN-Z`; the retained Gerber archive
+predates this component-identity update, but the reviewed PCB copper and
+footprint geometry are unchanged. Record the actual suffix and lot in the
+build record, and measure
+the loaded `17V3` trough, ripple, start-up, RESET behaviour and U5 temperature
+on the prototype. The existing U5 footprint/ground-pad and return-path review
+remains necessary for either device. Neither data sheet explicitly assigns an
+electrical net to the centre exposed pad. MPS [confirms GND for the MP4541
+pad](https://forum.monolithicpower.com/t/mp4541-exposed-pad-connection/2823/3);
+the MP4581 ground-pad connection follows from the matching package and
+manufacturer layout but is an inference until MPS confirms it. MPS states
+that [MP4581GN-P and -Z differ
+only in reel size](https://www.monolithicpower.com/en/mp4581.html).
+[DigiKey UK MP4581GN-P](https://www.digikey.co.uk/en/products/detail/monolithic-power-systems-inc/MP4581GN-P/18090062)
+and [Mouser UK MP4581GN-Z](https://www.mouser.co.uk/en/ProductDetail/Monolithic-Power-Systems-MPS/MP4581GN-Z?qs=CiayqK2gdcKlsoD07PwRgg%3D%3D)
+listed small-quantity stock in the 2 November search; availability and price
+are temporary procurement snapshots and need checking at checkout.
 
 The canonical partial schematic uses `R24 = 180 kΩ` and `R28 = 11 kΩ` at FB,
 giving a nominal `1 V × (1 + 180/11) ≈ 17.36 V` output. `R26 = 47 kΩ` sets
@@ -79,7 +119,7 @@ plausible for the auxiliary load, subject to its completed load budget.
 
 **2026-10-13 setpoint review — 18 V remains a candidate, not a schematic
 change.** Changing only R28 from 11 kΩ to 10.6 kΩ with R24 = 180 kΩ would
-give `1 V × (1 + 180/10.6) ≈ 17.98 V` nominal. With the MP4541's
+give `1 V × (1 + 180/10.6) ≈ 17.98 V` nominal. With the shared
 0.985 V minimum feedback reference and opposed 1% divider tolerances, the
 calculated lowest static output would rise from about 16.78 V to 17.38 V,
 before loaded ripple, transient sag, feed drop or return offset. The maximum
@@ -145,12 +185,13 @@ still has only C42–C44. Populate the fourth only if loaded ripple, start-up or
 meaningful load transients show a material need. The output net remains named
 `17V3`. The 12 V LDO is sourced from this rail; at the previous 120 mA
 amplifier-rail allocation its pass loss is approximately
-`(17.36 V - 12 V) × 0.12 A ≈ 0.64 W`, before ground-current loss. The MP4541
+`(17.36 V - 12 V) × 0.12 A ≈ 0.64 W`, before ground-current loss. The MP4581
 may enter pulse-skip operation at light load, so assess rail ripple and
 analogue noise at the actual idle and operating loads. These are design
 checks, not claims of measured faults.
 
-Manufacturer sources: [MP4541GN data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4541GN/document_id/9688/),
+Manufacturer sources: [MP4581GN data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4581GN/document_id/6903/),
+[earlier MP4541GN data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4541GN/document_id/9688/),
 [MPS exposed-pad guidance](https://forum.monolithicpower.com/t/mp4541-exposed-pad-connection/2823/3),
 [SRN8040 data sheet](https://www.bourns.com/docs/product-datasheets/srn8040.pdf),
 and [Samsung capacitor identity](https://product.samsungsem.com/mlcc/CL32A106KBJNNN.do).
@@ -360,16 +401,43 @@ Use the Mean Well `RSP-200-36`. Manufacturer data current at the review date:
 | setup / rise time | 1500 ms / 50 ms at 230 V AC/full load | amplifier mute/enable design must tolerate this |
 | hold-up time | 8 ms typical at full load | do not assume ride-through beyond this |
 
-The 200.16 W rating is adequate for the 140–150 W amplifier target. As a
-conservative illustration, 150 W audio output at 90% amplifier efficiency
-requires
+The 200.16 W rating is adequate for the 140–150 W **bounded clean-output**
+target. As a conservative peak-level sizing illustration, 150 W audio output
+at 90% amplifier efficiency requires
 
 ```text
 150 W / 0.90 = 167 W DC
 ```
 
 before auxiliary loads, leaving approximately 33 W within the PSU's continuous
-rating. This is a sizing check, not a measured amplifier-efficiency result.
+rating. This is a rating/headroom check, not a requirement to reproduce 150 W
+audio continuously or a measured amplifier-efficiency result. The
+[thermal authority](THERMAL.md#1-cooling-requirement) treats 5–10 W as a
+provisional sustained IC heat screen and 15–18 W as a bounded full-output
+stress case. A 200 W nameplate does not imply 200 W consumption or 22 W PSU
+heating during ordinary music; the published 90% efficiency is at rated load,
+and part-load efficiency in this cabinet is unmeasured.
+
+**31 October 2026 downsizing check — retain RSP-200-36.** Mean Well's smaller
+`LRS-150-36` is a genuine 36 V, 4.3 A, **154.8 W continuous** option in a
+159 × 97 × 30 mm case. Its 89% typical efficiency is specified at rated load;
+it has a 115/230 V AC selection switch rather than the selected RSP's universal
+input and active PFC. The current 150 W audio example needs about 167 W DC
+before auxiliary loads, exceeding the LRS's rating by about 12 W. The LRS
+overload range is protection behaviour, not a rated-duration burst allowance.
+[Mean Well LRS-150 data sheet](https://www.meanwell.com/Upload/PDF/LRS-150/LRS-150-SPEC.PDF).
+
+The board's two nominal 470 µF PVDD capacitors hold only
+`0.5 × 940 µF × (36² − 32.4²) ≈ 0.116 J` between 36 V and 10% rail droop.
+At a 12–20 W supply deficit that is only about 6–10 ms, before capacitance
+tolerance, other loads or the PSU's own unspecified transient response. This
+does not show that the LRS would fail on music, but it does not establish the
+desired clean 140–150 W bass passage either. Its smaller footprint could be
+valuable if the final chamber cannot accommodate the RSP; a substitution
+would then need a bounded burst/rail-sag check, a new mounting and mains
+review, and a fit check. The present RSP is not materially overspecified for
+the retained peak-output target. Its warm enclosed operation and the final
+air path remain prototype gates.
 
 Protection behaviour:
 
@@ -429,8 +497,8 @@ Locked inlet assembly:
 
 - Schurter `DD11.0111.1111`, Mouser `693-DD11.0111.1111`;
 - IEC C14 Class-I inlet, 10 A at 250 V AC;
-- front screw mounting, suitable for panels up to 8 mm thick and therefore for
-  the 6 mm aluminium plate;
+- front screw mounting, suitable for panels up to 8 mm thick; the current
+  1.6 mm insulating FR-4 control panel fits this nominal thickness limit;
 - non-illuminated two-pole line switch;
 - one-pole 5 × 20 mm fuseholder in line only;
 - 4.8 × 0.8 mm quick-connect terminals;
@@ -462,7 +530,7 @@ Wire the inlet as follows:
 ```text
 C14 L --> T2A fuse --> switch pole 1 --> RSP terminal 1 AC/L
 C14 N -------------> switch pole 2 --> RSP terminal 2 AC/N
-C14 PE --> short PE lead --> dedicated M4 plate stud
+C14 PE --> dedicated PE lead --> dedicated M4 plate stud
                                   |
                                   +--> aluminium plate
                                   |
@@ -502,7 +570,8 @@ Primary component sources:
   terminal strip. These guards must prevent finger, tool, loose-wire, and
   displaced-component contact with mains terminals.
 - Removing the rear plate is a service operation: disconnect the IEC lead
-  first. No mains terminals are user-accessible in normal use.
+  first, then protect the ply-mounted inlet wiring from being pulled as the
+  plate moves. No mains terminals are user-accessible in normal use.
 - Provide enough PE slack that protective earth is the last conductor stressed
   if the rear assembly is displaced.
 
@@ -520,7 +589,10 @@ Primary component sources:
 
 ## 3 Protective earth and chassis
 
-The exposed aluminium rear panel is protective-earthed.
+The exposed inset aluminium heat-spreader plate is protective-earthed. The
+IEC inlet mounts in the FR-4 control panel attached to the structural rear plywood; its PE terminal
+still bonds directly to the dedicated plate stud and continues separately to
+the PSU frame-ground terminal.
 
 ```text
 IEC PE
@@ -536,9 +608,10 @@ Mean Well terminal 3 FG / chassis
 
 Requirements:
 
-- Use a dedicated M4 machine screw through the 6 mm plate, with its threaded
-  end inboard. M3 is electrically adequate but is not the selected mechanical
-  baseline.
+- Use the dedicated M4 countersunk post in the 8 mm plate, with its threaded
+  end inboard and the head flush or slightly recessed under the heatsink.
+  The [mechanical design](MECHANICAL.md#21-aluminium-heatsink-plate) owns
+  the bore geometry and the Ø20 mm rear finish exclusion.
 - The stud must be mechanically independent of PCB, PSU, and plate mounting.
 - On the bare inner plate face use a serrated/internal-tooth washer and first
   nut to clamp the stud permanently. Fit the two PE ring terminals above that
@@ -552,6 +625,11 @@ Requirements:
   green/yellow conductors.
 - Mark the stud with the protective-earth symbol.
 - Do not rely on heatsink contact, PCB screws, RCA connectors, or PSU mounting screws as the sole protective-earth path.
+- With the two external sinks fitted through grease and anodised surfaces,
+  provide a local bare-metal contact under a suitable bonding fastener for
+  each accessible sink and verify continuity to the earthed plate. Protect
+  around the contact against corrosion. The TIM is not an electrical bond;
+  retain the independent M4 plate stud as the PE path.
 
 ---
 
@@ -971,14 +1049,23 @@ Requirements:
 
 ## 8 RCA inputs
 
-Use chassis-isolated RCA connectors.
+Mount the RCA connectors in the insulating FR-4 control panel and keep their shells
+electrically isolated from the aluminium plate.
+The selected REAN NYS367 sockets have conductive metal bodies, nuts and
+solder lugs; the insulating panel and any supplied insulating washers do not
+remove the need to keep those parts clear of plate edges, metal trim and PE
+hardware. Their [panel fit](MECHANICAL.md#31-current-fr-4-control-panel-11-november-2026) and
+assembled isolation remain to be checked.
 
 Requirements:
 
 - RCA shells must not make direct electrical contact with the aluminium rear plate.
-- Use insulated RCA sockets/bushes.
+- Use insulated sockets/bushes wherever metal mounting hardware could bridge
+  to the plate or another chassis part.
 - Signal ground returns to the analogue domain only.
 - Do not use the RCA mounting hardware as a chassis-ground connection.
+- On the assembled sockets, check that each shell is connected to its intended
+  signal return and isolated from the aluminium plate and PE hardware.
 
 Reason:
 

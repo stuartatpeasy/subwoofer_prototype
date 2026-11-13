@@ -1,11 +1,13 @@
 # Analogue front end
 
-> **State — current design basis; coupling and filter parts checked 2026-10-13.** Owns the analogue
+> **State — current design basis; coupling and filter parts checked 2026-10-13,
+> controls identified and polarity switch selected 2026-10-31.** Owns the analogue
 > signal path and its part choices; power rails and ground partitioning belong
 > to [power and grounding](POWER_AND_GROUNDING.md). Read when changing the
 > schematic front end. Current conclusions: retain R32 outside the VMID buffer
 > feedback loop; the selected Panasonic PPS-film capacitors have the intended
-> land pattern, and the J2 wiper-bias and J3 receiving networks are drawn.
+> land pattern, the REAN RCA sockets and E-Switch polarity toggle are selected,
+> and the J2 wiper-bias and J3 receiving networks are drawn.
 > Next gate: verify external pot/switch wiring and panel-cable stability, then
 > validate the assembled filter and noise. The XML is partial, and assembled
 > performance has not been measured. Current signal-path reference labels were
@@ -273,6 +275,35 @@ Requirements:
 - no dependence on source-specific output impedance
 - input protection should not add significant capacitance/distortion
 
+### 2.1 Selected RCA panel sockets, 31 October 2026
+
+The selected pair is REAN `NYS367-9` (white, left; Mouser `568-NYS367-9`)
+and `NYS367-2` (red, right; Mouser `568-NYS367-2`), one of each. These are
+female panel-mount RCA jacks with gold-plated contacts and solder terminations.
+They suit the 2 V RMS nominal / 3 V RMS clean-input target and the nominal
+47 kΩ input load. The manufacturer's present product page specifies at most
+10 mΩ contact resistance: even if all of that appeared in series with a
+47 kΩ input, its fractional voltage loss would be below `0.01/47000`, or
+0.000022%. Gold contacts are appropriate for a low-current audio input. This
+is an electrical suitability assessment, not an assembled noise or contact
+test. [REAN product and variant data](https://www.rean-connectors.com/en/product/nys367-1),
+[Mouser red listing](https://www.mouser.co.uk/en/ProductDetail/REAN/NYS367-2?qs=R5cXQUTKuHXVYwwK%252BeCprA%3D%3D),
+[Mouser white listing](https://www.mouser.co.uk/ProductDetail/REAN/NYS367-9?qs=R5cXQUTKuHUWHl83AlgzLg%3D%3D).
+
+**Mechanical condition:** the manufacturer's NYS367 sheet specifies a
+maximum 3 mm panel thickness. The current 1.6 mm insulating FR-4 control
+panel meets that nominal limit; the earlier unrelieved 12 mm plywood wall
+did not. The panel support, supplied insulating washers, nut engagement and
+wiring clearance remain to be checked
+on purchased parts before cutting. This is an implementation check, not a
+remaining part-selection gate. The [mechanical authority](MECHANICAL.md#3-rear-panel-structure)
+owns the land; [power and grounding](POWER_AND_GROUNDING.md#8-rca-inputs)
+owns isolation from the aluminium plate and PE.
+[SketchUp layout models](3d_models/Rear-signal-parts.md) record the drawing
+dimensions and inferred features for both sockets.
+[Manufacturer-branded NYS367 technical sheet](https://static.rapidonline.com/pdf/12-8301_v1.pdf),
+[REAN variant drawing](https://www.rean-connectors.com/media/15033/download/NYS367-9.pdf?v=1).
+
 ## 3 Stereo-to-mono summer
 
 Topology:
@@ -318,8 +349,8 @@ Locked topology:
 - `Q ≈ 0.707`
 - 12 dB/octave
 - continuously variable
-- Bourns `PDB182-K420K-203B` 20 kΩ dual-gang linear pot, provisionally
-  accepted subject to the mechanical and thermal conditions below
+- selected `rev0` part: Bourns `PDB182-K420K-203B` 20 kΩ dual-gang linear pot;
+  the user confirmed retention of its PC-pin terminals on 31 October 2026
 - target range approximately 40–100 Hz
 - unity-gain filter stage
 
@@ -390,13 +421,10 @@ clockwise. Equivalently, 67.4 Hz corresponds to one-third of the pot's full
 resistance remaining above its minimum-resistance end, not to one-third clockwise
 travel from the counter-clockwise stop.
 
-The part has PC pins and should be supported by its threaded panel bushing and
-wired to the main board in the present arrangement. The relaxed through-hole
-rule also permits direct PCB mounting if the finished panel/board geometry
-supports the body without stressing the pins. Keep the wiring short if used
-and away from Class-D switching nodes. The manufacturer's +50 °C
-maximum operating temperature applies at the pot body and must be confirmed by
-the thermal/mechanical layout.
+The current part has PC pins and mounts by its threaded bushing in the 1.6 mm
+FR-4 control panel, with a supported harness to the main board. Keep the
+wiring short and clear of Class-D switching nodes. The manufacturer's +50 °C
+maximum applies at the pot body, which still needs a finished-chamber check.
 
 For a temperature-induced fractional change `x` in both pot gangs' resistance
 at a fixed shaft position, with the PCB resistors and capacitors unchanged,
@@ -441,19 +469,85 @@ TODO:
   data sheet specifies ±20% total resistance but no gang-tracking tolerance
 - confirm the pot-body temperature remains at or below +50 °C
 
+### 4.1 Solder-lug alternatives and resistance scaling, 31 October 2026
+
+The user accepted the present 20 kΩ `PDB182-K420K-203B` PC-pin terminals
+on 31 October 2026. The following comparison records why changing resistance
+would also affect the filter; a resistance change is possible **only with two gangs that vary
+together approximately linearly**. The current `rev0` schematic, PCB and
+fabrication archive retain 13.7 kΩ arms and three 82 nF capacitors; the
+alternatives below are not a selected circuit revision.
+
+For matched gangs, write each arm as `R = R_FIXED + R_POT`. With
+`C_FEEDBACK = 2 C_SHUNT`, the unity-gain Sallen-Key equations above reduce to
+`f0 = 1/(2π R sqrt(C_FEEDBACK C_SHUNT))` and `Q = 0.707`.
+Increasing either arm resistance lowers the frequency. Changing the pot
+resistance alone therefore changes the *low* endpoint while the high endpoint
+stays set by `R_FIXED`. To retain a 100:40 = 2.5:1 span,
+`(R_FIXED + R_POT_MAX)/R_FIXED ≈ 2.5`, so
+`R_FIXED ≈ R_POT_MAX/1.5`. Keeping the high endpoint near 100 Hz then requires
+capacitors to scale inversely with that fixed resistance, while preserving
+their 2:1 ratio to retain Butterworth Q.
+
+| Hypothetical matched linear dual pot | Current 13.7 kΩ / 82 nF / 164 nF gives | Approximate retune for 40–100 Hz | Retuned nominal endpoints |
+| --- | --- | --- | --- |
+| 10 kΩ | 57.9–100.2 Hz | 6.8 kΩ in each fixed arm; 164 nF shunt, 328 nF feedback | 40.8–100.9 Hz |
+| 20 kΩ current | 40.7–100.2 Hz | 13.7 kΩ; 82 nF shunt, 164 nF feedback | unchanged |
+| 50 kΩ | 21.5–100.2 Hz | 34.0 kΩ in each fixed arm; 33 nF shunt, 66 nF feedback | 40.6–100.3 Hz |
+
+The 10 kΩ retune could use `2 × 82 nF` in the shunt and `4 × 82 nF` in
+feedback, versus the present three footprints total. The 50 kΩ retune needs
+smaller capacitors; Panasonic lists 33 nF 50 V PPS in a different package from
+the placed 82 nF part. Neither retune is a drop-in component swap on the
+released board. Matching the gangs remains important: the general equation
+above shows that unequal arms reduce Q below 0.707 as well as moving f0.
+[Panasonic ECHU(X) catalogue](https://industrial.panasonic.com/cdbs/www-data/pdf/RDI0000/ABD0000C173.pdf).
+
+A genuine matched-linear 50 kΩ pot could instead be shunted across each
+variable gang with about 33.3 kΩ: `50 kΩ || 33.3 kΩ ≈ 20 kΩ` at its maximum.
+This nominally preserves the present endpoints and capacitors, but compresses
+the frequency scale: halfway through rotation the filter would be about 49 Hz,
+versus about 58 Hz for the current 20 kΩ linear control. It needs two matched
+external resistors and still requires gang and wiring checks. This is an
+exploratory harness option, not a replacement decision.
+
+The two Mouser numbers raised by the user,
+[10 kΩ `652-PDB182-GTRB2-103`](https://www.mouser.co.uk/en/ProductDetail/Bourns/PDB182-GTRB2-103MN)
+and [50 kΩ `652-PDB182-GTRB2-503`](https://www.mouser.jp/en/ProductDetail/Bourns/PDB182-GTRB2-503MN),
+resolve to manufacturer variants ending **`MN`**. Bourns calls the GTRB2 a
+blend/balance guitar control with a centre detent: its M gang changes over the
+first half of rotation and then stays constant, while its N gang stays constant
+over the first half and changes over the second. They are **not matched linear
+dual gangs**, despite the catalogue's generic `Linear` attribute. In the
+present wiper-to-end rheostat wiring, one filter arm moves in each half-turn;
+the response would rise towards the centre and fall again, with Q varying.
+For illustration with unchanged 13.7 kΩ/82 nF/164 nF parts, the 50 kΩ MN
+option gives approximately `f0 = 46.5 Hz, Q = 0.54` at either end and
+`f0 = 100.2 Hz, Q = 0.707` at centre. Do not substitute either GTRB2 part for
+the current control. [Bourns GTRB datasheet](https://www.bourns.com/docs/product-datasheets/pdb182-gtrb.pdf),
+[Bourns blend/balance application note](https://www.bourns.com/docs/technical-documents/technical-library/sensors-controls/application-notes/Bourns_PDB182_Blend-Balance_Guitar_Pots_AppNote.pdf).
+
 ## 5 Level control
 
 - mono
 - post-LPF
-- initial value: 10 kΩ logarithmic pot
+- selected part: Bourns `PDB181-E420K-103A2`, 10 kΩ single-gang audio
+  taper, rear-facing solder lugs; the 1.6 mm FR-4 panel provides a thin land
 - connected between LPF output and VMID
 - wiper feeds differential-driver stage
 
 In the current schematic J2 pin 1 is the U2.1 filter output, pin 3 is VMID,
 and pin 2 is the pot wiper. The wiper feeds only U2.4's high-impedance
 non-inverting input; R11 takes its signal from U2.4's output. The
-previous 10 kΩ load on the pot wiper has therefore been removed. The exact
-level-pot part and panel-terminal mapping remain to be selected and checked.
+previous 10 kΩ load on the pot wiper has therefore been removed. The user
+identified `PDB181-E420K-103A2` on 31 October 2026. Its Bourns PDB18 drawing
+gives a 17 mm body, M7 × 0.75 bushing with only 6.5 mm exposed length,
+20 mm shaft projection and rear-facing solder lugs. The [3D layout
+models](../../Hub/3d_models/electronics/PDB18-family/README.md) record the nominal envelope. The
+J2-to-terminal mapping, clockwise level direction and assembled pot-body
+temperature still require checking. The bushing needs a thinner mounting
+section; the current 1.6 mm FR-4 panel supplies it. [Mechanical design](MECHANICAL.md)
+owns that arrangement.
 
 If the off-board wiper or its lead opens, `R6 = 1 MΩ` from `DIFF_IN` to
 VMID biases the driver input towards minimum output. With an intact nominal
@@ -468,7 +562,7 @@ the present 1 MΩ bias resistor, loading is small: at the electrical midpoint
 of a nominal 10 kΩ track, a 1% uniform track-resistance change alters the
 output fraction by approximately 0.0000124, or 0.0025% of the half-level
 output. This is an illustrative circuit sensitivity, not a bound on the
-unselected pot's temperature-dependent taper or contact behaviour.
+selected pot's temperature-dependent taper or contact behaviour.
 
 ## 6 Polarity control
 
@@ -505,6 +599,79 @@ pin 2 carries U2.3's inverted driver output through R12. Pin 3 returns through
 C11/R16 to `INPUT_A`, and pin 4 through C15/R17 to `INPUT_B`; C14/C18 provide
 the local shunts. The external switch and harness must still provide and verify
 the intended 0°/180° mapping.
+
+### 6.1 Dailywell polarity-switch candidate, 31 October 2026
+
+Mouser `118-1MD1T2B3M1QES` is Dailywell `1MD1T2B3M1QES`, a maintained
+two-position DPDT panel toggle with six solder lugs. The manufacturer's 1M
+series drawing identifies `1MD1` as ON–ON, `T2` as the short actuator, `B3`
+as a 7.10 mm threaded 1/4-40 UNS bushing, `M1` as solder lugs and `Q` as
+silver-plated contacts/terminals. The 1M series is rated −40 to +85 °C.
+This was the first **functional candidate, not a selected switch**; the
+gold-contact E-Switch in §6.2 has since been selected.
+[Dailywell 1M series datasheet](https://datasheet.lcsc.com/lcsc/2304140030_Dailywell-1M31T1B1M1QES-5_C545198.pdf),
+[Mouser listing](https://www.mouser.co.uk/ProductDetail/Dailywell/1MD1T2B3M1QES).
+
+The published contact table gives common terminals 2 and 5. One position
+closes 2–3 and 5–6; the other closes 2–1 and 5–4. A proposed four-wire
+cross-over harness connects J3 pin 3 (`INPUT_A` return) to 2, pin 4
+(`INPUT_B` return) to 5, J3 pin 1 (`VPLUS`) to both 3 and 4, and J3 pin 2
+(`VMINUS`) to both 1 and 6. The first switch position then passes the legs
+straight; the second swaps them. These are schematic terminal numbers, not
+an established front-panel lever direction: check continuity and label the
+actual part after mounting.
+
+The switch is before the two 2.2 µF input coupling capacitors, so its contacts
+sit at approximately 7.5 V common-mode potential but carry essentially no
+steady DC current.
+At a representative 1.2 V RMS signal per leg and nominal 24 kΩ amplifier
+input, the audio current is only about `1.2/24000 ≈ 50 µA RMS`. The specified
+initial 10 mΩ contact resistance would have negligible signal loss; the
+question is whether silver contacts remain consistently conductive at such
+low current after storage and use. Dailywell specifies `Q` for power contacts
+and recommends gold for precision, low-level circuits because it resists
+oxidation. No minimum reliable load or low-current contact-life guarantee was
+found for this silver variant. A gold-contact ON–ON DPDT with solder lugs is
+preferable for a repeatable build; this candidate could be tried in a
+prototype if the contact behaviour is checked in the assembled signal path.
+[Dailywell contact-material guidance](https://www.dailywell.com.tw/en/faq/Dailywell-FAQ-02.html).
+
+The 7.10 mm bushing cannot clamp the full 12 mm rear plywood. A local recess
+must leave enough exposed thread for the supplied nut and lockwasher, with
+wood strength and rear lug/harness clearance checked before drilling. The
+[mechanical authority](MECHANICAL.md#3-rear-panel-structure) owns that fit.
+
+### 6.2 Selected E-Switch gold-contact switch, 31 October 2026
+
+Mouser `612-100-F1112` resolves to E-Switch `100DP1T1B1M1REH`. The
+manufacturer's 100-series code and drawing specify maintained `DP1` DPDT
+ON–ON action, `T1` standard actuator, `B1` 8.89 mm threaded 1/4-40 UNS
+bushing, `M1` solder lugs, `R` gold contacts, `E` epoxy terminal seal, and
+`H` mounting hardware. The gold-contact rating is **0.4 VA maximum at
+20 V maximum** (AC or DC); the operating temperature range is −40 to +85 °C.
+This is the **selected polarity switch**. FR-4 panel fit and a continuity check
+on the purchased part remain implementation checks, not selection gates.
+[E-Switch 100-series datasheet](https://www.e-switch.com/wp-content/uploads/2024/05/100-1.pdf),
+[Mouser listing](https://www.mouser.com/ProductDetail/E-Switch/100DP1T1B1M1REH).
+
+The `DP1` terminal map is the same as the Dailywell switch above: commons
+2 and 5; one position closes 2–3/5–6 and the other 2–1/5–4. The four-wire
+J3 cross-over harness and two local jumpers described in §6.1 therefore
+apply without a circuit or PCB change. The switch still sits at about 7.5 V
+common-mode potential with no steady DC contact current. At the illustrative
+1.2 V RMS per-leg signal and 24 kΩ load, about 50 µA RMS is **60 µVA** of
+signal power per leg, far below the 0.4 VA contact limit; the highest
+illustrative instantaneous leg potential is roughly `7.5 + 1.2√2 ≈ 9.2 V`,
+below 20 V. Gold contacts are better suited to this dry signal circuit than
+the previous silver-contact candidate, though neither part's listing proves
+the finished harness or contact behaviour.
+
+The 8.89 mm bushing is longer than the Dailywell candidate's 7.10 mm, and
+the current 1.6 mm FR-4 panel provides a thin mounting land. Check the actual supplied
+hardware, thread engagement, keyway, lever access and rear solder-lug
+clearance before cutting. [Mechanical design](MECHANICAL.md#3-rear-panel-structure)
+owns the mounting arrangement. The [SketchUp switch model](3d_models/Rear-signal-parts.md)
+is a layout reference for that work.
 
 ## 7 Differential driver
 

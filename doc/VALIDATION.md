@@ -1,6 +1,6 @@
 # Prototype validation
 
-> **State — current prototype checks; reviewed 2026-10-26.** Owns practical
+> **State — current prototype checks; reviewed 2026-11-01.** Owns practical
 > build verification. The auxiliary buck, 15 V regulator and L78M12 12 V
 > regulator are selected for the first prototype but not yet measured;
 > the two-supervisor RESET topology and dedicated buck divider are selected;
@@ -52,7 +52,8 @@ additional protection and does not replace the PE inspection and bond test.
 - clipping level into 4 Ω
 - output noise
 - PWM residual
-- selected MP4541GN `17V3` output regulation, minimum loaded trough, ripple,
+- selected MP4581GN-Z U5 `17V3` output
+  regulation, minimum loaded trough, ripple,
   load-step response, and switching spectrum at representative reset, idle,
   and driven auxiliary loads, including
   any interaction products with the TPA3251's nominal 600 kHz switching
@@ -102,22 +103,34 @@ additional protection and does not replace the PE inspection and bond test.
 ## 3 Thermal
 
 - TPA3251 temperature
-- aluminium plate temperature
+- aluminium plate temperature at the IC land and hottest externally
+  accessible point; measure both external 557-140AB sink bases/fins with the
+  intended rear-wall clearance and finished upper outlet
 - output-inductor temperatures
 - Zobel resistor temperature
 - auxiliary-regulator temperatures
-- local air temperature at the lower intake, PSU intake, and upper exhaust
-- unobstructed bottom-to-top flow with the finished grilles, feet/plinth,
-  guards, covers, and wiring installed
-- the defined continuous thermal test at 35 °C room ambient, within all
-  component limits and the RSP-200-36 ambient-temperature/derating limit
+- local air temperature at the bottom inlet, PSU intake, and upper rear outlet
+- unobstructed flow from the bottom-panel electronics inlet to the
+  upper-rear outlet with the finished hole fields, legs, guards, covers,
+  and wiring installed on the intended carpet
+- loaded underside-to-carpet clearance and level support at all four
+  legs, with unobstructed driver and inlet paths
+- a temperature-stabilised test using representative sustained music and a
+  deliberately bass-heavy programme at the intended maximum use level;
+  record room and local air, output level, IC/plate/control temperatures and
+  PSU load against component limits and the RSP-200-36 derating curve at the
+  35 °C rated room-ambient condition
+- a separate bounded clean-output check near the 140–150 W target, with rail
+  sag, PSU hiccup, IC warning and relevant component temperatures observed;
+  do not hold 150 W continuously merely to reach thermal equilibrium, and
+  keep the driver's excursion and temperature within its own limits
 - a 40 °C room-ambient assessment that records remaining margin or required
   derating without treating continuous full-power operation as a requirement
 
 ## 4 Acoustic
 
 - before assembly, reconcile measured/CAD internal dimensions and every solid
-  intrusion to demonstrate `20.0 L` geometric net front-chamber air volume;
+  intrusion to demonstrate `20.0 L` geometric net acoustic-chamber air volume;
   record wadding separately rather than crediting it as geometric volume
 - verify the partition perimeter and driver-cable feed-through are airtight;
   investigate any impedance or low-frequency response evidence of a leak

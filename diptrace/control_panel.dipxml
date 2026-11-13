@@ -1,0 +1,565 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Source Type="DipTrace-PCB" Version="5.3.5.1" Units="mm">
+<Library Type="DipTrace-ComponentLibrary" Version="5.3.5.1" Units="mm">
+<Library Type="DipTrace-PatternLibrary" Version="5.3.5.1" Units="mm">
+<PadStyles>
+<PadStyle Name="PadT0" Type="Through" HoleType="Round" Hole="0.1667">
+<MainStack Shape="Ellipse" Width="-0.3333" Height="-0.3333" XOff="0" YOff="0" />
+</PadStyle>
+</PadStyles>
+<Patterns>
+<Pattern PatternStyle="PatType0" Id="0" RefDes="Hole" Mounting="Through" Width="3.5" Height="3.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Name>MtHole</Name>
+<Category Index="0" />
+<Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
+<DefPad Style="PadT0" />
+<Holes>
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="3.5" HoleDiam="3.5" />
+</Holes>
+<Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
+<Rotate X="0" Y="0" Z="0" />
+<Offset X="0" Y="0" Z="0" />
+<Zoom X="1" Y="1" Z="1" />
+</Model3D>
+</Pattern>
+<Pattern PatternStyle="PatType1" Id="1" RefDes="Hole" Mounting="Through" Width="4.5" Height="4.5" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Name>MtHole</Name>
+<Category Index="0" />
+<Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
+<DefPad Style="PadT0" />
+<Holes>
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="4.5" HoleDiam="4.5" />
+</Holes>
+<Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
+<Rotate X="0" Y="0" Z="0" />
+<Offset X="0" Y="0" Z="0" />
+<Zoom X="1" Y="1" Z="1" />
+</Model3D>
+</Pattern>
+<Pattern PatternStyle="PatType2" Id="2" RefDes="Hole" Mounting="Through" Width="7" Height="7" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Name>MtHole</Name>
+<Category Index="0" />
+<Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
+<DefPad Style="PadT0" />
+<Holes>
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="7" HoleDiam="7" />
+</Holes>
+<Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
+<Rotate X="0" Y="0" Z="0" />
+<Offset X="0" Y="0" Z="0" />
+<Zoom X="1" Y="1" Z="1" />
+</Model3D>
+</Pattern>
+<Pattern PatternStyle="PatType3" Id="3" RefDes="Hole" Mounting="Through" Width="8" Height="8" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Name>MtHole</Name>
+<Category Index="0" />
+<Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
+<DefPad Style="PadT0" />
+<Holes>
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="8" HoleDiam="8" />
+</Holes>
+<Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
+<Rotate X="0" Y="0" Z="0" />
+<Offset X="0" Y="0" Z="0" />
+<Zoom X="1" Y="1" Z="1" />
+</Model3D>
+</Pattern>
+<Pattern PatternStyle="PatType4" Id="4" RefDes="Hole" Mounting="Through" Width="9" Height="9" Orientation="0" LockTypeChange="Y" Type="Free" Float1="0" Float2="0" Float3="0" Int1="0" Int2="0">
+<Name>MtHole</Name>
+<Category Index="0" />
+<Origin X="0" Y="0" Cross="Y" Circle="Y" Common="Hide" Courtyard="Show" />
+<DefPad Style="PadT0" />
+<Holes>
+<Hole Id="1" Locked="N" X="0" Y="0" Diam="9" HoleDiam="9" />
+</Holes>
+<Model3D Mirror="N" NoSearch="N" Units="Wings" IPC_XOff="0" IPC_YOff="0" AutoHeight="0" AutoColor="4934475" Type="File" KeepPins="N">
+<Rotate X="0" Y="0" Z="0" />
+<Offset X="0" Y="0" Z="0" />
+<Zoom X="1" Y="1" Z="1" />
+</Model3D>
+</Pattern>
+</Patterns>
+</Library>
+<Components />
+</Library>
+<Board>
+<BoardOutline Locked="Y">
+<Points>
+<Point X="65" Y="6.35" Arc="N" />
+<Point X="65" Y="130.65" Arc="N" />
+<Point X="64.9457" Y="131.4788" Arc="N" />
+<Point X="64.7836" Y="132.2935" Arc="N" />
+<Point X="64.5166" Y="133.0801" Arc="N" />
+<Point X="64.1493" Y="133.825" Arc="N" />
+<Point X="63.6878" Y="134.5156" Arc="N" />
+<Point X="63.1401" Y="135.1401" Arc="N" />
+<Point X="62.5156" Y="135.6878" Arc="N" />
+<Point X="61.825" Y="136.1493" Arc="N" />
+<Point X="61.08" Y="136.5166" Arc="N" />
+<Point X="60.2935" Y="136.7836" Arc="N" />
+<Point X="59.4788" Y="136.9457" Arc="N" />
+<Point X="58.65" Y="137" Arc="N" />
+<Point X="6.35" Y="137" Arc="N" />
+<Point X="5.5212" Y="136.9457" Arc="N" />
+<Point X="4.7065" Y="136.7836" Arc="N" />
+<Point X="3.92" Y="136.5166" Arc="N" />
+<Point X="3.175" Y="136.1493" Arc="N" />
+<Point X="2.4844" Y="135.6878" Arc="N" />
+<Point X="1.8599" Y="135.1401" Arc="N" />
+<Point X="1.3122" Y="134.5156" Arc="N" />
+<Point X="0.8508" Y="133.825" Arc="N" />
+<Point X="0.4834" Y="133.0801" Arc="N" />
+<Point X="0.2164" Y="132.2935" Arc="N" />
+<Point X="0.0543" Y="131.4788" Arc="N" />
+<Point X="0" Y="130.65" Arc="N" />
+<Point X="0" Y="6.35" Arc="N" />
+<Point X="0.0543" Y="5.5212" Arc="N" />
+<Point X="0.2164" Y="4.7065" Arc="N" />
+<Point X="0.4834" Y="3.92" Arc="N" />
+<Point X="0.8508" Y="3.175" Arc="N" />
+<Point X="1.3122" Y="2.4844" Arc="N" />
+<Point X="1.8599" Y="1.8599" Arc="N" />
+<Point X="2.4844" Y="1.3122" Arc="N" />
+<Point X="3.175" Y="0.8507" Arc="N" />
+<Point X="3.92" Y="0.4834" Arc="N" />
+<Point X="4.7065" Y="0.2164" Arc="N" />
+<Point X="5.5212" Y="0.0543" Arc="N" />
+<Point X="6.35" Y="0" Arc="N" />
+<Point X="58.65" Y="0" Arc="N" />
+<Point X="59.4788" Y="0.0543" Arc="N" />
+<Point X="60.2935" Y="0.2164" Arc="N" />
+<Point X="61.08" Y="0.4834" Arc="N" />
+<Point X="61.825" Y="0.8507" Arc="N" />
+<Point X="62.5156" Y="1.3122" Arc="N" />
+<Point X="63.1401" Y="1.8599" Arc="N" />
+<Point X="63.6878" Y="2.4844" Arc="N" />
+<Point X="64.1493" Y="3.175" Arc="N" />
+<Point X="64.5166" Y="3.92" Arc="N" />
+<Point X="64.7836" Y="4.7065" Arc="N" />
+<Point X="64.9457" Y="5.5212" Arc="N" />
+</Points>
+</BoardOutline>
+<Panel Type="V-Scoring" Columns="1" Rows="1" ColumnSpacing="2.4" RowSpacing="2.4" PanelizeSingle="N" RailShow="N" RailLeft="0" RailRight="0" RailTop="0" RailBottom="0" LeftGap="2.4" RightGap="2.4" TopGap="2.4" BottomGap="2.4" TabWidth="4.5" TabRadius="1.2" TabStep="75" HoleDiam="0.8" HoleStep="1.2" HoleInset="0.01" HoleKeepout="1" TabsDone="N" CombinedRadius="1.2" KeepMaterial="N" BorderTabs="0" />
+<SheetSettings>
+<DisplayTitles>N</DisplayTitles>
+<DisplaySheet>N</DisplaySheet>
+<Xpos>52.7698</Xpos>
+<Ypos>98.0304</Ypos>
+<Scale>531.4683</Scale>
+<SheetWidth>297.002</SheetWidth>
+<SheetHeight>210.007</SheetHeight>
+<LeftMargin>19.99</LeftMargin>
+<TopMargin>5.004</TopMargin>
+<RightMargin>5.004</RightMargin>
+<BottomMargin>5.004</BottomMargin>
+<BorderZones>
+<Visible>N</Visible>
+<HorzZones>4</HorzZones>
+<VertZones>4</VertZones>
+<Standard>0</Standard>
+<FontName>Arial</FontName>
+<FontSize>10</FontSize>
+<FontLineWidth>-2</FontLineWidth>
+<Border>N</Border>
+<HorzBorderSize>5.004</HorzBorderSize>
+<VertBorderSize>5.004</VertBorderSize>
+</BorderZones>
+</SheetSettings>
+<Settings>
+<Markings>
+<CompRotate>N</CompRotate>
+<FontVector>N</FontVector>
+<FontName>Arial</FontName>
+<FontSize>5</FontSize>
+<FontSizeFloat>5</FontSizeFloat>
+<FontWidth>-2</FontWidth>
+<FontScale>1</FontScale>
+<RefDesGlobal SilkShow="Show" SilkAlign="Auto" AssyShow="Common" AssyAlign="Auto" />
+<NameGlobal SilkShow="Common" SilkAlign="Auto" AssyShow="Common" AssyAlign="Auto" />
+<ValueGlobal SilkShow="Common" SilkAlign="Auto" AssyShow="Common" AssyAlign="Auto" />
+<PatternGlobal SilkShow="Common" SilkAlign="Auto" AssyShow="Common" AssyAlign="Auto" />
+<ManufacturerGlobal SilkShow="Common" SilkAlign="Auto" AssyShow="Common" AssyAlign="Auto" />
+<DatasheetGlobal SilkShow="Common" SilkAlign="Auto" AssyShow="Common" AssyAlign="Auto" />
+<AddFieldsGlobal />
+</Markings>
+<Grid>
+<Visible>Y</Visible>
+<Snap>Y</Snap>
+<Size>0.1</Size>
+<YSize>1.27</YSize>
+<YIdentical>Y</YIdentical>
+</Grid>
+<Origin>
+<Visible>Y</Visible>
+<AxisColor>16711680</AxisColor>
+<X>0</X>
+<Y>0</Y>
+</Origin>
+<Assembly>
+<Pads>N</Pads>
+<Silk>N</Silk>
+<CompBorders>N</CompBorders>
+<BoardOutline>N</BoardOutline>
+</Assembly>
+<LayerDisplayMode>Contrast</LayerDisplayMode>
+<EditInactiveLayer>N</EditInactiveLayer>
+<LineWidth>
+<Silk>0.25</Silk>
+<Table>0.25</Table>
+<Titles>0.25</Titles>
+<BoardOutline>0.15</BoardOutline>
+<Assembly>0.12</Assembly>
+<CompOutline>0.05</CompOutline>
+<Courtyard>0.05</Courtyard>
+</LineWidth>
+<Routing>
+<Router>Shape</Router>
+<TraceWidth>0.2</TraceWidth>
+<TraceClearance>0.125</TraceClearance>
+<BoardClearance>0.75</BoardClearance>
+<ViaSize>0.45</ViaSize>
+<ViaHole>0.2</ViaHole>
+<FanoutLength>0.3387</FanoutLength>
+</Routing>
+<StackLength>N</StackLength>
+<SignalDelayLength>N</SignalDelayLength>
+<SolderMaskSwell>0.05</SolderMaskSwell>
+<PasteMaskShrink>0.05</PasteMaskShrink>
+<ShowCompFiducials>Y</ShowCompFiducials>
+<LayerPanel TopAssy="Y" TopMask="Y" TopPaste="N" BotAssy="Y" BotMask="N" BotPaste="N" TopTerminals="N" BotTerminals="N" TopCourtyard="N" BotCourtyard="N" TopOutline="N" BotOutline="N" TopDimensions="Y" BotDimensions="Y" />
+<RelatedSchem>
+<Path/>
+<Var/>
+</RelatedSchem>
+<SchemNetClasses>N</SchemNetClasses>
+<TopComponentLock>N</TopComponentLock>
+<BottomComponentLock>N</BottomComponentLock>
+<LockNetStructure>N</LockNetStructure>
+<FlipTextAuto>Y</FlipTextAuto>
+<JumperLayer>Silk</JumperLayer>
+<ProjectDir>C:\Users\swallace\Projects\Subwoofer prototype\diptrace</ProjectDir>
+</Settings>
+<ProjectLibs Sorted="N" />
+<CopperLayers>
+<Lay Id="0" Type="Signal" PlanePad="By Pads" PlaneRing="0.2" Color="11206655">
+<Name>Top</Name>
+</Lay>
+<Lay Id="1" Type="Signal" PlanePad="By Pads" PlaneRing="0.2" Color="11206655">
+<Name>Bottom</Name>
+</Lay>
+</CopperLayers>
+<LayerStackName>1.6 mm mechanical FR-4 panel</LayerStackName>
+<LayerStackItems>
+<LayerStackItem Lay="0">
+<Material Type="Conductor" VariableThickness="N" Thickness="0.035" Constant="0" TraceWidth="0">
+<Name>Copper</Name>
+</Material>
+</LayerStackItem>
+<LayerStackItem Lay="-1">
+<Material Type="Dielectric" VariableThickness="N" Thickness="1.53" Constant="4.6" TraceWidth="0">
+<Name>FR-4</Name>
+</Material>
+</LayerStackItem>
+<LayerStackItem Lay="1">
+<Material Type="Conductor" VariableThickness="N" Thickness="0.035" Constant="0" TraceWidth="0">
+<Name>Copper</Name>
+</Material>
+</LayerStackItem>
+</LayerStackItems>
+<ViaStyles>
+<ViaStyle Id="0" Size="0.45" HoleSize="0.2">
+<Name>Default</Name>
+</ViaStyle>
+</ViaStyles>
+<NetClasses>
+<NetClass Id="0" UpdateId="0" Type="Normal" AllLayers="Y" CheckLength="N" AllVias="Y" PerformDRC="N" Phase="2" Phase_ErrorLength="5" LengthDelta="2.54" MaxUncoupledLength="10" Tolerance="2">
+<Name>Default</Name>
+<LayProperties>
+<LayProperty Width="0.2" MinWidth="0.01" MaxWidth="100" Clearance="0.125">
+<ClearanceDetails />
+</LayProperty>
+</LayProperties>
+<Autorouting RoutePriority="N" PriorityValue="1" RouteMaxVias="N" MaxViasValue="10000" RouteMaxIncorrectWay="N" MaxIncorrectWayValue="30000" RouteAllLayers="Y" />
+</NetClass>
+</NetClasses>
+<ClassToClass Enabled="N" />
+<DRC Name="Main DRC" AllLayers="Y" CheckClearance="Y" CheckSize="Y" CheckJumpers="N" CheckCopperPours="Y" CheckClassToClass="Y" CheckSilk="N" CheckLength="Y" CheckKeepouts="N" CheckSameNet="N" CheckSameComponentPads="Y" CheckCourtyard="N" SilkClearance="0.12">
+<ShowList>Y</ShowList>
+<RealTimeMode>1</RealTimeMode>
+<DRCDone>Y</DRCDone>
+<LayClearances>
+<LayClearance Lay="0" SameTraceToTrace="0" SameSmdToVia="0" SameSmdToPad="0" SameSmdToSmd="0">
+<ClearanceDetails TraceToTrace="0.125" TraceToVia="0.125" TraceToPad="0.2" TraceToSmd="0.125" TraceToCopper="0.125" TraceToDrill="0.254" TraceToBoard="0.5" ViaToVia="0.125" ViaToPad="0.125" ViaToSmd="0.125" ViaToCopper="0.125" ViaToDrill="0.125" ViaToBoard="0.5" PadToPad="0.45" PadToSmd="0.125" PadToCopper="0.125" PadToDrill="0.125" PadToBoard="0.5" SmdToSmd="0.125" SmdToCopper="0.125" SmdToDrill="0.125" SmdToBoard="0.5" CopperToCopper="0.125" CopperToDrill="0.125" CopperToBoard="0.5" DrillToDrill="0.5" DrillToBoard="0.5" />
+</LayClearance>
+</LayClearances>
+<LaySizes>
+<LaySize Lay="0" MinTrace="0.09" MinDrill="0.2" MinRing="0.1" MaxRing="50" MaxPlatedHole="6.35" MaxNonPlatedHole="6.3" />
+</LaySizes>
+</DRC>
+<LastDRC Name="Last DRC" AllLayers="Y" CheckClearance="Y" CheckSize="Y" CheckJumpers="N" CheckCopperPours="Y" CheckClassToClass="Y" CheckSilk="N" CheckLength="Y" CheckKeepouts="N" CheckSameNet="N" CheckSameComponentPads="Y" CheckCourtyard="N" SilkClearance="0.12">
+<LayClearances>
+<LayClearance Lay="0" SameTraceToTrace="0" SameSmdToVia="0" SameSmdToPad="0" SameSmdToSmd="0">
+<ClearanceDetails TraceToTrace="0.125" TraceToVia="0.125" TraceToPad="0.2" TraceToSmd="0.125" TraceToCopper="0.125" TraceToDrill="0.254" TraceToBoard="0.5" ViaToVia="0.125" ViaToPad="0.125" ViaToSmd="0.125" ViaToCopper="0.125" ViaToDrill="0.125" ViaToBoard="0.5" PadToPad="0.45" PadToSmd="0.125" PadToCopper="0.125" PadToDrill="0.125" PadToBoard="0.5" SmdToSmd="0.125" SmdToCopper="0.125" SmdToDrill="0.125" SmdToBoard="0.5" CopperToCopper="0.125" CopperToDrill="0.125" CopperToBoard="0.5" DrillToDrill="0.5" DrillToBoard="0.5" />
+</LayClearance>
+</LayClearances>
+<LaySizes>
+<LaySize Lay="0" MinTrace="0.09" MinDrill="0.2" MinRing="0.1" MaxRing="50" MaxPlatedHole="6.35" MaxNonPlatedHole="6.3" />
+</LaySizes>
+</LastDRC>
+<ConnectivityCheck Traces="Y" Shapes="Y" CopperPours="Y" />
+<MainLengthRule Type="By User" Delta="0" AnyError="N" NetClass="-1">
+<Name/>
+</MainLengthRule>
+<Components>
+<Component Id="0" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType0" X="45" Y="76" Locked="Y">
+<RefDes>Hole1</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="1" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType0" X="45" Y="20" Locked="Y">
+<RefDes>Hole2</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="2" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType1" X="6" Y="131" Locked="Y">
+<RefDes>Hole3</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="3" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType1" X="59" Y="131" Locked="Y">
+<RefDes>Hole4</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="4" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType1" X="6" Y="6" Locked="Y">
+<RefDes>Hole5</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="5" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType1" X="59" Y="6" Locked="Y">
+<RefDes>Hole6</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="6" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType2" X="15" Y="75.715" Locked="Y">
+<RefDes>Hole7</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="7" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType3" X="17.5" Y="110.715" Locked="Y">
+<RefDes>Hole8</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="8" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType3" X="47.5" Y="110.715" Locked="Y">
+<RefDes>Hole9</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="9" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType4" X="15" Y="50.106" Locked="Y">
+<RefDes>Hole10</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+<Component Id="10" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType4" X="15" Y="30" Locked="Y">
+<RefDes>Hole11</RefDes>
+<Name>MtHole</Name>
+<Value/>
+</Component>
+</Components>
+<Shapes>
+<Shape Id="0" Type="Polyline" AllLayers="N" Layer="Board Cutout" LayId="0" Locked="Y">
+<Points>
+<Point X="59.5" Y="24" />
+<Point X="59.5" Y="72" />
+<Point X="30.5" Y="72" />
+<Point X="30.5" Y="24" />
+<Point X="59.5" Y="24" />
+</Points>
+</Shape>
+<Shape Id="1" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="20.33333" TextHeight="8.87302">
+<Points>
+<Point X="35.1" Y="16.6" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>MAINS INPUT</TextLine>
+<TextLine>88-264VAC 2A</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="2" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="10.33333" TextHeight="4.33333">
+<Points>
+<Point X="15" Y="67.6" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>PHASE</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="3" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="6.3" TextHeight="4.33333">
+<Points>
+<Point X="22.1" Y="78" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>180°</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="4" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="2.9" TextHeight="4.33333">
+<Points>
+<Point X="5" Y="78" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>0°</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="5" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="17.43333" TextHeight="4.33333">
+<Points>
+<Point X="17.5" Y="97" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>AMPLITUDE</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="6" Type="Line" AllLayers="N" Layer="Top Silk" LayId="0" LineWidth="0.5">
+<Points>
+<Point X="15" Y="44.8" />
+<Point X="15" Y="35.4" />
+</Points>
+</Shape>
+<Shape Id="7" Type="Arc" AllLayers="N" Layer="Top Silk" LayId="0" LineWidth="0.5">
+<Points>
+<Point X="26.16027" Y="105.715" />
+<Point X="17.5" Y="120.715" />
+<Point X="8.83973" Y="105.715" />
+</Points>
+</Shape>
+<Shape Id="8" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="9.13333" TextHeight="8.87302">
+<Points>
+<Point X="15" Y="18.6" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>LINE</TextLine>
+<TextLine>INPUT</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="9" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="5.70667" TextHeight="3.46667">
+<Points>
+<Point X="34.1" Y="104.9" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>20Hz</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="10" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="7.06667" TextHeight="3.46667">
+<Points>
+<Point X="55.1" Y="104.9" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>100Hz</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="11" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="3.92" TextHeight="3.46667">
+<Points>
+<Point X="6.2" Y="104.9" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>min</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="12" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="4.61333" TextHeight="3.46667">
+<Points>
+<Point X="25.2" Y="104.9" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>max</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="13" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="12" FontSizeFloat="12" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="38" TextHeight="10.64762">
+<Points>
+<Point X="32.5" Y="128.7" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>150W active subwoofer</TextLine>
+<TextLine>type SSA1-150</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="14" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Right" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="3.22667" TextHeight="3.46667">
+<Points>
+<Point X="7.3" Y="50.106" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>left</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="15" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Right" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="4.72" TextHeight="3.46667">
+<Points>
+<Point X="7.3" Y="30" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>right</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="16" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="19.13333" TextHeight="8.87302">
+<Points>
+<Point X="47.5" Y="94.7" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>CUTOFF</TextLine>
+<TextLine>FREQUENCY</TextLine>
+</TextLines>
+</Shape>
+<Shape Id="17" Type="Arc" AllLayers="N" Layer="Top Silk" LayId="0" LineWidth="0.5">
+<Points>
+<Point X="56.16027" Y="105.715" />
+<Point X="47.5" Y="120.715" />
+<Point X="38.83973" Y="105.715" />
+</Points>
+</Shape>
+</Shapes>
+<DesignErrors>
+<DesignError X="15" Y="75.715" Type="MaxNonPlatedHole" Value="7" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="6" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<Lays>
+<Item>Y</Item>
+<Item>Y</Item>
+</Lays>
+</DesignError>
+<DesignError X="17.5" Y="110.715" Type="MaxNonPlatedHole" Value="8" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="7" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<Lays>
+<Item>Y</Item>
+<Item>Y</Item>
+</Lays>
+</DesignError>
+<DesignError X="47.5" Y="110.715" Type="MaxNonPlatedHole" Value="8" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="8" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<Lays>
+<Item>Y</Item>
+<Item>Y</Item>
+</Lays>
+</DesignError>
+<DesignError X="15" Y="50.106" Type="MaxNonPlatedHole" Value="9" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="9" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<Lays>
+<Item>Y</Item>
+<Item>Y</Item>
+</Lays>
+</DesignError>
+<DesignError X="15" Y="30" Type="MaxNonPlatedHole" Value="9" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="10" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<Lays>
+<Item>Y</Item>
+<Item>Y</Item>
+</Lays>
+</DesignError>
+</DesignErrors>
+<CopperPourFills />
+</Board>
+</Source>

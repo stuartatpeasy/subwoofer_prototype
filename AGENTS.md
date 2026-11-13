@@ -27,11 +27,11 @@ for a particular task takes precedence.
    decisions, and application of shared facts. Link to a Hub fact's current
    authority and record only this project's consequence here.
 2. When a task depends on shared context, open the Hub index and then only its
-   relevant topic. Apply the Hub baseline alongside this project's more
-   specific constraints. A spoke may add constraints but must not silently
-   contradict a Hub fact or procedure. Correct shared facts in the Hub and
-   update affected consumers; record a project-specific exception here with
-   its reason and scope. A direct user instruction takes precedence.
+   relevant topic. Inherit every applicable Hub rule by default; add
+   project-specific constraints freely when consistent with it. Override a Hub
+   rule only with explicit user authorisation, then record the exception's
+   reason and scope here. Correct shared facts in the Hub and update affected
+   consumers. A direct user instruction takes precedence.
 3. When useful information arises that applies beyond this project, add it to
    the Hub's appropriate authority with its source, date, and evidence status.
    Keep transient prices, stock, and unverified observations labelled as such.

@@ -11,16 +11,20 @@
 > partial schematic; inspect it read-only for circuit questions
 > **Next gate:** Check the `rev0` fabrication ZIP in JLCPCB's rendered
 > upload preview and confirm the standard four-layer, 1.6 mm order options
-> **Limitations:** The `rev0` schematic is unchanged since the earlier
-> ACTIVE-indicator mapping check. The latest PCB has matching placed references,
-> values, update IDs and net names. The user reports zero DRC and connectivity
-> errors after the latest refill; the earlier ERC was zero. Reports were not
-> independently inspected. The prior replacement ZIP passed read-only layer,
-> drill and alignment checks; the `rev0` ZIP passed bounded format and hole-count checks;
-> the online CAM preview and order options have not yet been observed.
+> **Limitations:** The 2 November saved schematic now classifies both U7/U8
+> open-drain RESET pins as `Open Low` for ERC and uses explicit power/ground
+> pin-name masks; the user reports a zero-error ERC run with those settings.
+> The U5 substitution and U7/U8 SKU corrections leave all pin/pad nets and
+> material PCB geometry unchanged; see the
+> [release checkpoint](PCB_LAYOUT.md#1-reviewed-design-state-and-scope).
+> The earlier zero-error DRC and connectivity reports were user-reported,
+> not independently inspected or rerun after this component-identity update.
+> The 12 November Gerber ZIP matches the resized non-plated holes. The
+> [PCB release checkpoint](PCB_LAYOUT.md#1-reviewed-design-state-and-scope)
+> records the export checks and the outstanding CAM preview.
 > No live plug-in exchange has been inspected, and no
 > parser or plug-in has been qualified
-> **Last reviewed:** 2026-10-27
+> **Last reviewed:** 2026-11-02
 
 ## 1 Authority and retained resources
 

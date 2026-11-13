@@ -8,16 +8,76 @@
 >
 > **Read when:** Changing routing, copper, stack-up, connector wiring, or preparing fabrication outputs
 >
-> **Current conclusion:** The `rev0` schematic and PCB match by reference, value, update identity and net names. The latest Gerber ZIP postdates the repoured PCB, has four copper layers and separate plated/non-plated drill files, and passes a bounded format and hole-count check. U9 retains the accepted larger-land `M` DPAK pattern. No remaining bare-board data defect was found.
+> **Current conclusion:** The 12 November PCB and fabrication ZIP agree on four Ø3.40 mm corner NPTH and two Ø2.90 mm IC-adjacent NPTH. The archive has four copper layers and separate plated and non-plated drill files. The 2 November component and ERC corrections remain in effect.
 >
 > **Next gate:** On the JLCPCB upload preview, confirm four layers in order, outline/holes/masks/silks aligned, six mounting holes non-plated, and the selected standard four-layer 1.6 mm order options before placing the bare-board order.
 >
-> **Limitations:** The user reports zero DRC and connectivity errors after the latest refill; earlier ERC was zero and the schematic is unchanged. This reviewer could not inspect the DipTrace reports. The latest ZIP received a bounded check, not a full CAM preview. Saved files do not prove assembled fit, solder quality or thermal performance.
-> **Last reviewed:** 2026-10-27
+> **Limitations:** The previous ERC, DRC and connectivity results were user-reported. The 12 November review checked the saved XML and export files. A fresh DRC and rendered JLCPCB preview remain open.
+> **Last reviewed:** 2026-11-12
 
 ## 1 Reviewed design state and scope
 
-**27 October `rev0` release checkpoint.** The canonical schematic
+**12 November mounting-hole checkpoint.** The PCB SHA-256 is
+`3744A7833C0E57E4FE62DCA9915B242764058CE7C559B1F7AC672308E9A5288A`.
+Four corner holes at X = 5 and 85 mm, Y = 5 and 95 mm, are Ø3.40 mm.
+Two IC-adjacent holes at X = 44 mm, Y = 21 and 46 mm, are Ø2.90 mm.
+The centres and Ø7/Ø6 mm pattern keep-out diameters are unchanged. XML
+comparison also found view settings, 3D-model paths and small numeric
+rounding changes. The new Gerber ZIP SHA-256 is
+`7F4FC58342F29ACC4264627F15A6F0F761676DC9A96459C25625F79BC9E8082E`.
+It passes its ZIP CRC check and has the expected X2 copper layer headers
+and unchanged profile. The six NPTH hits match the PCB after the export's
++10 mm X and Y offset. All 458 plated drill hits match the previous archive.
+Confirm the final copper and mask clearance around the larger holes in the
+CAM preview and rerun the affected board checks before ordering.
+
+**2 November `rev0` component and ERC correction.** The canonical schematic
+`diptrace/main_board.dchxml` is SHA-256
+`8D2DF8FC4B64DD681D15BC050AD40E1F75A72F9E70D3C4CA319837E9E8CDA36C`;
+the PCB `diptrace/main_board.dipxml` is SHA-256
+`C584D44CC0DFF1A142417E768BA789DA1C3B6078ABC3F6B58C59AEF222BAF845`.
+U7 and U8 now have placed Mouser SKUs `595-S3762EUVF4DDFRQ1` and
+`595-S3762EUV02DDFRQ1`, respectively, in both files, while their Texas
+Instruments manufacturer part numbers remain `TPS3762EUVF4DDFRQ1` and
+`TPS3762EUV02DDFRQ1`. Mouser lists these exact SKU/MPN pairs for
+[U7](https://www.mouser.co.uk/en/ProductDetail/Texas-Instruments/TPS3762EUVF4DDFRQ1)
+and [U8](https://my.mouser.com/ProductDetail/Texas-Instruments/TPS3762EUV02DDFRQ1).
+U5 is now placed as MP4581GN-Z, Mouser `946-MP4581GN-Z`, in both files;
+its [MPS data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4581GN/document_id/6903/)
+and the [MP4541 data sheet](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4541GN/document_id/9688/)
+show the same eight functional pins and SOIC-8EP package. The
+[power authority](POWER_AND_GROUNDING.md#11-u5-buck-selection-and-schematic-review)
+owns the substitution and prototype-measurement limits.
+
+Read-only comparison with the 27 October release commit found the same placed
+references, update IDs, positions, pin/pad-to-net assignments, footprint
+assignments and 76 net names. Only U5's placed value and purchasing identity,
+and the U7/U8 SKUs, changed among placed component data. The PCB outline, 41
+pour definitions and stored fills are identical; all 192 traces retain their
+net, point count and non-numeric attributes. Numeric trace attributes moved by
+at most 0.00002 mm from re-serialization. Ratlines were reordered/recalculated,
+without a net or copper-topology change. One non-electrical schematic sheet
+label changed from “36V rail monitor” to “36V power in”.
+
+Both U7/U8 RESET pin 4 symbols now have visual `Type="Open Low"` and ERC
+`ElectricType="Open Low"`. This correctly represents their shared active-low
+open-drain output instead of the 27 October `ElectricType="Output"`, which
+produced an output-to-output ERC error when rechecked. The saved ERC power-pin
+mask is now `V+;VDD;VCC;VIN;VOUT;IN;OUT;+12V;+24V` and the ground mask is
+`GND*;VSS;V-`, with short-circuit checking enabled. The former broad `V*`
+power mask misclassified U6's grounded `VSS` pin and generated a false short
+against a `GNDA` net port on the same GND net. The user reran ERC after these
+corrections and reports “No errors found”; the report was not independently
+inspected. The earlier zero-error DRC and connectivity results apply to the
+materially geometrically identical routed board; no fresh run was reported
+after the component-identity changes.
+
+The archive at the 2 November checkpoint was SHA-256
+`B972AA8C73CF49E10C61E563714C4B6B9FCF4BA358B8F7B25F7A1E8C4075AA51`.
+It predates the new XML saves. Since the PCB change did not materially alter
+geometry, it was the fabrication export candidate at that checkpoint. The 12 November archive supersedes it.
+
+**27 October initial `rev0` release checkpoint (superseded CAD hashes).** The canonical schematic
 `diptrace/main_board.dchxml` is SHA-256
 `D32DE55442534BC2B6AEB46371B348DD89A16E49C0881064982B35FEF5CE8A38`;
 the repoured PCB `diptrace/main_board.dipxml` is SHA-256
@@ -236,8 +296,8 @@ the earlier `F55A86…` file. PR-008–PR-014 state the later inspections.
 | PR-006 | Low | Confirmed resolved in saved copper | Inner 2 beneath U3 | The broad `GND` fill is again on Inner 2, 0.2104 mm from the rear Bottom layer, and is continuous across the U3 region in the stored fill. Bottom GND and 53 local GND static vias within 10 mm of U3's centre remain; the former adjacent `36V` tongue has moved to Inner 1. | Preserve the local Bottom capacitor-to-pin loops and check the actual ground continuity after refill. No extra U3-side GND patch is indicated by this review. |
 | PR-007 | Low | Needs verification | Top analogue traces around x = 60–72 mm, y = 69–92 mm | The inner-layer swap also puts broad `15VA` copper on Inner 1 directly beneath parts of the buffered/filter and `VMID` routes. Inner 2 GND remains beneath them, but the Top-to-GND spacing is approximately 1.275 mm instead of 0.2104 mm. The short raw `R_IN`/`L_IN` routes beside J4 remain over the right-side Inner 1 GND strip. This is a reference/return-path trade-off, not evidence of audible noise. | Retain the present layout unless final route inspection or prototype noise reveals a problem. If refining it, give the sensitive Top routes a local Inner 1 GND reference without severing the low-current `15VA` distribution; do not swap the whole planes back merely for this point. |
 | PR-008 | Low | Confirmed resolved in current saved assignments | Test access | The earlier board had only TP1. The current schematic and PCB place TP1–TP11, including the three status nodes, four rails/reference nodes and four GND pads. All are Top-side 3 mm pads. | Check probe approach after components and the rear plate are fitted. |
-| PR-009 | High | Closed on user-reported checks | Current board after refill | The user reports zero DRC and net-connectivity errors after the 27 October trace/via tidying and repour. The prior ERC was zero and the schematic hash is unchanged. Reports were not independently inspected. The saved DRC configuration disables courtyard and keep-out classes; the pass applies to the checks as run. | Repeat affected checks if electrical design, routing, pours or rule configuration changes. Inspect final manufacturing outputs and relevant excluded rule classes under PR-010. |
-| PR-010 | High | Export defect resolved; upload preview pending | Fabrication release | The prior 27 October replacement ZIP passed four-layer, outline, hole-count and coordinate-alignment checks. The current `rev0` ZIP postdates the new refill; bounded checks confirm its CRC, layer-function headers and separate six-hole NPTH and plated drill files. The deeper coordinate-alignment check has not been repeated on this export. No bare-board data defect is known. | Upload the `rev0` ZIP whose hash is recorded in §1 to JLCPCB. Confirm its preview maps Top, Inner 1, Inner 2 and Bottom in order, shows the 90 × 100 mm outline and all six NPTH mounting holes, with masks/silks aligned. Select standard four-layer 1.6 mm construction and inspect the order options before payment. If the viewer misassigns extra Assembly/Dimension drawings, omit those drawing layers from the upload. [JLCPCB upload guidance](https://jlcpcb.com/help/article/how-to-generate-gerber-and-drill-files-in-kicad-9). |
+| PR-009 | High | Closed on user-reported checks for materially equivalent board | Board after U5/U7/U8 updates | The user reports zero ERC errors after correcting both RESET pins to `Open Low` and narrowing the saved power/ground pin-name masks while retaining short-circuit checking. Zero DRC and net-connectivity errors were reported after the 27 October trace/via tidy and repour. The 2 November component changes preserve all pin/pad nets, component positions, footprint assignments, copper-pour definitions and stored fills; trace-coordinate re-serialization is at most 0.00002 mm. Reports were not independently inspected. The saved DRC configuration disables courtyard and keep-out classes. | Repeat affected checks if electrical design, routing, pours or rule configuration changes. Inspect final manufacturing outputs and relevant excluded rule classes under PR-010. |
+| PR-010 | High | Export defect resolved; upload preview pending | Fabrication release | The prior 27 October replacement ZIP passed four-layer, outline, hole-count and coordinate-alignment checks. The 12 November ZIP passes CRC and layer-function checks. All six NPTH diameters and centres match the saved PCB, and the plated drill hits and board profile match the prior export. The rendered CAM preview is pending. | Upload the `rev0` ZIP whose hash is recorded in §1 to JLCPCB. Confirm its preview maps Top, Inner 1, Inner 2 and Bottom in order, shows the 90 × 100 mm outline and all six NPTH mounting holes, with masks/silks aligned. Select standard four-layer 1.6 mm construction and inspect the order options before payment. If the viewer misassigns extra Assembly/Dimension drawings, omit those drawing layers from the upload. [JLCPCB upload guidance](https://jlcpcb.com/help/article/how-to-generate-gerber-and-drill-files-in-kicad-9). |
 | PR-012 | Medium | Saved geometry confirmed; prototype assembly verification open | U9 DPAK assembly lands | The placed `DPAK3P228_972X240L100X77T510X540M_AP1` pattern has 2.43 × 1.32 mm lead lands and a 6.04 × 5.63 mm GND-tab land. The lead lands are about 28% larger in area and the tab about 4% larger than the preceding `N` pattern. Copper, mask and six tab-paste windows appear in the first export. ST recommends 3.00 × 1.60 mm leads and a 6.70 × 6.70 mm tab; the present land is a documented smaller-land choice, not a datasheet match. | Retain for the first prototype, inspect lead and tab solder joints after assembly, then measure U9 temperature at sustained real load. Revisit the land only if assembly or thermal results warrant it. [ST L78M datasheet](https://www.st.com/resource/en/datasheet/l78m.pdf). |
 | PR-013 | Low | Confirmed in replacement paste export | Top test pads TP1–TP11 | All eleven exposed 3 mm probe pads have matching 3 mm openings in `TopPaste.gbr`. This would deposit solder on the test pads if a stencil is made from this file. | No bare-board fabrication change is needed. Before ordering a stencil or assembly, suppress paste on these pads or omit them from the stencil. |
 | PR-014 | Low | Saved geometry confirmed; noise outcome unmeasured | Copper beneath L5 and L1–L4 | At the L5 body, the Top has the intended switch/output copper; Inner 1, Inner 2 and Bottom have GND pour outlines, with no separately routed trace crossing the body. At L5's height the Inner 1 `15VA` pour begins near x = 39.5 mm, about 25 mm from its centre. The four shielded output inductors have 36 V pour outlines on Inner 1 and GND on Inner 2/Bottom. A Bottom `AMP_nRESET` route crosses the edge of L1's body, but Inner 2 GND lies between it and the inductor. Local magnetic/stray-capacitive currents are plausible; a harmful analogue-ground or 15 V disturbance is not established by this geometry. | Retain the continuous planes. Do not cut GND beneath L5 solely to prevent eddy currents; that could weaken the reference and return paths. On the prototype, compare `17V3` and `15VA` ripple and analogue-output noise at idle and representative load with short local probe returns; revisit the copper only if a material problem is measured. |
@@ -365,7 +425,7 @@ For L5's nominal 36 V input, 17.36 V output, 47 µH and 674 kHz switching,
 `D ≈ 17.36/36 = 0.482`, `T_ON ≈ D/674 kHz = 0.715 µs`, and
 `di/dt ≈ (36 − 17.36)/47 µH = 0.397 A/µs`. The ideal continuous-mode rise
 is therefore about 0.284 A per on-time, a current ramp rather than a sharp
-current spike. At light load the MP4541 can pulse-skip, so this nominal
+current spike. At light load the selected MP4581 can pulse-skip, so this nominal
 continuous-mode calculation does not predict the idle spectrum. The
 switch-side winding still sees fast voltage edges, and the semi-shielded
 part has some leakage field. A close continuous plane
@@ -378,7 +438,7 @@ LDO/analogue return. The local input/output capacitors and their complete
 return loops, rather than the presence of GND under L5 alone, set those paths.
 This is a risk judgement pending prototype measurements, not an EMI result.
 [ADI inductor-plane guidance](https://www.analog.com/en/resources/analog-dialogue/raqs/raq-issue-164.html),
-[MPS MP4541 layout guidance](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4541GN/document_id/9688/),
+[MPS MP4581 layout guidance](https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4581GN/document_id/6903/),
 [Bourns SRN8040](https://www.bourns.com/docs/product-datasheets/srn8040.pdf),
 [Vishay IHLP5050FD-5A](https://www.vishay.com/docs/34337/ihlp5050fd-5a.pdf).
 
@@ -437,14 +497,16 @@ differentially; neither speaker conductor is a scope ground.
 This is a review of the stated board snapshot, not fabrication approval or
 assembled electrical/thermal qualification.
 
-## 5 Current release disposition, 27 October 2026
+## 5 Current release disposition, 12 November 2026
 
-The `rev0` fabrication package is ready for JLCPCB upload, with no
-remaining bare-board data defect found. Before payment, confirm the rendered
+Use the 12 November fabrication package for the JLCPCB preview. The prior
+archive has the smaller mounting holes.
+Before payment, confirm the rendered
 four-layer/NPTH preview and standard four-layer, 1.6 mm order options (PR-010).
 PR-003 remains
 closed on the user's selected-fastener dimensions. PR-009 is closed on the
-user's fresh zero-error ERC, DRC and connectivity reports after repour. The
+prior user-reported ERC, DRC and connectivity results. Rerun the affected
+board checks after the drill changes. The
 first Gerber ZIP's mixed-drill defect is superseded by the replacement export.
 U9's larger `M` land geometry is confirmed, with assembly and thermal checks
 remaining for the built prototype (PR-012). Test-pad paste needs attention

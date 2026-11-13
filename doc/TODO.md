@@ -20,11 +20,15 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
   current traceable manufacturer datasheet.
 - [ ] After break-in, measure the actual driver's small-signal parameters; the
   manufacturer publishes neither T/S tolerances nor cabinet displacement.
-- [x] Lock the nominal external cabinet envelope at `390 × 390 × 390 mm`, with
-  20.0 L net geometric front volume and the separate ventilated rear chamber.
+- [x] Lock the nominal bare structural envelope at `300 × 470 × 320 mm`,
+  downward driver, sloped pressure partition, 20.0 L net geometric acoustic
+  target, and bottom-inlet/upper-rear-outlet ventilation direction. Decorative
+  exterior ash legs, bumpers and later trim may extend beyond the bare
+  envelope. The extra 10 mm depth serves the electronics compartment; the
+  acoustic-chamber planning volume is unchanged.
 - [ ] Complete a scaled electronics/airflow layout demonstrating that the PSU,
-  PCB, inlet, guards, wiring, assembly access, and convection path fit within
-  the locked rear-chamber envelope.
+  PCB, bottom inlet, upper rear outlet, guards, wiring, assembly access, and
+  convection path fit within the current sloped electronics chamber.
 - [x] Select the exact 36 V main PSU and document its continuous/peak power,
   cooling, noise, protection, mechanical, and safety characteristics.
 - [ ] Convert each item in [prototype validation](VALIDATION.md) into a
@@ -95,9 +99,14 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
   post-inductor peaks and Zobel temperature on the built prototype before
   treating the network as qualified for sustained high output.
 - [x] Select the first-prototype auxiliary supply in
-  [power and grounding](POWER_AND_GROUNDING.md): keep the present MP4541GN
+  [power and grounding](POWER_AND_GROUNDING.md): use the MP4581GN-Z
   approximately 17.36 V buck, C42–C44, XC6701 15 V and L78M12 12 V branches.
   Do not redesign them unless built-prototype measurements justify a change.
+  This U5 substitution replaces the originally selected MP4541GN for sourcing.
+- [ ] Before populating U5, recheck MP4581GN-Z stock and the actual orderable
+  suffix, and confirm its exposed-pad ground connection with MPS or its
+  evaluation-board copper. Record the build identity and verify loaded
+  buck/RESET behaviour on the prototype.
 - [ ] Check the selected U5 SOIC-8EP, C42–C44 1210 and U9 DPAK land dimensions,
   U5 exposed-pad net, and local switching-current return before fabrication;
   measure the loaded ripple, start-up and meaningful load transients on the
@@ -137,7 +146,7 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
   a formal worst-case guarantee. Check at least 400 ms RESET release on the
   prototype; reconsider 330 nF only if timing or margin requires it.
 - [x] Select the dedicated E24 buck SENSE divider: 130 kΩ/7.5 kΩ, 1%,
-  separate from the MP4541 feedback path, gives approximately 14.67 V
+  separate from the U5 buck feedback path, gives approximately 14.67 V
   nominal falling. Analogue-LDO pre-dropout muting is not a requirement.
 - [ ] Bound loaded buck trough, amplifier-feed/return drop, and RESET
   sequence with the placed L78M12. The conservative 13.97 V buck trip is
@@ -175,14 +184,28 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
 - [x] Run DipTrace ERC before bare-PCB release. After the current refill,
   the user reports zero ERC, DRC and connectivity errors; the reports were not
   independently inspected. Repeat affected checks after electrical or layout changes.
-- [ ] Verify actual J3 harness load, physical DPDT 0°/180° mapping, and
-  terminal identification.
+- [x] Select the gold-contact E-Switch `100DP1T1B1M1REH` DPDT ON–ON
+  [polarity switch](FRONT_END.md#62-selected-e-switch-gold-contact-switch-31-october-2026)
+  for the four-wire J3 crossover harness (31 October 2026).
+- [ ] Detail the selected switch's mounting land in the 1.6 mm FR-4 control panel and
+  confirm nut/washer engagement, lug clearance, contact continuity, and the
+  physical 0°/180° lever mapping before panel cutting and labelling.
 - [ ] Verify the Sallen-Key filter transfer function, Q, adjustment range,
   component tolerances, and control tracking in simulation.
 - [ ] Qualify the selected Bourns `PDB182-K420K-203B` 20 kΩ dual-gang linear
   crossover potentiometer by measuring both gangs and confirming that the
-  panel-wired installation and +50 °C pot-body limit are met; select the level
-  potentiometer.
+  FR-4-panel installation and +50 °C pot-body limit are met. The specified
+  Bourns `PDB181-E420K-103A2` level potentiometer needs its J2 terminal mapping,
+  clockwise level direction and the same mounting/temperature checks. Confirm
+  nut engagement on the 1.6 mm FR-4 panel for both 6.5 mm bushings.
+  Select knobs for their 6 mm, 18-tooth shafts and the final exposed shaft
+  length; [SAK-007 does not fit directly, and the Mouser shortlist needs a
+  physical depth check](MECHANICAL.md).
+- [x] Retain the specified 20 kΩ dual-gang cutoff potentiometer with PC pins;
+  the user accepted the terminal style on 31 October 2026. The considered
+  10 kΩ/50 kΩ GTRB2 `MN` blend controls are unsuitable; the
+  [resistance comparison](FRONT_END.md#41-solder-lug-alternatives-and-resistance-scaling-31-october-2026)
+  remains design history, not an open substitution task.
 - [x] Retain the saved RCA input coupling and RF network for the first
   bare-board prototype without adding a dedicated input ESD suppressor.
   This is a prototype design choice, not an ESD immunity qualification;
@@ -207,6 +230,13 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
 - [x] Select the latching, through-hole 36 V input and speaker-output
   connector pairs documented in [power and grounding](POWER_AND_GROUNDING.md)
   and [power amplifier](POWER_AMPLIFIER.md).
+- [ ] Dry-fit the driver-output harness with the driver supported outside its
+  opening and the rear panel withdrawn while J5 remains connected. Use the
+  selected 150 mm Mini-Fit Jr `215326-1021` pigtail at the unchanged J5 header,
+  then a supported, insulated splice to the two-conductor 2.5 mm² jacketed
+  cable in the electronics chamber. Set the actual cable length and independent
+  service slack on both sides before sealing the partition feed-through; verify
+  polarity and the received driver's terminal fit.
 - [ ] Verify the joined 36 V and GND entry at J6 with the actual three closely
   paired feed/return cables and common Mean Well terminals. The saved board
   now takes the buck branch locally, resolving the previous asymmetric
@@ -256,23 +286,75 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
   The [local ceramic copper estimate](POWER_AMPLIFIER.md#114-local-pvdd-ceramic-copper-parasitic-estimate-17-october-2026)
   supports retaining C21/C22/C24/C25 while the final filled copper and
   prototype switching waveform remain open checks.
-- [ ] Finalise the aluminium-plate dimensions, mounting, finish exclusions,
-  connector/control locations, and sealing details.
-- [ ] Obtain JLCCNC confirmation of 6061 temper/6 mm stock, pocket and web
+- [ ] Finalise the aluminium-plate dimensions, mounting, finish exclusions and
+  sealing, together with the separate rear FR-4 control panel and its fixings.
+- [ ] Verify the DD11 inlet on the 1.6 mm FR-4 control panel: confirm the
+  mounting cut-out, screw/washer stack, rear cover and wiring clearance on
+  the purchased part before cutting. Route its PE lead to the independent
+  aluminium-plate stud.
+- [x] Select the REAN `NYS367-9` white left and `NYS367-2` red right
+  [RCA pair](FRONT_END.md#21-selected-rca-panel-sockets-31-october-2026)
+  (31 October 2026).
+- [ ] Trial the 1.6 mm FR-4 control panel and four M3 fixings in the rear-ply
+  opening. Check stiffness under IEC/RCA plug and switch loads, socket
+  washer/nut engagement, actual knob stand-off, and any needed local support.
+  Confirm RCA isolation from the plate/PE and the inlet cover and mains/signal
+  wiring routes; the modelled inlet and nearest RCA envelopes are about
+  7 mm apart laterally. Use the [layout models](3d_models/Rear-signal-parts.md)
+  for component placement, not as machining templates.
+- [ ] Replace one of the DAE's two single-gang `PDB181-E420K-103A2` control
+  instances with the selected dual-gang `PDB182-K420K-203B` crossover
+  model. Confirm the intended knob position and the extra 2 mm rear body
+  depth, six PC pins and harness clearance before fixing the control panel.
+- [x] Replace the 8 November broad, 4 mm-thick plywood control land with
+  a separate insulating FR-4 panel over a rear-ply through-opening in the
+  11 November DAE. Physical and electrical assembly checks remain above.
+- [ ] Obtain JLCCNC confirmation of 6061 temper/8 mm stock, pocket and web
   geometry, and the drawing-defined bare thermal/PE/ground contact zones;
   check the 6061 heat-spreading budget before approving production geometry.
-- [x] Establish the cabinet-bracing baseline: use the continuously bonded
-  full-width/full-height partition as the sole brace; do not add speculative
-  front-to-partition or window bracing.
-- [x] Establish the front-chamber displacement allowance: use 1.0 L for the
-  approximately 0.8 ± 0.2 L driver estimate, neglect the small cable gland or
-  grommet, and keep partition-joint cleats on the electronics side.
-- [ ] Select the lower and upper grille locations and net free areas, bottom
-  clearance, foreign-object guarding, and unobstructed convection path.
-- [ ] Produce a passive-cooling thermal-resistance budget from the stated
-  15–18 W worst-case IC dissipation to the 35 °C maximum rated room ambient,
-  including the package-to-PCB-to-plate interface and component hot spots; use
-  40 °C as the margin/derating assessment case.
+- [ ] Finalise the modelled brace network and its joints while retaining sound
+  panel support; its roughly 1.259 L solid volume leaves about 21.305 L
+  before driver displacement. Reconcile any overlaps and all solid
+  intrusions against the 20.0 L net target before cutting.
+- [ ] Check the actual driver's effective displacement relative to the inner
+  baffle plane. The former 1.0 L calculation input is provisional, not an
+  established upper bound; retain the airtight cable feed-through.
+- [ ] Finalise the accepted bottom-inlet assembly: select the two vent-panel
+  materials and fixings, PSU screw stack, and foreign-object guarding
+  without reducing its roughly 135 cm² geometric free area unnecessarily.
+  Preserve the nominal 15 mm under-PSU gap. Trial the eight vent screws'
+  close aperture-corner lands and the PSU mounting stack in a representative
+  offcut; the modelled ash legs clear the apertures.
+- [ ] Finalise the modelled upper rear outlet: about 99.5 cm² geometric area
+  through two 8 mm inserts with 352 nominal 6 mm airflow holes. Detail its
+  fixings in the 15 mm plywood rails; the four screws now sit 2 mm outward
+  from the opening corners and need a representative pilot/joint trial.
+  Check any insect screen and its
+  effect on
+  both vents, and the flow route with the PCB, wiring and intended wall gap.
+  Validate the final inlet-to-outlet path and heat budget.
+- [ ] Detail the DAE's 152 × 137 mm plate with two external 557-140AB sinks
+  using the [P01 prototype order package](MECHANICAL.md#21-aluminium-heatsink-plate).
+  Verify the twelve tapped heatsink positions against the received slots and
+  check the common screw stack at the six inner positions. Confirm the
+  P01 thread and finish callouts in the quote. After receiving the PCB and
+  P01, measure the support and contact stack and verify fastener fit,
+  component clearance, PCB isolation and PE bond before releasing a revised plate.
+- [ ] Trial one rear-panel insert and countersunk screw in representative
+  plywood before cutting. The revised positions give about 3.75 mm brace
+  wood to the insert thread and 2.75 mm panel edge margin to the countersink.
+- [ ] Check the completed ash-legged cabinet on the intended carpet: the
+  plywood baffle starts 100 mm and the lower bumpers 90 mm above a hard floor.
+  Confirm loaded clearance, level support, and unobstructed driver/inlet
+  paths; extend legs or use firm bearing pads if necessary. Preserve a
+  deliberate rear-wall gap: sink tips extend about 22 mm beyond the ash legs.
+- [ ] Refine the [two-sink, reduced-plate and TIM screen](THERMAL.md)
+  for the finished pocket, the actual thin 8616 IC film, both greased sink
+  joints and wall clearance. Check 5–10 W sustained IC
+  heat at 35 °C room ambient and a bounded 15–18 W full-output stress case;
+  continuous 150 W audio output is not required. Include the 40 °C margin
+  assessment, hottest externally accessible plate and sink temperatures,
+  and the +50 °C body limit of both FR-4-panel-mounted potentiometers.
 - [ ] Resolve the TPA3251 package, PCB, and rear-plate stack mechanically and
   thermally; verify contact-land height/flatness, TIM compression, pocket
   clearances for parts and trimmed through-hole leads, and the actual heat

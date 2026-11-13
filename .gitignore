@@ -6,3 +6,9 @@
 
 # tmp/ directory
 tmp/**
+
+# Disposable Python bytecode in the local 3D workspace
+3d_models/__pycache__/
+
+# Recreate the optional preview environment from the pinned Hub requirements
+.venv-3d-preview/

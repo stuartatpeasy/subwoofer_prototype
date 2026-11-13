@@ -4,6 +4,18 @@ The saved schematic, four-layer PCB and fabrication archive form the `rev0`
 bare-board prototype release. The release identity and remaining order-preview
 gate are in [PCB layout review](doc/PCB_LAYOUT.md). Enclosure, harness,
 assembly and measured electrical/thermal performance remain prototype work.
+The 140–150 W clean subwoofer output target is bounded peak capability;
+continuous output at that level is not required. The selected 200 W PSU retains
+headroom for those peaks. [Thermal design](doc/THERMAL.md) owns the sustained
+heat screen and the rear-spreader assessment.
+The current enclosure DAE has the locked 300 × 470 × 320 mm structural
+cabinet, a rear perimeter brace, vent and rear-panel fasteners, ash
+corner legs and edge bumpers, and a separate insulating FR-4 control panel.
+The extra 10 mm depth serves the electronics compartment; decorative ash lies
+outside the bare structural envelope. The PCB/plate stack, protective-earth
+hardware, mains guards and harness, assembled cooling and accessible
+temperatures remain open.
+[Mechanical design](doc/MECHANICAL.md) owns the fit and outlet.
 
 ## 1 Objective
 
@@ -13,14 +25,20 @@ Primary constraints:
 
 - music-oriented rather than extreme home-cinema SPL
 - compact cabinet
-- 390 mm cubic external cabinet with a sealed 20.0 L front acoustic chamber and
-  separate ventilated rear electronics chamber
+- 300 × 470 × 320 mm nominal bare-cabinet outer envelope, with a downward-
+  firing driver, sloped acoustic partition, 20.0 L net sealed acoustic target,
+  and separate naturally ventilated electronics chamber; decorative trim may
+  extend beyond the bare envelope
 - analogue signal path
 - no microcontroller or firmware
 - no forced-air cooling
 - no custom mains PSU
 - CNC-relieved rear plate allowing selected components and through-hole leads on
   the plate-facing side of the amplifier PCB
+- the rear panel alone uses 12 mm plywood and carries all user controls and
+  external connectors; other structural plywood thicknesses remain as specified
+- the aluminium plate remains the amplifier heat spreader, PCB mount and
+  protective-earth bond
 - one four-layer PCB with physically controlled analogue and power regions
 - engineering-led, measurable design
 
@@ -36,6 +54,7 @@ specification first only when a decision could affect more than one subsystem.
 | How is the loudspeaker driven? | [Power amplifier](doc/POWER_AMPLIFIER.md) | TPA3251 PBTL stage, output filter, Zobel network, passives, and layout constraints |
 | How are the rails, returns, chassis, and protective earth arranged? | [Power and grounding](doc/POWER_AND_GROUNDING.md) | Power tree, DC distribution, grounding domains, chassis bonding, RCA isolation, and PCB grounding |
 | What constrains the cabinet, PCB, and rear plate? | [Mechanical design](doc/MECHANICAL.md) | PCB clearance, aluminium plate, thermal interface, and rear-panel structure |
+| Where are the SketchUp-compatible component models? | [3D model catalogue](doc/3d_models/README.md) | Project selections and fit notes; reusable component models and generation records are in the Hub library |
 | What heat load must passive cooling handle? | [Thermal design](doc/THERMAL.md) | Present thermal assumptions and cooling requirement |
 | What must the prototype prove? | [Prototype validation](doc/VALIDATION.md) | Electrical, thermal, and acoustic measurements |
 | How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Canonical partial schematic XML, shared Hub SDK route, read-only inspection workflow, and future parser/plugin gates |
@@ -59,6 +78,20 @@ specification first only when a decision could affect more than one subsystem.
   [mechanical design](doc/MECHANICAL.md),
   [thermal design](doc/THERMAL.md), then the thermal and acoustic checks in
   [prototype validation](doc/VALIDATION.md).
+- **Driver placement in 3D:** [driver 3D model](doc/3d_models/README.md),
+  then [mechanical design](doc/MECHANICAL.md) for the cabinet constraints.
+- **PSU placement in 3D:** [RSP-200-36 model](doc/3d_models/RSP-200-36.md),
+  then [mechanical design](doc/MECHANICAL.md) for enclosure and guard space.
+- **Mains-inlet placement in 3D:** [DD11.0111.1111 model](doc/3d_models/DD11.0111.1111.md),
+  then [mechanical design](doc/MECHANICAL.md) for the rear FR-4 panel mounting.
+- **Control placement in 3D:** [PDB18 potentiometer models](doc/3d_models/PDB18-potentiometers.md),
+  then [mechanical design](doc/MECHANICAL.md) for the rear FR-4 panel mounting.
+- **Rear signal-part placement in 3D:** [RCA and polarity-switch models](doc/3d_models/Rear-signal-parts.md),
+  then [mechanical design](doc/MECHANICAL.md) for the rear FR-4 panel mounting.
+- **Provisional heatsink placement in 3D:** [557-140AB model](doc/3d_models/557-140AB.md),
+  then [thermal design](doc/THERMAL.md#12-bolt-on-extrusion-shortlist-31-october-2026) for the cooling decision.
+- **Fastener placement in 3D:** [fastener model routes](doc/3d_models/README.md#2-fastener-layout-references),
+  then [mechanical design](doc/MECHANICAL.md) for the assembly and length decisions.
 - **DipTrace schematic or PCB inspection:** [DipTrace data and
   tooling](doc/DIPTRACE.md), then the [current PCB layout review](doc/PCB_LAYOUT.md)
   for a routing or fabrication question and only the affected electrical,

@@ -1,0 +1,79 @@
+{
+  "chambers": [
+    {
+      "name": "Sealed acoustic chamber planning volume",
+      "gross": {
+        "type": "trapezoidal_prism",
+        "width_mm": 264,
+        "height_mm": 266,
+        "depth_bottom_mm": 240,
+        "depth_top_mm": 402.626
+      },
+      "subtract_parts": [
+        "Brace_top_sides", "Brace_front_sides", "Brace_front",
+        "Brace_top_lateral", "Brace_top_longitudinal", "Brace_partition"
+      ],
+      "allowances_litres": {"provisional_driver": 1.0}
+    }
+  ],
+  "vents": [
+    {
+      "name": "Lower inlet",
+      "plane": "XY",
+      "opening_rectangles_mm": [
+        [42, 317, 152, 446],
+        [176, 317, 286, 446]
+      ],
+      "hole_parts": ["Vent_lower_A", "Vent_lower_B"],
+      "diameter_mm": 6
+    },
+    {
+      "name": "Upper outlet",
+      "plane": "XZ",
+      "opening_rectangles_mm": [[48, 306, 280, 386]],
+      "hole_parts": ["Upper_vent_A", "Upper_vent_B"],
+      "diameter_mm": 6
+    }
+  ],
+  "features": [
+    {
+      "name": "control_opening",
+      "part": "Panel_rear",
+      "expected_bounds_mm": [[53, 108], [472, 484], [167, 277]]
+    },
+    {
+      "name": "plate_rebate",
+      "part": "Panel_rear",
+      "expected_bounds_mm": [[126, 280], [476, 484], [152, 291]]
+    },
+    {
+      "name": "outlet_opening",
+      "part": "Panel_rear",
+      "expected_bounds_mm": [[48, 280], [472, 484], [306, 386]]
+    }
+  ],
+  "lands": [
+    {"name": "outlet top rail", "host_part": "Panel_rear",
+     "recess_feature": "outlet_opening", "axis": "Z", "side": "max"},
+    {"name": "outlet left rail", "host_part": "Panel_rear",
+     "recess_feature": "outlet_opening", "axis": "X", "side": "min"},
+    {"name": "outlet right rail", "host_part": "Panel_rear",
+     "recess_feature": "outlet_opening", "axis": "X", "side": "max"}
+  ],
+  "clearances": [
+    {"name": "control opening to plate rebate",
+     "a": "feature:control_opening", "b": "feature:plate_rebate"},
+    {"name": "outlet to plate rebate",
+     "a": "feature:outlet_opening", "b": "feature:plate_rebate"}
+  ],
+  "part_inventory": [
+    {
+      "name": "Rear control identities",
+      "within": "Controls",
+      "expected": {
+        "PDB181-E420K-103A2": 1,
+        "PDB182-K420K-203B": 1
+      }
+    }
+  ]
+}

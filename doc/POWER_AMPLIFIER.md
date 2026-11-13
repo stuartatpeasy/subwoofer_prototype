@@ -1,6 +1,6 @@
 # Power amplifier
 
-> **State — current amplifier authority; reviewed 2026-10-26.** Owns the
+> **State — current amplifier authority; reviewed 2026-11-08.** Owns the
 > TPA3251 stage and RESET topology. Two 36 V-powered TPS3762-Q1 supervisors
 > monitoring PVDD and `17V3` are selected. The dedicated 130 kΩ/7.5 kΩ,
 > 1% E24 buck SENSE divider is selected. The now-placed L78M12 12 V regulator
@@ -20,8 +20,9 @@
 > from `AMP_nRESET`: lit when RESET is released and dark when it is asserted.
 > The former false RESET-indication issue SR-001 is closed in the saved design;
 > assembled brightness and polarity remain checks.
-> The two-position Mini-Fit Jr speaker-output pair is selected; placement and
-> finished harness routing remain open.
+> The two-position Mini-Fit Jr speaker-output PCB header and short mating
+> pigtail are selected; the 2.5 mm² driver-cable route, splice and service
+> lengths remain to be fitted in the cabinet.
 
 ## 1 TPA3251 output stage
 
@@ -847,7 +848,7 @@ divider at the amplifier-side `17V3` feed; confirm loaded buck trough,
 amplifier-feed and return drops, and start/stop behaviour. RESET-before-any-
 12 V-sag is not a design claim.
 
-The current partial schematic's MP4541GN feedback divider (`R24 = 180 kΩ`,
+The current partial schematic's U5 buck feedback divider (`R24 = 180 kΩ`,
 `R28 = 11 kΩ`) is not a substitute for this separate SENSE divider. Its FB
 node is regulated near 1.0 V; the TPS3762's 0.8 V falling threshold would
 represent only `0.8 V × (1 + 180/11) = 13.89 V` nominal at the buck output.
@@ -950,26 +951,57 @@ transistor.
 
 ### 1.3 Speaker-output connection
 
-Selected board-to-driver pair (2026-10-12): Molex Mini-Fit Jr `39-28-1023`
-two-position, vertical through-hole, tin-plated PCB header and `215326-1023`
-two-position female-to-pigtail assembly. The assembly has two factory-terminated
-16 AWG (approximately 1.31 mm²), **600 mm** conductors; its housing and
-contacts are supplied as part of the assembly, so no separate pins or crimp
-tool are required. Connect the two positions to the filtered PBTL speaker
-outputs, not to chassis or `GND`. The selected parts have a positive latch and
-are distinct in position count from the six-position 36 V input connector.
+The saved J5 PCB header remains Molex Mini-Fit Jr `39-28-1023`, two-position,
+vertical through-hole and tin-plated. The mating board-end assembly is now
+`215326-1021`: a two-position, tin-plated female pigtail with two
+factory-terminated **150 mm, 16 AWG (approximately 1.31 mm²)** leads. It
+replaces the previously selected `215326-1023`. Its 600 mm leads are unlikely
+to reach both planned service positions as a complete harness and would leave
+an unnecessarily long 16 AWG section when joined to the heavier cable.
+The assembly includes housing and contacts; no Mini-Fit crimp tooling is needed.
+The selected parts have a positive latch and are distinct in position count
+from the six-position 36 V input connector. Connect the two positions to the
+filtered PBTL speaker outputs, not to chassis or `GND`.
+
+Join the short pigtail to the user's round-jacketed, two-conductor **2.5 mm²**
+speaker cable within the ventilated electronics chamber. Use separately
+insulated, mechanically supported splices, kept clear of mains wiring,
+heatsinks and the PCB; do not let the splice or connector carry a pull on the
+cable. Pass the intact outer jacket through the sealed partition and terminate
+the driver end after installation. Leave independent service slack on **both**
+sides of the fixed feed-through: enough to remove and support the driver and
+to draw out the rear panel with J5 still connected. Approximately 1 m total
+is a planning estimate, not a cut length; dry-fit both service positions before
+cutting the cable or sealing the penetration. Verify the driver terminals and
+their 2.5 mm² termination on the received unit.
 
 At the approximately 150 W into 4 Ω output target, speaker current is
 `sqrt(150 W / 4 Ω) = 6.12 A RMS`. Molex's two-position, 16 AWG brass-contact
 guideline is 9 A per contact, subject to PCB copper, ambient temperature, and
-the completed cable termination. Confirm the 600 mm route, pin numbering,
-header footprint and clearance, strain support, polarity, and the driver-end
-termination during layout and assembly. Recheck Mouser UK availability,
-normal-stock status, MOQ, and price before ordering.
+the completed cable termination. The Mini-Fit Jr female contact's specified
+maximum conductor is 16 AWG; do not force the 2.5 mm² conductor into it.
+For scale, taking copper resistivity as approximately
+`0.01724 Ω mm²/m` at 20 °C, a 1 m two-conductor 16 AWG run has an estimated
+`2 × 0.01724 × 1/1.31 = 0.0263 Ω` loop resistance and dissipates about
+`6.12² × 0.0263 = 0.99 W` at the 150 W design point. A 1 m run comprising
+150 mm of 16 AWG and 850 mm of 2.5 mm² gives approximately `0.0157 Ω` and
+`0.59 W`, before contact and splice resistance. The change is modest
+electrically, but retains the user's preferred heavier jacketed cable through
+the cabinet. Confirm J5 pin numbering, polarity, routing, strain support,
+splices and the driver-end termination during assembly. Recheck Mouser UK
+availability, normal-stock status, MOQ and price before ordering.
+
+If a hand-built Mini-Fit end is later preferred, the corresponding loose
+two-position receptacle housing is Molex `39-01-2020` (5557 series), with two
+tin-plated 16 AWG female contacts `39-00-0078` (bag packaging). These retain
+the 16 AWG termination limit and require suitable crimp tooling; they do not
+accept the 2.5 mm² cable directly.
 
 Manufacturer sources: [Mini-Fit Jr product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/555/5556/PS-5556-001-001.pdf),
-[header](https://www.molex.com/en-us/products/part-detail/39281023), and
-[600 mm pigtail series](https://www.molex.com/en-us/products/series-chart/215326).
+[header](https://www.molex.com/en-us/products/part-detail/39281023),
+[150 mm pigtail](https://www.molex.com/en-us/products/part-detail/2153261021),
+[loose housing](https://www.molex.com/en-us/products/part-detail/39012020), and
+[16 AWG loose contact](https://www.molex.com/en-us/products/part-detail/39000078).
 
 ## 2 Output inductors
 
