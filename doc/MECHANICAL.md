@@ -690,10 +690,13 @@ the PCB outline and 10 mm from the pocket edge. The rear Ø20 mm finish
 mask is tangent to the pocket edge and reaches to about 1 mm inside the
 plywood opening. It is a finish callout. Verify the actual ring terminals,
 cable bends and spanner access. Seat the actual head flush or slightly below
-the heatsink face and secure the post before fitting the sink. The DAE's two
-nuts touch. In assembly the inner nut clamps the serrated washer to the bare
-land and the outer Nyloc clamps the two ring terminals against it. The DAE
-still depicts two full nuts; the selected stack is in [power and grounding](POWER_AND_GROUNDING.md).
+the heatsink face and secure the post before fitting the sink. The 16 November DAE depicts the inner full nut, serrated washer and outer
+Nyloc on the post. The two nuts touch and the ring terminals are not modelled:
+move the outer nut along the post to accommodate both actual terminals. The
+modelled outer nut's outer face is about 7.8 mm from the screw tip before
+that movement; this is an envelope, not a verified usable thread allowance.
+Dry-fit both terminals and confirm full nylon engagement and accessible
+thread before treating the assembly as complete.
 The [grounding authority](POWER_AND_GROUNDING.md#3-protective-earth-and-chassis)
 owns the hardware and bond. The heatsinks need their own verified bonds.
 Confirm the Ø20 mm anodising exclusion with the machinist.

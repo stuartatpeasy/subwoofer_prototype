@@ -13,8 +13,8 @@
 Counts are individual fastener component instances in
 [Subwoofer cabinet.dae](../3d_models/Subwoofer%20cabinet.dae), not packs and
 without spares. The assembly breakdown makes the counts traceable. SKU
-identities marked **old list** come from the user-provided
-[fastener_bom.txt](../fastener_bom.txt), not a fresh product-page verification.
+identities marked **old list** come from the earlier user-provided
+`fastener_bom.txt` (no longer present), not a fresh product-page verification.
 Where the DAE model does not specify material or finish, the listed SKU is a
 candidate, not evidence of an exact match.
 
@@ -32,15 +32,15 @@ candidate, not evidence of an exact match.
 | M4 × 20 mm black PZ2 pan machine screw | Driver 8; PSU 4 | 12 | `23413.040.020` — old list; driver head and PSU penetration require the checks below |
 | M4 × 25 mm A2 PZ2 countersunk machine screw | Protective-earth post 1 | 1 | `30022.040.025` — old list |
 | M4 Form A flat washer | Spreader 4 | 4 | [`20206.040.000`](https://boltworld.co.uk/products/m4-form-a-flat-washer-stainless-steel-a2-304-din-125-4-3x9x0-8mm/) — A2 candidate; Boltworld identity checked 16 November 2026; check final clamp stack |
-| M4 DIN 985 Nyloc nut | Spreader 4 | 4 modelled; 5 required including PE | `20009.040.000` — old-list candidate; model material unspecified; PE use selected below |
+| M4 DIN 985 Nyloc nut | Spreader 4; protective-earth post 1 | 5 | `20009.040.000` — old-list candidate; model material unspecified |
 | M4 DIN 6798J A2 internal-tooth washer | Protective-earth post 1 | 1 | `20251.040.000` — old list |
-| M4 DIN 934 A2 full nut | Protective-earth post 2 | 2 modelled; 1 required | `10001.040.000` — old list; replace outer modelled full nut with a Nyloc for assembly |
+| M4 DIN 934 A2 full nut | Protective-earth post 1 | 1 | `10001.040.000` — old list |
 | M4 × 10 mm Type E non-flanged timber insert | Rear brace 12; driver baffle 8 | 20 | `10130.040.010` — old-list zinc/yellow steel candidate; verify dimensions and pilot against supplied part |
 | 3 × 15 mm black Pozidriv countersunk self-tapping screw | Lower vents 8; upper vent 4 | 12 | [`23581.290.016`](https://boltworld.co.uk/products/no-4-x-5-8-2-9-x-16mm-pozi-countersunk-self-tapping-screws-black-stainless-a2-304-din-7982/) — user-selected 2.9 × 16 mm near match; fit and penetration check required; page inaccessible during 16 November lookup, SKU from user and old list |
 
 The existing list's 3.9 × 25 mm driver wood screw `23581.390.025`
 is superseded by the modelled M4 driver screws and is excluded. Quantities
-above replace the old list's quantities; the old file is retained as source.
+above replace the earlier list's quantities; the earlier file is no longer present.
 
 ## 2. Purchasing and fit gates
 
@@ -53,10 +53,9 @@ above replace the old list's quantities; the old file is retained as source.
   M3 × 8 mm. Confirm the physical stack and blind-hole depth before choosing
   either length. The modelled spreader washer/nut stack also needs a physical
   bearing check before its final washers are selected.
-- The DAE depicts two ordinary M4 full nuts at the PE post. The selected
-  stack uses one full nut and one M4 Nyloc instead; the latter adds one to
-  the four modelled spreader Nylocs. No PE flat washer is specified in this
-  stack. Check ring-terminal bearing, full nylon engagement and temperature;
+- The DAE now depicts the selected full nut and outer Nyloc at the PE post.
+  The nuts touch and the two ring terminals are not modelled, so check the
+  final stack's ring-terminal bearing, full nylon engagement and temperature;
   see [power and grounding](POWER_AND_GROUNDING.md).
 - Boltworld's M4 washer listing calls it 0.8 mm thick in its title but
   0.9 mm in its description and specification. Check the received thickness
