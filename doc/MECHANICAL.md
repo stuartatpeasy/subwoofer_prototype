@@ -1,6 +1,6 @@
 # Mechanical design
 
-> **State — current mechanical authority; reviewed 2026-11-13.** Owns cabinet,
+> **State — current mechanical authority; reviewed 2026-11-16.** Owns cabinet,
 > rear-plate and PCB/plate fit; electrical bonds are owned by
 > [power and grounding](POWER_AND_GROUNDING.md), and heat-load acceptance by
 > [thermal design](THERMAL.md). Read for plate or PCB packaging changes.
@@ -14,7 +14,7 @@
 > bottom-firing sloped-partition model in §1 is the current layout basis;
 > the revised lower inlet geometry is accepted as the current design basis;
 > its material, fixings, guards and assembled thermal result remain open.
-> The current DAE has four ash corner legs, eight edge bumpers and a separate
+> The 16 November DAE uses eight M4 driver screws and timber inserts, and has four ash corner legs, eight edge bumpers and a separate
 > insulating FR-4 control panel over a rear-ply cut-out. The vent and rear-panel
 > fixing locations have sounder wood lands. Loaded carpet and sink/wall
 > clearances, control-panel support, mains guards and harness, PCB/plate contact,
@@ -68,12 +68,14 @@ work with the shared [read-only DAE inspector](../../Hub/tools/3d_models/README.
 From the project root, run
 `python ..\Hub\tools\3d_models\dae_inspect.py report "3d_models\Subwoofer cabinet.dae" --config "3d_models\dae-inspect.json"`.
 The configuration was updated for the 11 November rear control opening and
-the 10 mm higher world-Z placement. It identifies the three rear-panel
+the 10 mm higher world-Z placement, then its four vent-part names were
+corrected on 13 November to match the current DAE assembly export. It
+identifies the three rear-panel
 features by unique expected bounds, so their direct geometry indices may
 change without breaking the inspection. It also declares one PDB181 level
 control and one PDB182 crossover control beneath the rear control assembly.
-The present DAE has two PDB181 instances, so `report` prints the other
-geometry results but exits with status 1 until that identity error is fixed.
+The 16 November DAE passes this identity check with one of each; the
+check establishes names and counts only, not wiring or physical fit.
 The configuration declares the trapezoidal acoustic-space dimensions and
 the provisional 1.0 L driver allowance; those inputs are not inferred from
 the mesh. It also identifies the vent openings and rear-panel features.
@@ -195,26 +197,32 @@ the published 24 mm peak-to-peak *linear coil travel* is not a mechanical
 stop or a motion specification for every surround point. Set any grille
 clearance from the actual driver and intended drive level.
 
-**Provisional driver-fixing specification, revised 8 November 2026:** use eight
-4.0 × 25 mm black-finished, fully threaded, countersunk wood/chipboard screws
-with a sharp point. A PZ2 drive is represented by the [reusable layout
-model](../../Hub/3d_models/fasteners/4x25mm_Black_PZ2_Countersunk_Wood_Screw/README.md).
-The screw must pass freely
-through the eight nominal 4.3 mm flange holes in the [driver's dimensional
-record](../../Hub/3d_models/loudspeakers/SB23MFCL45-4/README.md), and its
-smooth head must seat in the nominal 7.9 mm recess without cutting ribs bearing on
-the cast frame; select a head diameter no greater than about 7.7 mm to allow
-some clearance. The manufacturer's drawing does not specify the recess angle,
-so check the head profile against the received driver before buying a full set.
-The 25 mm countersunk length includes the head. The user reports a minimum
-26.5 mm from the seated screw-head top plane to the baffle's inner surface,
-giving 26.5 − 25 = **1.5 mm nominal unpierced plywood**. This is a small
-clearance, dependent on the actual screw length, flange, gasket and seating;
-confirm it at the tightest fixing position before drilling. Then
-mark pilot centres from the actual driver, drill stopped pilot holes in the
-plywood, and confirm no pilot or screw tip
-reaches the sealed chamber. This is a wood-screw size, not an M4 machine-thread
-designation.
+**Current driver mounting, 16 November 2026:** the DAE places eight
+M4 × 20 mm pan-head machine screws on the 219 mm pitch circle, with eight
+M4 × 10 mm non-flanged Type E timber inserts in the baffle. This supersedes
+the 8 November 4 × 25 mm wood-screw proposal. The modelled screws and inserts
+are coaxial. In world coordinates their inserts occupy Z = 120–130 mm and
+the screw tips reach Z = 131 mm; the chamber-side baffle face is Z = 136 mm.
+Thus the model has approximately 10 mm axial insert overlap and 5 mm between
+the screw tips and chamber-side face. These are nominal envelopes, not a
+thread-engagement or drilling-depth guarantee. The insert opening faces the
+driver side, so the downward driver load is carried through the insert's
+external thread into the plywood. The eight fixings share roughly 49 N of
+static gravity load, about 6 N each if evenly loaded; dynamic loads, uneven
+preload and plywood strength are not established by that arithmetic.
+
+The modelled pan head is 8.0 mm diameter; the driver record gives a nominal
+7.9 mm head recess and 4.3 mm through hole. The head may therefore catch on
+the recess edge instead of bearing flat; tolerances and the actual recess shape
+matter. Trial the received driver and selected screw, ensuring the head bears
+fully without damaging the cast frame. If it does not, select a compatible
+head while retaining the M4 insert arrangement; recheck length from its
+actual bearing plane. Do not assume that the older countersunk screw fits.
+Trial the selected insert and its supplier-specified pilot in laminated plywood,
+checking edge breakout, square installation, full screw engagement without
+bottoming, and the remaining blind-hole depth. Locate holes from the actual
+driver and seal any accidental breakthrough. The physical fasteners, gasket,
+installation strength and airtightness remain unverified.
 
 Let `h` be the **loaded** vertical gap from the cabinet's outer bottom
 surface to the top of the nearby carpet pile, measured with the completed
@@ -311,6 +319,11 @@ Its selected TBC-09 terminal guard, leads and cable bends are not modelled.
 The [Mean Well mechanical specification](https://www.meanwell.com/Upload/PDF/RSP-200/RSP-200-spec.pdf)
 limits underside M4 screw penetration to 3 mm; finalise the screw stack,
 vent-panel material and attachment, support, and protective-earth continuity.
+The four modelled M4 × 20 pan screws extend from the vent-panel underside
+at world Z = 118 mm to Z = 141 mm, nominally 3 mm into the PSU base
+at Z = 138 mm. This consumes the entire stated penetration limit; actual
+length, panel thickness, seating and tolerances must keep penetration within
+3 mm, using a suitable shorter screw or spacing if necessary.
 
 The upper 18 mm baffle lamination is cleared over X = 18–282 mm,
 Y = 293–442 mm, leaving the rear electronics floor locally 18 mm thick.
@@ -335,7 +348,7 @@ Keep the inlet above the intended carpet with the loaded leg clearance
 in §1.2. Retain the IEC mains-inlet rear cover and PSU terminal guard, and protect
 mains parts from direct probing or foreign objects through the 6 mm
 lower holes. A retained screen would reduce net free area and must be
-considered with the modelled outlet. The missing PCB, thermal-contact
+considered with the modelled outlet. The modelled PCB, and the still-unresolved thermal-contact
 land, mounts, wiring and control harnesses may affect the chamber path.
 Preserve solid rear-plate land for the PCB, thermal contact and PE stud;
 validate the finished enclosure thermally using
@@ -405,9 +418,9 @@ The brace is glued to the surrounding cabinet as assumed; confirm one
 representative insert/plywood joint in an offcut before committing the pattern.
 The rear brace does not directly back the central FR-4 control-panel opening
 described in §3. The driver, rear wall, spreader, vents, IEC inlet, control
-panel and two sinks now show candidate fasteners; PSU mounting screws are not
-apparent in the DAE. The independent PE post is modelled. The amplifier PCB and its
-machined clearance pocket remain absent from the DAE. The ash legs and
+panel and two sinks show candidate fasteners; four PSU mounting screws are
+also modelled. The independent PE post is modelled. The amplifier PCB and its mounting fasteners are now modelled; the plate
+machining and physical component clearances still require independent checking. The ash legs and
 bumpers are present as glued wooden geometry, without mechanical fasteners.
 
 ## 2 PCB and mechanical constraints
@@ -484,6 +497,14 @@ fixing/seal. [Hub heatsink layout model](../../Hub/3d_models/thermal/557-140AB/R
 nominal envelope; [thermal design](THERMAL.md)
 owns the cooling screen.
 
+The 13 November [system order review](REV0_ORDER_REVIEW.md#2-findings-and-consequences)
+found that the DAE's plate-fixing washers stop around world Y = 470 mm,
+about 2 mm inboard of the rear plywood bearing face at Y = 472 mm. The
+depicted stack therefore does not clamp the 4 mm residual plywood land.
+Set the actual washer/nut stack to bear on sound ply, and trial that land,
+insert and countersink before using the DAE as an assembly drawing. This
+is a rear-panel hardware correction, not evidence of a P01 plate-hole error.
+
 **Historical base geometry, 11 November 2026:** the first model recorded the DAE's 152 × 137 × 6 mm blank with R6.35 mm plan
 corners. In plate-local coordinates, viewed from the heatsink/front face, the
 lower-left outline corner is (0, 0) mm. Ten Ø3.5 mm through holes for the
@@ -511,7 +532,7 @@ the opposite face is the rear. The user permits tapped through holes provided
 the installed screws do not project through the front. This is a preliminary
 layout proposal, not approved machining geometry.
 
-The imported [PCB STEP](../diptrace/main_board.step) has a 90 × 100 mm
+The PCB STEP used for the preliminary fit study had a 90 × 100 mm
 board, four Ø3 mm corner holes and two Ø2.5 mm IC-adjacent holes. Its modelled
 IC thermal face projects 1.25 mm from the rear PCB surface; four 1206 bodies
 project about 1.915 mm. Modelled through pins are longer, but the user plans
@@ -520,6 +541,10 @@ dimensions and a trimming assumption, not as-built measurements. Centred
 orientations screened put PCB fixing centres at least approximately 17.6 mm
 from existing heatsink-hole centres; select the final orientation only after
 checking pockets, tooling, hardware and electrical isolation.
+The [14 November PCB STEP](../diptrace/main_board.step) includes the enlarged
+Ø3.40 and Ø2.90 mm mounting holes. The centres match the saved PCB and
+the P01 seats. For cabinet placement, see the
+[amplifier assembly DAE](3d_models/README.md#4-amplifier-pcb-assembly).
 
 A candidate is approximately 4 mm from the PCB rear surface to local pocket
 floors. With the nominal 1.25 mm IC projection and its land at the original
@@ -667,7 +692,8 @@ plywood opening. It is a finish callout. Verify the actual ring terminals,
 cable bends and spanner access. Seat the actual head flush or slightly below
 the heatsink face and secure the post before fitting the sink. The DAE's two
 nuts touch. In assembly the inner nut clamps the serrated washer to the bare
-land and the outer nut clamps the ring terminals and flat washer against it.
+land and the outer Nyloc clamps the two ring terminals against it. The DAE
+still depicts two full nuts; the selected stack is in [power and grounding](POWER_AND_GROUNDING.md).
 The [grounding authority](POWER_AND_GROUNDING.md#3-protective-earth-and-chassis)
 owns the hardware and bond. The heatsinks need their own verified bonds.
 Confirm the Ø20 mm anodising exclusion with the machinist.
@@ -900,8 +926,11 @@ on the actual shaft and panel stack. The panel's outer face lies at Y =
 
 The [control panel DipTrace layout](../diptrace/control_panel.dipxml)
 copies the DAE's `Control_panel` part as a separate mechanical board.
-It uses the outside view, with XML X measured rightward from the left
-edge and XML Y measured down from the top edge. The 65 × 137 mm outline
+The current export uses the outside view with +X to the right and +Y
+upwards from the lower-left corner of the bounding rectangle. The
+[SketchUp layout model](3d_models/README.md#3-rear-fr-4-control-panel)
+combines the STEP solid and the Top Silk artwork to depict the specified
+black FR-4 and white legend. The 65 × 137 mm outline
 retains the DAE's 52 vertices around its R6.35 mm corners. The nominal
 thickness is 1.6 mm. Eleven circular openings are non-plated mounting
 holes, and the 29 × 48 mm rectangular opening is a Board Cutout polygon.
@@ -912,15 +941,13 @@ the panel face boundaries and the DAE's through-wall meshes. Check the
 outline, cutout and drill rendering in DipTrace before exporting for
 fabrication.
 
-**Model identity error:** both knob positions instantiate the single-gang
-`PDB181-E420K-103A2`. The selected crossover control is the dual-gang
-`PDB182-K420K-203B`, with six PC pins and an 11.5 mm rear body depth rather
-than the PDB181's three solder lugs and 9.5 mm rear depth, according to the
-[Hub PDB182 record](../../Hub/3d_models/electronics/PDB182-K420K-203B/README.md).
-Replace the appropriate instance and recheck its approximately 2 mm greater
-inboard reach, pin/harness clearance and actual panel fit before treating the
-control layout as complete. The present mesh cannot establish which knob
-position the user intends for crossover.
+**Control identities, 16 November 2026:** the DAE now contains one
+`PDB181-E420K-103A2` and one dual-gang `PDB182-K420K-203B`; the PDB182 is
+in the left-hand position in the model. This resolves the earlier duplicate
+identity. Confirm that position is the intended crossover control, and check
+its six PC pins, approximately 2 mm greater inboard reach, harness and actual
+panel fit. The [Hub PDB182 record](../../Hub/3d_models/electronics/PDB182-K420K-203B/README.md)
+owns the part dimensions.
 
 The FR-4 panel gives a nominal 14 mm X gap to the aluminium spreader
 (panel X maximum 113 mm; spreader X minimum 127 mm). The RCA model envelope

@@ -12,3 +12,7 @@ tmp/**
 
 # Recreate the optional preview environment from the pinned Hub requirements
 .venv-3d-preview/
+
+# GCode files
+*.gcode
+

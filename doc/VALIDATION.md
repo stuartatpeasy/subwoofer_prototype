@@ -17,8 +17,8 @@ Before first energisation:
   relief, conductor colour, absence of loose strands, and a firm pull-test;
 - confirm the inlet rear cover and PSU terminal guard are fitted and that mains
   wiring cannot contact signal/DC wiring, sharp edges, or ventilation slots;
-- confirm bare metal, serrated washer, fixed-stud nut, ring terminals, final
-  washer, and all-metal locknut are present in the documented M4 PE stack; and
+- confirm bare metal, serrated washer, fixed-stud nut, both ring terminals
+  and the fully engaged Nyloc are present in the documented M4 PE stack; and
 - with the unit unplugged, verify the inlet truth table: `OFF` opens both line
   and neutral to the PSU, `ON` closes both, and PE remains continuous in both
   positions.

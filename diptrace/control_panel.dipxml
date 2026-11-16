@@ -143,9 +143,9 @@
 <SheetSettings>
 <DisplayTitles>N</DisplayTitles>
 <DisplaySheet>N</DisplaySheet>
-<Xpos>52.7698</Xpos>
-<Ypos>98.0304</Ypos>
-<Scale>531.4683</Scale>
+<Xpos>17.37782</Xpos>
+<Ypos>97.99661</Ypos>
+<Scale>272.72727</Scale>
 <SheetWidth>297.002</SheetWidth>
 <SheetHeight>210.007</SheetHeight>
 <LeftMargin>19.99</LeftMargin>
@@ -346,12 +346,12 @@
 <Name>MtHole</Name>
 <Value/>
 </Component>
-<Component Id="7" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType3" X="17.5" Y="110.715" Locked="Y">
+<Component Id="7" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType3" X="17.5" Y="100.715">
 <RefDes>Hole8</RefDes>
 <Name>MtHole</Name>
 <Value/>
 </Component>
-<Component Id="8" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType3" X="47.5" Y="110.715" Locked="Y">
+<Component Id="8" UpdateId="-1" OriginCommon="Hide" OriginCourtyard="Show" Type="MtHole" PatternStyle="PatType3" X="47.5" Y="100.715">
 <RefDes>Hole9</RefDes>
 <Name>MtHole</Name>
 <Value/>
@@ -379,7 +379,7 @@
 </Shape>
 <Shape Id="1" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="20.33333" TextHeight="8.87302">
 <Points>
-<Point X="35.1" Y="16.6" />
+<Point X="34.6" Y="14.6" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
@@ -416,7 +416,7 @@
 </Shape>
 <Shape Id="5" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="17.43333" TextHeight="4.33333">
 <Points>
-<Point X="17.5" Y="97" />
+<Point X="17.5" Y="88" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
@@ -431,14 +431,14 @@
 </Shape>
 <Shape Id="7" Type="Arc" AllLayers="N" Layer="Top Silk" LayId="0" LineWidth="0.5">
 <Points>
-<Point X="26.16027" Y="105.715" />
-<Point X="17.5" Y="120.715" />
-<Point X="8.83973" Y="105.715" />
+<Point X="26.16027" Y="95.715" />
+<Point X="17.5" Y="110.715" />
+<Point X="8.83973" Y="95.715" />
 </Points>
 </Shape>
 <Shape Id="8" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="9.13333" TextHeight="8.87302">
 <Points>
-<Point X="15" Y="18.6" />
+<Point X="15" Y="16.6" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
@@ -448,7 +448,7 @@
 </Shape>
 <Shape Id="9" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="5.70667" TextHeight="3.46667">
 <Points>
-<Point X="34.1" Y="104.9" />
+<Point X="34.1" Y="94.9" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
@@ -457,7 +457,7 @@
 </Shape>
 <Shape Id="10" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="7.06667" TextHeight="3.46667">
 <Points>
-<Point X="55.1" Y="104.9" />
+<Point X="55.1" Y="94.9" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
@@ -466,7 +466,7 @@
 </Shape>
 <Shape Id="11" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="3.92" TextHeight="3.46667">
 <Points>
-<Point X="6.2" Y="104.9" />
+<Point X="6.2" Y="94.9" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
@@ -475,57 +475,64 @@
 </Shape>
 <Shape Id="12" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Left" VertAlign="Top" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="4.61333" TextHeight="3.46667">
 <Points>
-<Point X="25.2" Y="104.9" />
+<Point X="25.2" Y="94.9" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
 <TextLine>max</TextLine>
 </TextLines>
 </Shape>
-<Shape Id="13" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="12" FontSizeFloat="12" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="38" TextHeight="10.64762">
+<Shape Id="13" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="18" FontSizeFloat="18" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="57" TextHeight="7.8">
 <Points>
-<Point X="32.5" Y="128.7" />
+<Point X="32.5" Y="124.3" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
 <TextLine>150W active subwoofer</TextLine>
-<TextLine>type SSA1-150</TextLine>
 </TextLines>
 </Shape>
-<Shape Id="14" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Right" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="3.22667" TextHeight="3.46667">
+<Shape Id="14" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Right" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="1.36" TextHeight="3.46667">
 <Points>
-<Point X="7.3" Y="50.106" />
+<Point X="5.3" Y="50.106" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
-<TextLine>left</TextLine>
+<TextLine>L</TextLine>
 </TextLines>
 </Shape>
-<Shape Id="15" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Right" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="4.72" TextHeight="3.46667">
+<Shape Id="15" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Right" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="8" FontSizeFloat="8" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="1.76" TextHeight="3.46667">
 <Points>
-<Point X="7.3" Y="30" />
+<Point X="5.3" Y="30" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
-<TextLine>right</TextLine>
+<TextLine>R</TextLine>
 </TextLines>
 </Shape>
-<Shape Id="16" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="19.13333" TextHeight="8.87302">
+<Shape Id="16" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="10" FontSizeFloat="10" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="12.36667" TextHeight="4.33333">
 <Points>
-<Point X="47.5" Y="94.7" />
+<Point X="47.5" Y="88" />
 </Points>
 <FontName>Helvetica-Narrow</FontName>
 <TextLines>
 <TextLine>CUTOFF</TextLine>
-<TextLine>FREQUENCY</TextLine>
 </TextLines>
 </Shape>
 <Shape Id="17" Type="Arc" AllLayers="N" Layer="Top Silk" LayId="0" LineWidth="0.5">
 <Points>
-<Point X="56.16027" Y="105.715" />
-<Point X="47.5" Y="120.715" />
-<Point X="38.83973" Y="105.715" />
+<Point X="56.16027" Y="95.715" />
+<Point X="47.5" Y="110.715" />
+<Point X="38.83973" Y="95.715" />
 </Points>
+</Shape>
+<Shape Id="18" Type="Text" AllLayers="N" Layer="Top Silk" LayId="0" Angle="0" HorzAlign="Center" VertAlign="Center" TextAlign="Center" Inverted="N" FontVector="N" FontSize="12" FontSizeFloat="12" FontWidth="-2" FontScale="1" LineSpacing="1.2" TextWidth="32.88" TextHeight="5.2">
+<Points>
+<Point X="32.5" Y="118" />
+</Points>
+<FontName>Helvetica-Narrow</FontName>
+<TextLines>
+<TextLine>Stuart Wallace 2026</TextLine>
+</TextLines>
 </Shape>
 </Shapes>
 <DesignErrors>
@@ -535,13 +542,13 @@
 <Item>Y</Item>
 </Lays>
 </DesignError>
-<DesignError X="17.5" Y="110.715" Type="MaxNonPlatedHole" Value="8" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="7" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<DesignError X="17.5" Y="100.715" Type="MaxNonPlatedHole" Value="8" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="7" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
 <Lays>
 <Item>Y</Item>
 <Item>Y</Item>
 </Lays>
 </DesignError>
-<DesignError X="47.5" Y="110.715" Type="MaxNonPlatedHole" Value="8" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="8" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
+<DesignError X="47.5" Y="100.715" Type="MaxNonPlatedHole" Value="8" Rule="6.3" RuleType="DesignRules" RuleLay="-1" ObjectType1="MtHoleKeepout" ObjectType2="-1" Object1="8" SubObject1="1" Point1="-1" Object2="-1" SubObject2="-1" Point2="-1" ExtObject1="-1" ExtObject2="-1" ObjectNetClass1="0" ObjectNetClass2="0">
 <Lays>
 <Item>Y</Item>
 <Item>Y</Item>

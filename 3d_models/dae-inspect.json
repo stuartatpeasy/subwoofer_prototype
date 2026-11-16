@@ -24,14 +24,14 @@
         [42, 317, 152, 446],
         [176, 317, 286, 446]
       ],
-      "hole_parts": ["Vent_lower_A", "Vent_lower_B"],
+      "hole_parts": ["Subwoofer_vent_lower_segment_A", "Subwoofer_vent_lower_segment_B"],
       "diameter_mm": 6
     },
     {
       "name": "Upper outlet",
       "plane": "XZ",
       "opening_rectangles_mm": [[48, 306, 280, 386]],
-      "hole_parts": ["Upper_vent_A", "Upper_vent_B"],
+      "hole_parts": ["Subwoofer_upper_vent_segment_A", "Subwoofer_upper_vent_segment_B"],
       "diameter_mm": 6
     }
   ],

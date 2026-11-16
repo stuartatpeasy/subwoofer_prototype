@@ -613,10 +613,17 @@ Requirements:
   The [mechanical design](MECHANICAL.md#21-aluminium-heatsink-plate) owns
   the bore geometry and the Ø20 mm rear finish exclusion.
 - The stud must be mechanically independent of PCB, PSU, and plate mounting.
-- On the bare inner plate face use a serrated/internal-tooth washer and first
-  nut to clamp the stud permanently. Fit the two PE ring terminals above that
-  fixed joint, followed by a flat washer and an all-metal prevailing-torque
-  locknut. Servicing a conductor must not loosen the stud-to-plate bond.
+- On the clean bare inner plate face fit the internal-tooth washer and an M4
+  full nut, clamping the dedicated stud to the plate. Above that fixed joint
+  place the inlet PE ring terminal, the PSU FG ring terminal, then an M4
+  Nyloc nut. This 16 November selection supersedes the earlier flat-washer and
+  all-metal locknut stack. The tooth washer helps maintain metal contact at
+  the plate; the ring terminals conduct through the clamped metal surfaces.
+  Ensure flat, clean, sufficiently supported terminal faces, full thread
+  engagement through the nylon insert and an acceptable nut temperature.
+  Hold the inner nut while tightening or servicing the outer joint so the
+  stud-to-plate bond is not disturbed. A Nyloc is a mechanical lock, not a
+  substitute for the low-resistance bond test in [validation](VALIDATION.md).
 - Remove paint/coating at PE contact point.
 - Clean/abrade the contact area immediately before assembly; after tightening,
   protect around but never between the conductive interfaces against

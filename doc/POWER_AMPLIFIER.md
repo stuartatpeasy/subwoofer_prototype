@@ -972,8 +972,18 @@ the driver end after installation. Leave independent service slack on **both**
 sides of the fixed feed-through: enough to remove and support the driver and
 to draw out the rear panel with J5 still connected. Approximately 1 m total
 is a planning estimate, not a cut length; dry-fit both service positions before
-cutting the cable or sealing the penetration. Verify the driver terminals and
-their 2.5 mm² termination on the received unit.
+cutting the cable or sealing the penetration.
+
+On 15 November 2026 the user measured both received SB23MFCL45-4 tabs at
+approximately 6.3 mm wide and 0.7–0.8 mm thick. This suggests the 6.3 × 0.8 mm
+(.250 × .032 inch) receptacle family; the [driver data sheet](https://sbacoustics.com/wp-content/uploads/2024/02/8in-SB23MFCL45-4.pdf)
+does not specify the tabs. A candidate, not yet physically fitted or selected,
+is [TE 9-160313-2](https://www.te.com/en/product-9-160313-2.html): 6.35 ×
+0.81 mm tab, 1–2.5 mm² conductor, partially insulated, with a maximum
+4.32 mm insulation diameter. Confirm cable insulation diameter, crimp tooling,
+tab engagement and retention on the actual driver before committing the harness.
+[Farnell UK](https://uk.farnell.com/amp-te-connectivity/9-160313-2/crimp-terminal-female-blue/dp/587254)
+listed stock in multiples of ten on 15 November; recheck before ordering.
 
 At the approximately 150 W into 4 Ω output target, speaker current is
 `sqrt(150 W / 4 Ω) = 6.12 A RMS`. Molex's two-position, 16 AWG brass-contact

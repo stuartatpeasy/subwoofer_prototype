@@ -12,7 +12,7 @@ and selected standard 1.6 mm order options. Open items below concerning
 component fit, harness, rear plate, mains assembly, rail noise, temperatures
 and measured behaviour are deferred to assembly or prototype validation unless
 their order-preview evidence reveals a bare-board defect. See [PCB layout
-review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
+review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
 
 ## 1 Complete the system specification
 
@@ -218,6 +218,16 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
 
 ## 3 Complete the physical and safety design
 
+- [ ] Before the wider component order, generate a counted build BOM from the
+  placed board references and add the external driver, PSU, inlet/fuse/drawer,
+  controls, FR-4 panel, connector mates/pigtails, sinks, TIM, guards,
+  fasteners, terminals and cable. Check exact orderable suffixes and current
+  availability. The [13 November system order review](REV0_ORDER_REVIEW.md)
+  found no consolidated purchasing list in the project. The [fastener BOM](FASTENER_BOM.md)
+  now inventories the DAE, and the [off-board electrical BOM](OFFBOARD_ELECTRICAL_BOM.md)
+  lists external components and harness candidates; their fit and sourcing
+  gates and the combined build BOM remain open.
+
 - [ ] Implement and validate the selected common-`GND` layout, the one
   intended board-to-chassis bond, and the independent protective-earth paths.
   Account for intentional and incidental conductive contacts in the assembly;
@@ -302,10 +312,17 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
   wiring routes; the modelled inlet and nearest RCA envelopes are about
   7 mm apart laterally. Use the [layout models](3d_models/Rear-signal-parts.md)
   for component placement, not as machining templates.
-- [ ] Replace one of the DAE's two single-gang `PDB181-E420K-103A2` control
-  instances with the selected dual-gang `PDB182-K420K-203B` crossover
-  model. Confirm the intended knob position and the extra 2 mm rear body
-  depth, six PC pins and harness clearance before fixing the control panel.
+- [ ] Export and preview the separate `diptrace/control_panel.dipxml` outline,
+  cut-out and eleven NPTH holes before ordering the FR-4 panel; the main-board
+  Gerber ZIP does not contain its fabrication data.
+- [ ] Confirm the modelled PDB182 crossover position, pin and harness
+  clearances and actual panel fit; the DAE now contains one PDB181 and one
+  PDB182.
+- [ ] Trial the driver M4 pan head in the actual flange recess and a Type E
+  insert in laminated plywood. Verify blind-hole depth, full engagement without
+  bottoming, frame bearing and seal as described in [mechanical design](MECHANICAL.md#12-downward-driver-and-carpeted-floor-clearance).
+- [ ] Check the modelled PSU screws against the 3 mm maximum penetration: the
+  nominal stack uses all 3 mm, leaving no tolerance margin.
 - [x] Replace the 8 November broad, 4 mm-thick plywood control land with
   a separate insulating FR-4 panel over a rear-ply through-opening in the
   11 November DAE. Physical and electrical assembly checks remain above.
@@ -343,6 +360,11 @@ review](PCB_LAYOUT.md#5-current-release-disposition-27-october-2026).
 - [ ] Trial one rear-panel insert and countersunk screw in representative
   plywood before cutting. The revised positions give about 3.75 mm brace
   wood to the insert thread and 2.75 mm panel edge margin to the countersink.
+- [ ] Correct or physically replace the DAE's plate-fixing washer/nut stack:
+  its washers stop about 2 mm short of the rear-ply inboard bearing face, so
+  the model does not show a clamped 4 mm residual plywood land. Trial the
+  actual clamp and countersink in representative plywood before final cutting;
+  see [mechanical design](MECHANICAL.md#21-aluminium-heatsink-plate).
 - [ ] Check the completed ash-legged cabinet on the intended carpet: the
   plywood baffle starts 100 mm and the lower bumpers 90 mm above a hard floor.
   Confirm loaded clearance, level support, and unobstructed driver/inlet
