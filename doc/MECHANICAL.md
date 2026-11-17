@@ -1,27 +1,17 @@
 # Mechanical design
 
-> **State — current mechanical authority; reviewed 2026-11-16.** Owns cabinet,
+> **State — current mechanical authority; reviewed 2026-11-17.** Owns cabinet,
 > rear-plate and PCB/plate fit; electrical bonds are owned by
 > [power and grounding](POWER_AND_GROUNDING.md), and heat-load acceptance by
 > [thermal design](THERMAL.md). Read for plate or PCB packaging changes.
-> Current direction: 12 mm plywood rear panel and CNC-relieved nominal 8 mm
-> plate, with approximately 4 mm
-> local component clearance planned; JLCCNC 6061 and matt-black anodising
-> preferred provisionally. Next gate: confirmed material,
-> selective finish, bulk-capacitor edge clearance, finished
-> contact/clearance stack, FR-4 control-panel installation and thermal budget. No
-> final plate drawing or assembled thermal result is yet approved. The
-> bottom-firing sloped-partition model in §1 is the current layout basis;
-> the revised lower inlet geometry is accepted as the current design basis;
-> its material, fixings, guards and assembled thermal result remain open.
-> The 16 November DAE uses eight M4 driver screws and timber inserts, and has four ash corner legs, eight edge bumpers and a separate
-> insulating FR-4 control panel over a rear-ply cut-out. The vent and rear-panel
-> fixing locations have sounder wood lands. Loaded carpet and sink/wall
-> clearances, control-panel support, mains guards and harness, PCB/plate contact,
-> protective-earth details and the thermal result remain open.
-> The [working FreeCAD plate](../3d_models/Thermal%20spreader%20plate.FCStd)
-> includes the PE post hole. IC contact, fastener fit, finish, clearances
-> and the production drawing remain open.
+> Current direction: 12 mm plywood rear panel, separate FR-4 controls and
+> the P01 nominal 8 mm CNC-relieved plate. The user reports that the rev0
+> board and P01 plate are in fabrication and that design clearances are
+> adequate for prototyping. Next gate: check the received parts' actual
+> contact stack, fastener fit, clearances, electrical isolation and PE
+> bonds; assess cooling in prototype validation. The model is not a physical
+> fit or temperature measurement. The cabinet, control-panel support,
+> guards, harness and loaded carpet and wall clearance remain open.
 
 ## 1 Two-chamber cabinet architecture
 
@@ -36,7 +26,7 @@ cabinet's front-left-bottom corner as the local origin. The current DAE's
 world coordinates are offset from it by X = 14 mm, Y = 14 mm and Z = 100 mm.
 Later veneer, edge protection, or other decorative trim may increase the finished outer
 dimensions without breaching that decision. The model is not a final cutting
-drawing: joint details, tolerances, amplifier PCB, plate contacts, some
+drawing: joint details, tolerances, actual PCB and plate contacts, some
 fasteners, and finished trim remain open. The model includes candidate braces, two bottom
 vent/PSU-mount panels, two upper vent inserts, a separate FR-4 control panel,
 and a smaller spreader with two external sinks. Both vent fields are reviewed
@@ -132,22 +122,12 @@ retain the **20.0 L geometric target without a wadding credit**. If tuning
 this detail, compare low-level installed impedance under otherwise matched
 conditions before and after adding the chosen lining.
 
-The earlier 2.585 L figure was obtained by directly summing signed
-triangle volumes from the prior DAE. Some SketchUp surfaces had
-inconsistent winding, making that method unreliable. The current
-1.259 L result comes from reorienting each closed brace mesh consistently
-before integrating its enclosed volume; all six meshes had paired edges
-and no orientation conflicts in that check.
-
-The previous driver-displacement estimate of about 0.8 ± 0.2 L came from
-the manufacturer's section drawing, not a displaced-volume measurement.
-The roughly 130 mm diameter motor has an approximately 0.66 L cylindrical
-envelope at an inferred 50 mm length, before subtracting its vent and
-reliefs. The open basket adds less solid volume than its outside shape
-suggests. The user reasonably suspects that 1.0 L may be low; keep it as
-a provisional calculation input, not an upper bound. The visual 3D driver
-model is not a solid-displacement model. Count only driver solids extending
-into the sealed chamber, relative to the inner baffle plane.
+The 1.259 L brace volume uses consistently oriented closed meshes. The
+1.0 L driver allowance is provisional, not an upper bound; the visual model
+is not a displacement measurement. Count only driver solids inside the sealed
+chamber relative to the inner baffle plane. [Earlier volume methods and
+limitations](history/MECHANICAL_HISTORY.md#4-earlier-volume-calculations)
+are retained for provenance.
 
 The revised window and rib network retains the same load paths while
 reducing member depth: it ties the side panels at about 160 mm height,
@@ -420,7 +400,8 @@ The rear brace does not directly back the central FR-4 control-panel opening
 described in §3. The driver, rear wall, spreader, vents, IEC inlet, control
 panel and two sinks show candidate fasteners; four PSU mounting screws are
 also modelled. The independent PE post is modelled. The amplifier PCB and its mounting fasteners are now modelled; the plate
-machining and physical component clearances still require independent checking. The ash legs and
+pocket is not represented in the cabinet DAE, and physical component clearances
+still require checking. The ash legs and
 bumpers are present as glued wooden geometry, without mechanical fasteners.
 
 ## 2 PCB and mechanical constraints
@@ -478,22 +459,18 @@ records the earlier saved-XML coordinates.
 
 ### 2.1 Aluminium heatsink plate
 
-Current manufacturing selection: custom CNC machining through JLCCNC, with
-6061 preferred over its listed 7075 option. Use the nominal 8 mm study as
-the current design basis. The user corrected the pre-reduction plate to 185 × 172 mm and
-the DAE depicts 152 × 137 mm with two external 557-140AB
-sinks as the preferred provisional direction. The DAE has no component
-pocket; the earlier intended 3 mm-deep local pocket would leave a nominal
-3 mm web where cut, while actual PCB-to-metal clearance depends on the full
-mounted stack. With vertical 116.84 mm fin channels, the two nominal sink
+The P01 nominal 152 × 137 × 8 mm spreader and the rev0 PCB are in
+fabrication (user report, 17 November 2026). Two external 557-140AB
+sinks are the current cooling arrangement. The user considers the design
+clearance adequate for prototyping; fit remains to be checked on receipt. The DAE omits the component pocket; actual PCB-to-metal clearance depends
+on the received parts and mounted stack. With vertical 116.84 mm fin channels, the two nominal sink
 footprints occupy 121.92 × 116.84 mm; with the modelled 8 mm gap between
 them, the pair occupies about 130 × 116.84 mm. This leaves about 11 mm at
 each plate side and end before fasteners, gasket and tolerances. The
 90 × 100 mm PCB outline also fits nominally. Its supports and recessed field
 are explored in the study below. The 13 November DAE shows four plate
-bolts, twelve heatsink screws and the dedicated PE point. Co-design the plate and
-upper outlet while retaining the continuous IC thermal land and perimeter
-fixing/seal. [Hub heatsink layout model](../../Hub/3d_models/thermal/557-140AB/README.md) records its
+bolts, twelve heatsink screws and the dedicated PE point. Retain the continuous IC thermal land and perimeter fixing/seal when
+finishing the upper outlet. [Hub heatsink layout model](../../Hub/3d_models/thermal/557-140AB/README.md) records its
 nominal envelope; [thermal design](THERMAL.md)
 owns the cooling screen.
 
@@ -505,74 +482,13 @@ Set the actual washer/nut stack to bear on sound ply, and trial that land,
 insert and countersink before using the DAE as an assembly drawing. This
 is a rear-panel hardware correction, not evidence of a P01 plate-hole error.
 
-**Historical base geometry, 11 November 2026:** the first model recorded the DAE's 152 × 137 × 6 mm blank with R6.35 mm plan
-corners. In plate-local coordinates, viewed from the heatsink/front face, the
-lower-left outline corner is (0, 0) mm. Ten Ø3.5 mm through holes for the
-heatsinks are centred at (14, 22.5), (14, 68.5), (14, 114), (69, 22.5),
-(69, 114), (83, 22.5), (83, 114), (138, 22.5), (138, 68.5), and
-(138, 114) mm. Four plate fixing holes are centred at (7, 7), (145, 7),
-(7, 130), and (145, 130) mm; each is Ø5 mm through with an Ø8.5 mm,
-1.75 mm deep, nominal 90° countersink on the front face. Local +Z runs from
-the PCB/rear face to the heatsink/front face; DAE (X, Y, Z) maps approximately to
-local (X − 127.013, Z − 153, Y − 478) mm. The slight world-X fraction comes
-from the SketchUp transform, not a machining dimension.
+The preliminary 6 mm plate and early PCB stack proposal were superseded by
+the 8 mm P01 design below. Their geometry is retained in
+[mechanical history](history/MECHANICAL_HISTORY.md#1-earlier-spreader-geometry-and-proposed-stack).
 
-The [base generator](../tools/freecad/build_thermal_spreader_plate.py)
-rebuilds that historical geometry in FreeCAD 1.1.4. Run
-`runpy.run_path(path)` in the FreeCAD GUI Python console, where `path`
-is the generator's absolute path. Its retained constants and sketch
-definitions generate a native model and STEP in
-`tmp/thermal-spreader-base-rebuild/`. The expected result is a single
-valid 152 × 137 × 6 mm solid of 123569.154 mm³.
-
-**Proposed rear-face arrangement, 11 November 2026:** the user intends the
-PCB centred on the plate, with four corner supports and the two holes beside
-the TPA3251 used for its thermal contact. The heatsink-side face is the front;
-the opposite face is the rear. The user permits tapped through holes provided
-the installed screws do not project through the front. This is a preliminary
-layout proposal, not approved machining geometry.
-
-The PCB STEP used for the preliminary fit study had a 90 × 100 mm
-board, four Ø3 mm corner holes and two Ø2.5 mm IC-adjacent holes. Its modelled
-IC thermal face projects 1.25 mm from the rear PCB surface; four 1206 bodies
-project about 1.915 mm. Modelled through pins are longer, but the user plans
-to trim them to at most 2 mm beyond the rear PCB surface. These are CAD
-dimensions and a trimming assumption, not as-built measurements. Centred
-orientations screened put PCB fixing centres at least approximately 17.6 mm
-from existing heatsink-hole centres; select the final orientation only after
-checking pockets, tooling, hardware and electrical isolation.
-The [14 November PCB STEP](../diptrace/main_board.step) includes the enlarged
-Ø3.40 and Ø2.90 mm mounting holes. The centres match the saved PCB and
-the P01 seats. For cabinet placement, see the
-[amplifier assembly DAE](3d_models/README.md#4-amplifier-pcb-assembly).
-
-A candidate is approximately 4 mm from the PCB rear surface to local pocket
-floors. With the nominal 1.25 mm IC projection and its land at the original
-plate surface, that implies about 2.75 mm pocket depth and 3.25 mm remaining
-web in 6 mm stock; the nominal clearance above trimmed 2 mm pins is then
-2 mm. Limit the pocket footprint to the component and pin fields while
-retaining the IC land, support pads and continuous heat paths. Verify actual
-component, solder, pin, tool-radius and tolerance envelopes before machining.
-PCB supports at the IC land height would need to stand approximately 1.25 mm
-above the original plate face: separate supports or additional stock can
-provide this; a boss of that height cannot be cut out of the existing flat
-6 mm blank without lowering the land. Keep analogue-domain mounting isolation
-as specified in §2 and the grounding authority.
-
-Equal rigid support heights alone do not establish controlled IC contact
-pressure. Resolve the contact stack from actual package projection, PCB and
-support dimensions and a thin TIM film; assess a compliant, limited-load
-clamping arrangement at the two IC-adjacent holes without imposing excessive
-PCB or solder-joint bending. Fix screw size, engagement and length after the
-hardware stack and thread depths are selected. The Ø3 and Ø2.5 mm board holes
-do not themselves establish clearance for nominal M3 and M2.5 screws.
-
-**8 mm design study, 11 November 2026:** the user authorised considering
-thicker stock and developing the rear design. The [working FreeCAD plate](../3d_models/Thermal%20spreader%20plate.FCStd)
-is the model for developing the production geometry. Its features
-retain the DAE's plan outline and front countersinks. The extra 2 mm is on
-the cabinet side of the original 6 mm plate. The 13 November DAE now uses
-the same thickness and the rebate floor has moved to world Y = 476 mm.
+The [working FreeCAD plate](../3d_models/Thermal%20spreader%20plate.FCStd)
+records the nominal 8 mm geometry. The cabinet DAE uses the same thickness
+and a rebate floor at world Y = 476 mm.
 
 Using the base plate's local XY datum, the board maps as X = 31 + PCB X and
 Y = 118.5 − PCB Y. A rounded clearance field spans X = 29–123 and
@@ -586,24 +502,18 @@ the IC land. They need approximately 1.25 mm of selected shims to reach
 the nominal board plane, before resolving the real contact stack. The land
 size is a trial provision for TI's exposed pad, not a proven contact fit.
 Its nominal clearance to the modelled lead rows is limited; assess actual
-package, solder, placement and machining tolerances before release.
+package, solder, placement and machining tolerances on the received parts.
 
 The P01 prototype models four Ø2.50 mm pilots for M3 × 0.5 corner
 threads and two Ø2.05 mm pilots for M2.5 × 0.45 IC-adjacent threads.
-Tap both groups through from the PCB face. The matching drill clearances
+The drawing specifies through threads from the PCB face. The matching drill clearances
 in the saved PCB are Ø3.40 and Ø2.90 mm respectively.
 [JLCCNC ordering guidance](https://jlccnc.com/help/article/cnc-machining-ordering-guidelines).
 
-**Heatsink fastening study, 12 November 2026:** use a common short screw
-from the heatsink side at all six positions per sink. The revised FreeCAD
-study replaces the DAE's ten Ø3.5 mm clearance holes with Ø2.5 mm tap-drill
-bores for M3 × 0.5 through threads and reinstates the two middle positions
-at (69, 68.5) and (83, 68.5) mm. These centres follow the DAE rows. Check
-all six slots and washer seats on each physical extrusion before fixing
-the drilling coordinates. The six inner positions pass through the 4 mm
-pocket web. The six outer positions pass through 8 mm. The revised model
-and STEP carry the plain tap drills. The machining drawing needs the
-twelve M3 × 0.5 through thread callouts on the heatsink face.
+**Heatsink fasteners:** the P01 drawing specifies twelve M3 × 0.5
+through threads for six short screws per sink. Six inner positions pass
+through the 4 mm pocket web; the six outer positions pass through 8 mm.
+Check all slots and washer seats on the actual extrusions and plate.
 
 The user measured a 3.2 mm flange and confirmed M3 × 8 mm screws for all
 twelve positions. Use fully threaded M3 × 0.5 screws, 8 mm under the head,
@@ -658,8 +568,8 @@ clearance is Ø2.90 mm finished NPTH at the two existing centres. It gives
 size and position tolerances and is a close-fit option only with a checked
 tolerance stack. The [12 November PCB](PCB_LAYOUT.md#1-reviewed-design-state-and-scope) has
 Ø2.90 mm NPTH. The spreader has M2.5 tap drills at those seats. Check all layers and preserve the 5 mm hardware
-envelope and controlled amplifier-ground contact before adopting the new
-hole diameter. Start all six screws loosely and locate the board by the
+envelope and controlled amplifier-ground contact when assembling the received
+board. Start all six screws loosely and locate the board by the
 PowerPAD-to-land alignment before tightening. Use a separate assembly
 guide if the thermal land needs tighter registration.
 [JLCPCB NPTH guide](https://jlcpcb.com/blog/npth-design-guide).
@@ -677,8 +587,7 @@ tap-drill geometry at those centres.
 has twelve M3 × 8 mm screws with tips 4.32 mm into the plate. The six inner
 tips therefore project about 0.32 mm into the FreeCAD pocket. The simplified
 DAE bores are Ø3.5 mm. The FreeCAD plate retains Ø2.50 mm pilots for M3 × 0.5.
-The earlier exports had eight and then eleven washer meshes. The revised
-20:41 export has twelve, one at each screw. Dry-check seating, tool access
+The DAE shows twelve washers, one at each screw. Dry-check seating, tool access
 and tip projection on the actual assembly.
 The DAE screws are about 0.12 mm higher than the FreeCAD tap-drill rows.
 Keep the existing drill rows and confirm alignment on the actual sinks.
@@ -699,10 +608,10 @@ Dry-fit both terminals and confirm full nylon engagement and accessible
 thread before treating the assembly as complete.
 The [grounding authority](POWER_AND_GROUNDING.md#3-protective-earth-and-chassis)
 owns the hardware and bond. The heatsinks need their own verified bonds.
-Confirm the Ø20 mm anodising exclusion with the machinist.
+Check the received plate for the specified Ø20 mm anodising exclusion.
 
-Before manufacturing, also resolve PCB mounting isolation, selective finish,
-and real board and part tolerances.
+During dry assembly, verify PCB mounting isolation, actual finish and real
+board and part tolerances.
 
 The [working plate generator](../tools/freecad/build_thermal_spreader_study.py)
 captures the current 8 mm geometry. To rebuild it in FreeCAD 1.1.4, run
@@ -717,8 +626,8 @@ pre-P01 model used smaller PCB tap drills.
 **P01 prototype order package.** Use the matching
 [STEP](../output/pdf/Thermal%20spreader%20plate%20-%20P01.step) and
 [PDF drawing](../output/pdf/Thermal%20spreader%20plate%20-%20P01.pdf) for
-the JLCCNC quote. The user will order this plate and PCB together, then
-trial the actual contact stack before ordering a revised plate. Both
+the P01 fabrication package. The user reports that this plate and the PCB are in fabrication.
+Trial the actual contact stack before deciding whether a revised plate is needed. Both
 IC screw seats and the thermal land remain 2.75 mm above the pocket floor.
 The nominal inner shim is 1.25 mm. Use actual support gaps and pad height
 to select shims and to derive the next land height. If the IC contacts
@@ -740,9 +649,8 @@ finish zones, bare and unblasted PE and IC lands, both heatsink mating
 footprints and both inner seat tops. Bare seat tops preserve options for
 the shim and intentional amplifier bond trial. They do not decide the
 electrical bonding point or replace the separate heatsink bond on each
-extrusion. Confirm the finish boundaries and achievable finished land and
-seat tolerances in the quote. If masking cannot be supplied, request an
-as-machined alternative. Match the order options to the accepted drawing.
+extrusion. Inspect the received finish boundaries and finished land and seat dimensions;
+the physical parts have not yet been verified.
 
 The [drawing generator](../tools/freecad/draw_spreader_p01.py) uses
 ReportLab 4.4.9. Run it with the bundled Python from the project root to
@@ -757,25 +665,12 @@ and verify one solid of the expected dimensions and volume. A previous
 whole-document STEP contained four solids because it included the hidden
 machining stages.
 
-Superseded CAD files were removed from `3d_models/` and retained in
-`tmp/thermal-spreader-superseded-2026-11-13/`. That archive includes old
-quote files and backups. For the preceding 8 mm geometry without the PE
-bore, use the working plate generator with `earth_post_cut` bypassed.
-The expected final volume is 127072.803 mm³. The earlier ten-hole study
-also used the ten DAE sink centres listed above and Ø3.5 mm clearance
-bores, giving 126810.480 mm³. The historical base geometry has its own
-generator as described above.
+Earlier plate geometry and its historical reconstruction notes are recorded in
+[mechanical history](history/MECHANICAL_HISTORY.md).
 
-The previous version's 106 nominal rear-component and IC-lead bounding boxes
-showed no solid overlap after limiting pin projection to 2 mm. The revised
-sink bores and recessed screw tips stay outside that component clearance
-envelope. This is a nominal interference
-screen, not a tolerance, solder, fastener or physical-assembly check.
-1050A-H14 was the
-earlier flat-plate choice; its higher thermal conductivity does not resolve the
-PCB-side placement problem by itself. Verify JLCCNC's available 6061 temper and
-stock thickness, final machined web, panel stiffness, and passive-cooling
-budget before approving production geometry.
+The user reports that design clearance is adequate for the rev0 prototype.
+Verify the received part, panel stiffness, actual component and screw-tip
+clearances and passive-cooling performance during assembly and validation.
 
 **Revised mounting decision, 11 November 2026:** no user control or external
 connector mounts in the aluminium heat-spreader plate. The potentiometers,
@@ -810,11 +705,8 @@ Preserve specified contact flatness and finish; a blasted land may increase
 TIM thickness. Show coating boundaries and acceptable anodising rack/contact
 marks away from the visible face and functional zones. Mark any other
 tolerance-critical bores, threads, mating/gasket faces or recess depths with
-their required finished dimensions and coating state. Confirm masking or
-post-finish machining of bare zones with JLCCNC in the quote; its standard
-black-anodised part must not be assumed to have the required bare contacts.
-If selective finishing is unavailable, retain an as-machined plate with a
-separately applied matt-black exterior finish as the fallback.
+their required finished dimensions and coating state. Inspect the received plate for the required bare contacts and finish.
+If the functional zones are not suitable, resolve the finish before assembly.
 Sources: [JLCCNC finish comparison](https://jlccnc.com/finishes) and
 [anodising dimensional guidance](https://jlccnc.com/blog/anodizing-thickness).
 
@@ -831,17 +723,6 @@ wiring from sharing the signal/DC loom space.
 The [Hub PSU 3D layout model and M4 guide](../../Hub/3d_models/electronics/RSP-200-36/README.md) can be used to
 place its nominal case and threaded-hole centres. The separate guard and wiring
 still need actual-part clearance checks.
-
-The intended fabrication route is now a custom CNC-machined plate. An
-illustrative `300 × 200 × 5 mm` FreeCAD solid with representative holes and a
-recess was accepted by JLCCNC's quote tool on 2026-10-07; the user reported an
-approximate US$20 quote for that test article. This establishes that a native
-solid STEP export can pass the upload/quote stage. It is not a quote for the
-project plate or evidence that the final material, features, thermal path,
-PCB clearance, or machining details are resolved. The retained generator and
-reconstruction instructions are in `tmp/cnc-machining-debug/quote_probe_freecad.py`;
-the corresponding `.FCStd` and `.step` files in that directory are exploratory
-outputs.
 
 ### 2.2 Plate installation
 
@@ -866,8 +747,8 @@ the IC to compensate for an unmeasured assembly gap.
 For each sink, specify a flat, unblasted plate contact region beneath the
 black-anodised extrusion, clean both faces, apply a thin continuous grease
 film and tighten the sink fasteners evenly. Check the actual extrusions'
-mating faces, slot hardware, thread engagement and assembled contact before
-fixing the plate drawing. Because grease and anodising cannot establish a
+mating faces, slot hardware, thread engagement and assembled contact on the
+received plate. Because grease and anodising cannot establish a
 protective-earth path, provide a local bare-metal bonding contact at a
 mounting point for each externally accessible sink, independent of the
 greased face, and verify continuity to the earthed plate;
@@ -965,90 +846,12 @@ height, so check the real inlet cover and wire bends before approving the
 cut-outs. The FR-4 panel and its fasteners are not a mains safety enclosure
 by themselves.
 
-### 3.2 Superseded 8 November plywood control recess
+### 3.2 Knob and control fit
 
-The following assessment records why the earlier shared thin-plywood land
-was replaced; its relief dimensions are not current machining instructions.
-
-The 8 November DAE relieves one continuous X = 34–107 mm, Z = 62–181 mm
-region from the inside by 8 mm, leaving a **4 mm outer plywood skin** for
-the IEC inlet, two potentiometers, polarity switch and RCA sockets. This
-73 × 119 mm thin land is interrupted by their cut-outs and sits only about
-5 mm from the spreader rebate at X ≈ 112 mm. For scale, a free 4 mm skin
-has `(4/12)^3 = 1/27` the bending stiffness of the full 12 mm sheet in
-the same span; surrounding wood helps but does not make repeated plug and
-switch loads harmless. This is a material mechanical concern before cutting.
-Prefer separate local reliefs matched to each part's required clamping
-thickness, retaining full-depth wood between them, or design a supported
-subpanel. Recheck the inlet cover, mains/signal separation, PE scheme,
-washer support and fixings on the actual assembly; the DAE does not show
-the cable bends or guards. The modelled IEC and nearest RCA envelopes are
-only about 12 mm apart laterally over a shared height range, so the
-unmodelled inlet cover and wiring route matter here. The selected
-NYS367 RCA sockets allow at most 3 mm effective panel thickness, so this
-4 mm land still needs at least 1 mm further local relief at each RCA before
-any finish or washer stack. Preserve support between the individual controls.
-
-The [Hub PDB18 models](../../Hub/3d_models/electronics/PDB18-family/README.md) and
-[DD11 inlet model](../../Hub/3d_models/electronics/DD11.0111.1111/README.md) support layout in SketchUp.
-Their panel guides are references, not cutting instructions. Each selected
-PDB18 potentiometer has only 6.5 mm of exposed M7 bushing, so the full 12 mm
-ply cannot sit under its washer and nut. Design a local recess or thin control
-land, then check actual nut engagement, anti-rotation feature, knob reach and
-remaining plywood strength. Same Sky `SAK-007` (Mouser `179-SAK-007`) was
-checked on 1 November 2026 and is not a direct-fit knob for either selected
-PDB18: its [D-shaped 6 × 4.5 mm socket and 9.6 mm depth](https://jp.sameskydevices.com/product/resource/knobs-compatibility-guide.pdf)
-are specified for a D shaft, while the selected `K420K` shafts have 18-tooth
-knurls. The [Bourns drawing](https://www.bourns.com/docs/product-datasheets/pdb18.pdf)
-gives a 20 mm shaft projection from the pot's seating face; even a 3 mm
-finished mounting land would leave about 17 mm outside the panel. With a
-9.6 mm-deep socket fully seated on the shaft, the knob base would stand about
-7.4 mm off that panel. Select a knob for the 6 mm, 18-tooth spline and check
-its socket depth against the final panel, washer and nut stack.
-
-Mouser-listed shaft-profile candidates checked on 2 November 2026 are
-[Davies Molding `1106WA`](https://www.mouser.co.uk/en/ProductDetail/Davies-Molding/1106WA?qs=sGAEpiMZZMt59L%252B180nu3T6TRtZ1rFBWDLLs7PLd1bgcYNFjF0fNCw%3D%3D)
-(18.5 mm diameter, 18 mm high, black with white pointer),
-[Eagle Plastic Devices `450-AE185`](https://www.mouser.co.uk/en/ProductDetail/Eagle-Plastic-Devices/450-AE185?qs=sGAEpiMZZMt59L%252B180nu3QVMcO3xhYHCvPKHdInvapI%3D)
-(19 mm diameter, 18 mm high, grey with black line), and
-[`450-AE141`](https://www.mouser.co.uk/en/ProductDetail/Eagle-Plastic-Devices/450-AE141?qs=OEmOpuBgIMzKdJe6iTJ5jg%3D%3D)
-(14 mm diameter, 17 mm high, black with black line). Davies specifies a
-6 mm, 18-tooth moulded spline for `1106WA`; Eagle's [T18 definition](https://www.mouser.com/catalog/catalogusd/646/2041.pdf)
-is likewise a 6 mm, 18-tooth shaft. Their published overall heights do not
-establish usable bore depths. With about 17 mm of shaft above a proposed 3 mm
-land, none is yet a verified direct fit. Trial-fit a sample on the actual
-potentiometer and final panel/nut stack before fixing knob height or trimming
-a shaft. Mouser stock and prices are transient and need rechecking at purchase.
-
-The Schurter DD11 screw-mounted inlet permits at
-most **8 mm panel thickness**. Its location therefore needs an effective ply
-thickness no greater than 8 mm, requiring at least 4 mm local relief in the
-12 mm wall before any veneer or finish in the clamped stack; check the
-purchased inlet, rear cover, screw fixing and
-remaining wood web before machining. Keep the inlet rear cover and mains loom
-clear of signal controls and the plate's thermal/PE fixtures.
-
-The selected
-[E-Switch polarity switch](FRONT_END.md#62-selected-e-switch-gold-contact-switch-31-october-2026)
-has an 8.89 mm threaded bushing, so its nut and washer need a locally relieved
-land in the 12 mm plywood. Check actual hardware engagement, lever access,
-anti-rotation keyway, remaining wood and rear solder-lug clearance. The switch
-mounting cut-out is not yet locked.
-
-The selected [REAN NYS367 RCA sockets](FRONT_END.md#21-selected-rca-panel-sockets-31-october-2026)
-also need a relieved land: their published maximum effective panel thickness
-is 3 mm, implying at least 9 mm rear-side relief in 12 mm plywood before
-finish or washer effects. Check whether the resulting wood web and the
-15.5 mm mounting-washer footprint will support repeated plug insertion and
-removal; use a suitably supported thin insulating insert if that is more
-robust. Confirm the purchased washers, nut engagement and rear solder/wire
-clearance before cutting. Keep every conductive socket part clear of the
-aluminium plate and its fixings, as specified in
-[power and grounding](POWER_AND_GROUNDING.md#8-rca-inputs). The exact socket
-cut-out is not yet locked. The [rear signal-part layout models](3d_models/Rear-signal-parts.md)
-show the component envelopes but do not define the pocket machining.
-
-The acoustic partition, rather than this outer rear wall, now contains the
-driver pressure. The rear structure must still carry the electronics safely,
-retain the plate, preserve cabinet stiffness, and provide the bottom-panel
-inlet, upper-rear-panel outlet, and service access without exposing live parts.
+Select knobs for the PDB18 6 mm, 18-tooth splined shafts. The previously
+considered Same Sky SAK-007 is for a D shaft and is not a direct fit.
+Davies `1106WA` and Eagle `450-AE185`/`450-AE141` are shaft-profile
+candidates, not physically verified selections; trial the actual knob,
+potentiometer, FR-4 panel and nut stack before setting knob height or trimming
+the shaft. The replaced plywood recess and earlier alternatives are recorded
+in [mechanical history](history/MECHANICAL_HISTORY.md#2-earlier-plywood-control-recess-and-component-mounting).

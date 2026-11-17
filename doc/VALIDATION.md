@@ -26,7 +26,8 @@ Before first energisation:
 Protective-bond acceptance:
 
 - measure from the C14 PE pin to the farthest accessible point on the aluminium
-  plate and separately to the RSP metal case/FG;
+  plate, separately to the RSP metal case/FG, and to each externally accessible
+  heatsink;
 - pass at no more than 0.10 Ω after subtracting test-lead resistance, using a
   low-resistance tester supplying at least 200 mA;
 - flex the protected wiring and operate the controls during the test; no

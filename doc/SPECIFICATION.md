@@ -34,7 +34,8 @@ Do not revisit without measured/simulation evidence:
   intrusions and before assigning any apparent-volume benefit to wadding
 - electronics-chamber inlet through the bottom panel and outlet through the
   upper half of the rear panel, with the sloped partition shaping the airflow
-  route; the hole fields and free areas remain to be designed
+  route; modelled vent fields and projected free areas are recorded in
+  [mechanical design](MECHANICAL.md); finished guarding and airflow remain open
 - 36 V main rail
 - Mean Well `RSP-200-36` main PSU
 - first-prototype auxiliary supply selection: MP4581GN-Z buck at approximately
@@ -114,14 +115,11 @@ Do not revisit without measured/simulation evidence:
 - one four-layer PCB with physically controlled analogue and power regions;
   no two-layer fallback
 
-The former 1050A-H14 flat plate, painted-exterior process, SMD-only board,
-and front-side-only support-component rules are superseded by the CNC-relieved
-plate and component-placement permissions above. JLCCNC 6061 and ordinary
-matt-black anodising are preferred **provisional** material/finish choices,
-subject to the thermal and fabrication gates in [Mechanical design](MECHANICAL.md).
-The former X7R MLCC output-filter technology preference is also superseded:
-through-hole film is permitted, with exact selection still provisional in
-[Power amplifier](POWER_AMPLIFIER.md).
+The rev0 CNC-relieved P01 plate is in fabrication (user report,
+17 November 2026); its material, finish, fit and thermal performance are to
+be checked on receipt and during prototype validation. See
+[mechanical design](MECHANICAL.md). Through-hole film output-filter capacitors
+are selected for the prototype; see [power amplifier](POWER_AMPLIFIER.md).
 
 The previous 15 V converter feeding separate 12 V amplifier and analogue
 post-regulators is superseded by the selected first-prototype supply in the
@@ -134,10 +132,9 @@ net, and the unpopulated R1/R2 links have been removed. The TPA3251's 12 V
 feeds are drawn, but their loaded current, L78M12 thermal behaviour, and the
 physical bypass and return paths remain open. The selected nominal 1 µF C36
 input bypass meets the local capacitance target on the user's DC-bias data;
-its placement remains a PCB check.
-Prior component analysis remains
-in [power and grounding](POWER_AND_GROUNDING.md) as superseded context, not
-an active procurement or assembly instruction.
+verify its connection and loaded behaviour on the received prototype.
+Earlier component analysis is retained as [history](history/power-and-grounding.md),
+not an active procurement or assembly instruction.
 
 ## 1.1 PCB architecture and grounding
 
@@ -162,11 +159,10 @@ The one-board, four-layer architecture remains locked; the common `GND` net
 supersedes the earlier split-net scheme. The current saved copper and its
 remaining assembly checks are in [PCB layout review](PCB_LAYOUT.md).
 Four layers are a project requirement even though they are not a functional
-requirement of the TPA3251 itself. For the first bare-board order, JLCPCB
-standard four-layer, 1.6 mm construction is selected; the final export and
-order-option comparison remains open. The milled plate reliefs and thermal
-interface between the rear-mounted top-exposed PowerPAD and aluminium plate
-remain separate assembly design tasks.
+requirement of the TPA3251 itself. The rev0 four-layer, 1.6 mm board is in fabrication (user report); the
+rendered-preview outcome was not recorded. The P01 plate is also in
+fabrication; verify its reliefs and thermal contact to the rear-mounted
+PowerPAD on the received parts.
 
 ## 2 Driver
 
@@ -208,8 +204,9 @@ control panel fastened to the rear ply, and a reduced aluminium plate with
 two external sinks.
 The extra 10 mm depth is in the electronics compartment. It also includes
 four ash corner legs and eight ash edge bumpers, glued to the plywood core.
-Joints, amplifier PCB, leg and trim detail, control-panel support and wiring,
-and the plate's earthing and thermal-contact details remain to be designed.
+Joints, leg and trim detail, control-panel support and wiring remain open.
+The PCB and plate designs are complete for rev0; verify physical fit, plate
+earthing and thermal contact during assembly.
 The local
 rear electronics floor is 18 mm thick; the sealed acoustic baffle and
 partition foot retain the 36 mm laminated structure.
@@ -263,7 +260,7 @@ These are small-signal model results, not completed-enclosure measurements.
   no recorded rationale; the 2026-10-11 review retained the reference resistor
   and corrected the requirement. The output-filter values remain provisional
   pending their existing validation gates.
-- output-filter capacitor candidate: one TDK `B32701P4684K000` 680 nF
+- selected first-prototype output-filter capacitor: one TDK `B32701P4684K000` 680 nF
   metallised-polypropylene film shunt on each combined speaker-output side;
   prototype checks remain open in [Power amplifier](POWER_AMPLIFIER.md)
 - passive cooling only

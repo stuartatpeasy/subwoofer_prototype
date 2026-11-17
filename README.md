@@ -1,11 +1,11 @@
 # Active Subwoofer Project
 
-The saved schematic, four-layer PCB and fabrication archive form the `rev0`
-bare-board prototype release. The release identity and remaining order-preview
-gate are in [PCB layout review](doc/PCB_LAYOUT.md). Enclosure, harness,
-assembly and measured electrical/thermal performance remain prototype work.
-The [13 November system order review](doc/REV0_ORDER_REVIEW.md) records the
-PCB/P01-spreader fit evidence and separate pre-payment and dry-fit gates.
+The rev0 PCB and P01 thermal spreader are in fabrication, as reported on
+17 November 2026. Their designs are complete for this prototype; clearance
+was verified as adequate for prototyping. Physical fit, contact and thermal
+performance remain to be checked on received hardware during bring-up.
+[PCB layout](doc/PCB_LAYOUT.md) and [mechanical design](doc/MECHANICAL.md)
+own the implementation; enclosure, harness and assembly remain prototype work.
 The 140–150 W clean subwoofer output target is bounded peak capability;
 continuous output at that level is not required. The selected 200 W PSU retains
 headroom for those peaks. [Thermal design](doc/THERMAL.md) owns the sustained
@@ -63,11 +63,11 @@ specification first only when a decision could affect more than one subsystem.
 | What heat load must passive cooling handle? | [Thermal design](doc/THERMAL.md) | Present thermal assumptions and cooling requirement |
 | What must the prototype prove? | [Prototype validation](doc/VALIDATION.md) | Electrical, thermal, and acoustic measurements |
 | How should DipTrace schematic and PCB data be exposed or inspected? | [DipTrace data and tooling](doc/DIPTRACE.md) | Canonical partial schematic XML, shared Hub SDK route, read-only inspection workflow, and future parser/plugin gates |
-| What does the current routed PCB review find? | [PCB layout review](doc/PCB_LAYOUT.md) | Saved four-layer board correspondence, copper and return-path findings, and fabrication gates |
-| What must be checked before the rev0 PCB, P01 plate, and wider parts orders? | [System order review](doc/REV0_ORDER_REVIEW.md) | Dated cross-system evidence, order disposition, and first dry-fit gates |
+| What does the current routed PCB review find? | [PCB layout review](doc/PCB_LAYOUT.md) | Rev0 board disposition and remaining prototype checks |
 | Which shared resources, environment facts, or general procedures apply? | [Hub index](../Hub/README.md) | Open only the relevant Hub topic; retain this project's design and evidence here |
 | How should a schematic review be run and reported? | [Shared Hub index](../Hub/README.md) | Open its schematic-review procedure; use this project's saved schematic and current design authorities as the review inputs |
 | What work remains? | [Action list](doc/TODO.md) | Ordered design, construction, and validation tasks |
+| Where is superseded design evidence and chronology? | [History archive](doc/history/README.md) | Read only for provenance, lessons or a superseded decision |
 | How should the documentation itself be reviewed or consolidated? | [Documentation review procedure](doc/DOCUMENTATION_REVIEW.md) | Targeted and comprehensive review modes, preservation rules, validation, and Git gates |
 
 ## 3 Suggested reading routes

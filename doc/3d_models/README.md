@@ -66,9 +66,10 @@ The current export uses the revised DipTrace artwork, including the
 
 ## 4. Amplifier PCB assembly
 
-Import the [SketchUp ZIP](../../3d_models/main_board_sketchup.zip) in
-SketchUp for Web. It contains the [DAE](../../3d_models/main_board.dae)
-and two [legend textures](../../3d_models/main_board_textures).
+For SketchUp for Web, generate `3d_models/main_board_sketchup.zip` on demand
+using the amplifier generator below. The ZIP is a disposable output containing
+the retained [DAE](../../3d_models/main_board.dae) and two
+[legend textures](../../3d_models/main_board_textures). Its absence is normal.
 The [14 November STEP](../../diptrace/main_board.step) supplies the board,
 component and pin geometry. The [DipTrace XML](../../diptrace/main_board.dipxml)
 confirms the 90 × 100 mm outline and six mounting holes. The four corner
@@ -92,3 +93,23 @@ Run the following from the project directory or use the absolute script path.
 import runpy
 runpy.run_path("tools/freecad/build_amplifier_dae.py", run_name="__main__")
 ```
+
+The generator reads the retained STEP, DipTrace XML and fabrication archive
+linked above and the shared Hub toolkit. It overwrites the retained DAE and
+textures while writing the ZIP, so preserve those files before regenerating if
+their current versions are needed. It writes the DAE, textures and ZIP;
+check the ZIP contains the DAE and both textures, and that the DAE opens and
+shows the board and both legends. The existing DAE has the verified mesh
+bounds stated above; a fresh reconstruction has not been checked this turn.
+
+## 5. Printer-job retention gap
+
+A local ignored `3d_models/upper vent segment.gcode` contains a Cura 5.13.0
+CR-20 Pro job with partial embedded settings. Its source STL or slicer project
+and complete print configuration have not been identified; the G-code alone
+does not establish that the job was printed or make it reproducible. Preserve
+the local file while recovering the source and settings. The separate ignored
+`test squares 20mm.gcode` also has no identified retained source or print
+record. Before treating either as a repeatable project job, retain its source
+and record the material print settings in `3d_models/PRINT_SETTINGS.json` or
+a suitable slicer project, as required by [project instructions](../../AGENTS.md).

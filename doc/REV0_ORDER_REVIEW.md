@@ -1,14 +1,19 @@
 # Rev0 system order review — 13 November 2026
 
+> **HISTORY:** This is a dated review, not a current order procedure. The user
+> reports on 17 November that the PCB and P01 plate are in fabrication and
+> clearance is adequate for prototyping. Physical fit and thermal validation
+> remain open. Current next actions are in [the action list](TODO.md).
+
 > **Lifecycle:** Dated, read-only design review with one inspector-declaration repair; not an assembled qualification.
 >
 > **Owns:** Evidence and order disposition at this checkpoint. Current design details remain in [PCB layout](PCB_LAYOUT.md), [mechanical design](MECHANICAL.md), [thermal design](THERMAL.md), [power and grounding](POWER_AND_GROUNDING.md), and [system specification](SPECIFICATION.md).
 >
-> **Read when:** Preparing the rev0 bare-board or P01 spreader order, or planning the first cabinet dry fit.
+> **Read when:** Auditing the historical 13 November order review. Use current authorities for present actions.
 >
-> **Current conclusion:** No confirmed electrical or CAD hole-centre mismatch prevents a prototype PCB and P01 trial plate order. The bare-board checks and the CNC drawing acceptance below remain before payment. P01 is an intentional contact-stack trial and may need a revised plate. The control panel and cabinet construction are not yet released from the model alone.
+> **Historical conclusion:** No confirmed electrical or CAD hole-centre mismatch prevented a prototype PCB and P01 trial plate order. P01 was an intentional contact-stack trial. The dated order gates below describe the position at the time, not current actions.
 >
-> **Next gate:** Complete the bounded pre-payment checks in §3, then perform the physical fit sequence in §4 on received parts.
+> **Next gate:** Follow the current [action list](TODO.md) and [validation](VALIDATION.md) on received parts.
 >
 > **Limitations:** No live DipTrace DRC/connectivity report, JLCPCB rendered upload preview, JLCCNC quotation, physical parts, assembled temperature, or electrical measurements were obtained in this review.
 >

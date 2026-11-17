@@ -25,8 +25,8 @@
 > supervisor RESET topology senses 36 V and `17V3` with a selected dedicated
 > divider; its headroom claim depends on the loaded buck trough and 12 V LDO
 > input in [Power amplifier](POWER_AMPLIFIER.md).
-> Earlier STH0548S15/LM2937 selections and their calculations below are
-> superseded context, not current implementation instructions. Last reviewed:
+> Earlier STH0548S15/LM2937 selections are archived as historical context.
+> Last reviewed:
 > 2026-11-02. The RSP-200-36 remains selected after review of the revised
 > sustained-music thermal duty; the 200 W rating is headroom for clean peaks,
 > not a claim of continuous music consumption at 200 W.
@@ -57,8 +57,7 @@ Requirements:
 
 - keep the amplifier and analogue supply loads in their appropriate physical
   regions, with locally controlled return paths
-- check the selected parts' physical footprints, local return paths, and final
-  fabrication outputs before ordering; measure loaded rail levels, ripple,
+- the rev0 board is in fabrication; measure loaded rail levels, ripple,
   heat, and RESET sequencing on the built prototype, including the lowest
   `17V3` trough against the buck supervisor's release threshold
 
@@ -117,41 +116,13 @@ With 36 V input and `L5 = 47 µH`, ideal nominal inductor ripple is about
 1.5 A saturation current, and 0.19 Ω maximum DCR; the current rating is
 plausible for the auxiliary load, subject to its completed load budget.
 
-**2026-10-13 setpoint review — 18 V remains a candidate, not a schematic
-change.** Changing only R28 from 11 kΩ to 10.6 kΩ with R24 = 180 kΩ would
-give `1 V × (1 + 180/10.6) ≈ 17.98 V` nominal. With the shared
-0.985 V minimum feedback reference and opposed 1% divider tolerances, the
-calculated lowest static output would rise from about 16.78 V to 17.38 V,
-before loaded ripple, transient sag, feed drop or return offset. The maximum
-static output would be about 18.60 V, within the L78M12A's 27 V specified
-input range and the XC6701's 28 V operating range. At the provisional
-120 mA amplifier load, U9's pass loss plus typical 6 mA ground-current loss
-would rise from about 0.75 W to 0.83 W: approximately 0.08 W more, or 8 °C
-more rise on ST's 100 °C/W reference thermal arrangement. The 15 V LDO's
-pass loss would rise by 0.013 W at 20 mA or 0.064 W at 100 mA.
-
-Raising the buck setpoint alone does not change the existing supervisor's
-13.97 V lowest calculated falling threshold, which remains below the L78M12A's
-14.5 V specified input minimum. It would increase the calculated static
-healthy-rail margin above the highest RESET release threshold from about
-1.00 V to 1.60 V. A separate **unselected** 150 kΩ/8.2 kΩ, 1% supervisor
-divider would instead move the nominal falling trip to 15.43 V, with
-approximately 14.70–16.21 V falling corners and 16.61 V maximum rising
-release under the same 2% resistor, ±0.9% threshold, ±200 nA sense-current
-and 2.5% hysteresis assumptions used in [Power amplifier](POWER_AMPLIFIER.md).
-At the 17.38 V calculated lowest healthy buck output, that leaves only
-0.77 V before loaded ripple and feed/return offsets; its lowest falling
-trip is just 0.20 V above the L78M12A's specified input minimum. It therefore
-does not establish guaranteed pre-dropout RESET assertion. Retain the drawn
-17.36 V feedback and 130 kΩ/7.5 kΩ supervisor divider for now. Reconsider
-18 V after the loaded buck trough, analogue load/headroom, and U9 temperature
-are known; do not change either divider to claim a protection guarantee from
-nominal values alone.
+The selected 17.36 V setpoint and supervisor divider remain the rev0 basis.
+Loaded trough, LDO headroom and temperature are prototype checks. The earlier
+18 V alternative is documented in the [historical power record](history/power-and-grounding.md#6-earlier-buck-setpoint-comparison).
 
 The revised canonical XML shows a nine-pad SOIC-8EP pattern for `U5` and
 1210 patterns for `C42`–`C44`. U5 has symbol pad 9 assigned to `GND`.
-Verify the actual land dimensions against the chosen parts and the resulting
-PCB netlist before layout.
+The board is in fabrication; confirm the actual part and pad fit during assembly.
 
 The current XML assigns `C38`–`C40` (36 V input capacitors), `C42`–`C44`
 (buck output capacitors), `C46` (U5 VCC decoupling), `R26` (FREQ), `R23/R27` (EN
@@ -166,8 +137,7 @@ The TPA3251's PVDD and 12 V VDD/GVDD returns use one local amplifier ground.
 The 12 V branch takes its input from the buck's `17V3` net and returns it to
 the local amplifier-side `GND` region. The canonical schematic now uses a
 single `GND` net; unpopulated R1/R2 placeholders have been removed. Keep the
-amplifier return out of quiet analogue copper. Final 12 V
-supply placement and return routing remain open.
+amplifier return out of quiet analogue copper. Physical return paths and measured rail behaviour remain prototype checks.
 
 The three output capacitors total 30 µF by nameplate value. A user-supplied
 Samsung simulator plot for the placed `CL32A106KBJNNNE` reports a typical
@@ -179,10 +149,10 @@ guaranteed minimum or a measurement of the assembled bank. With the nominal
 `ΔV ≈ ΔI/(8 f C)` gives about 2.5 mV capacitive ripple at 20.4 µF, versus
 1.7 mV at an ideal 30 µF; ESR and pulse-skip behaviour are excluded. A fourth
 identical part would give about 27.2 µF at the same bias and reduce this
-idealised ripple to 1.9 mV. On 2026-10-13 the user chose to add a fourth
-identical schematic position as an unpopulated option; this saved XML snapshot
-still has only C42–C44. Populate the fourth only if loaded ripple, start-up or
-meaningful load transients show a material need. The output net remains named
+idealised ripple to 1.9 mV. A fourth identical position was considered but was not implemented in the
+saved XML, which contains only C42–C44. Consider an added capacitor or PCB
+revision only if loaded ripple, start-up or meaningful load transients show
+a material need. The output net remains named
 `17V3`. The 12 V LDO is sourced from this rail; at the previous 120 mA
 amplifier-rail allocation its pass loss is approximately
 `(17.36 V - 12 V) × 0.12 A ≈ 0.64 W`, before ground-current loss. The MP4581
@@ -200,8 +170,8 @@ and [Samsung capacitor identity](https://product.samsungsem.com/mlcc/CL32A106KBJ
 
 The saved schematic now places `U9 = L78M12ABDT-TR`: VIN/pin 1 is on
 `17V3`, GND/pin 2 and DPAK tab pad 4 are on `GND`, and VOUT/pin 3 is on
-`12VAMP`. The 24 October saved PCB carries these pad nets, but verify the land
-pattern dimensions and completed thermal copper before layout release. The
+`12VAMP`. The 24 October saved PCB carries these pad nets, with the final larger DPAK lands documented in the PCB review; inspect the
+assembled joints and measure temperature on the prototype. The
 former `U4 = NCP1117ST12T3G` and its SOT-223
 output-tab mapping, 20 V input limit, and output-capacitor ESR requirement are
 superseded by this substitution.
@@ -221,9 +191,7 @@ this 15 V LDO leaves regulation.
 
 The saved U6 `XC6701DF02FR-G` symbol now maps VIN/pad 3 to `17V3`, VSS/pad 2
 and tab pad 4 to `GND`, and VOUT/pad 1 to `15VA`. Torex identifies the SOT-223
-tab as VSS. Verify the transferred PCB netlist and provide suitable thermal
-copper before layout release; this closes the earlier missing schematic tab
-mapping.
+tab as VSS. The saved PCB incorporates this mapping; inspect assembly and operation on the prototype.
 
 The saved XML now shows `C36 = Murata GRJ21BC72A105ME11L`, a nominal 1 µF,
 100 V X7S ceramic from U9's `17V3` input to `GND`, and `C37 = 100 nF` from
@@ -267,31 +235,9 @@ typical 6 mA ground current adds about 0.10 W of regulator dissipation. Its
 the reference arrangement; actual PCB copper, enclosure ambient and measured
 load must be checked before approving the placed part.
 
-**24 October 2026 U9 PCB thermal checkpoint (provisional).** The saved
-`diptrace/main_board.dipxml` (SHA-256
-`45FE65236B2B1EA68EB9F5CC34BEE44550DD954FE301C733DB515B7A8B11C152`,
-`DipTrace-PCB` 5.3.5.1, mm) places U9 on Top at (27.2, 85.5) mm. Its placed
-footprint has physical pads 1=`17V3`, 3=`12VAMP`, and tab 4=`GND`; the omitted
-lead 2 is the DPAK ground/tab connection, not an output-tab mapping. The Top
-`GND` pour ID 34 reaches the tab and has a 499 mm² outline area before pad,
-hole and clearance cut-outs. Its useful thermal area is therefore smaller
-than 499 mm². The nearest saved `GND` vias are about 5.5–7.8 mm from the tab
-centre; there are none immediately beside it. The present Inner 2 `GND` pour ends
-around x=22.2 mm, to the left of the tab, while Inner 1 and Bottom have no
-local `GND` pour under U9. The planned four-layer heat-spreading structure is
-not yet implemented. Adjacent `17V3` and `12VAMP` copper is electrically
-separate and should not be counted as a directly joined tab heat spreader.
-The screenshots agree with this saved geometry; neither
-is an assembled thermal result or current DipTrace connectivity/DRC pass.
-
-**25 October 2026 superseding geometry checkpoint.** The
-[current routed-board review](PCB_LAYOUT.md) identifies a roughly 544 mm² Top
-GND-pour outline joined to U9's tab, further local GND fills on Inner 1,
-Inner 2 and Bottom, and 19 GND vias within 10 mm of the tab centre. The
-24 October statement that the planned four-layer structure was absent remains
-a dated description of that earlier file. The present geometry now implements
-the intended spreader, subject to connectivity/DRC and a temperature check at
-the actual continuous load. The dissipation model below remains provisional.
+The saved PCB incorporates local GND copper and vias for U9; its actual
+continuous-load temperature remains to be measured on the prototype. Earlier
+geometry snapshots are in the [historical power record](history/power-and-grounding.md#7-earlier-u9-layout-checkpoints).
 
 For a linear regulator, input power is `VIN × (IOUT + IQ)` and delivered
 output power is `VOUT × IOUT`, so
@@ -642,11 +588,7 @@ Requirements:
 
 ## 4 36 V distribution
 
-The existing wiring proposal uses the Mean Well PSU output as the primary DC
-branching point.
-
-**Later 25 October PCB review:** The proposal below records the previous
-dedicated-branch wiring plan, not the present saved copper. The current PCB
+The current PCB
 joins all three J6 `36V` pads into a broad Inner 1 feed and all three J6
 `GND` pads into common GND; no ratline is visible. The six selected conductors
 can therefore form three closely paired parallel feed/return paths between
@@ -659,13 +601,10 @@ The [current PCB review](PCB_LAYOUT.md#3-engineering-interpretation) gives the
 electrical interpretation. Preserve the contiguous U3 GND plane.
 
 ```text
-Mean Well +V (three common terminals)
-  |-- two proposed conductors --> TPA3251 amplifier-domain power entry
-  +-- one proposed conductor  --> 36 V -> 17V3 buck converter
-
-Mean Well -V (three common terminals)
-  |-- two proposed conductors --> TPA3251 power-ground region
-  +-- one proposed conductor  --> buck-converter input return
+Mean Well common +V and -V terminals
+  -> three closely paired feed/return cable pairs
+  -> common 36V and GND fields at J6
+  -> local amplifier and buck branches on the PCB
 ```
 
 Requirements:
@@ -694,8 +633,8 @@ under the specification's reference conditions, but a one-pair alternative
 would need a board-entry and enclosure-temperature check. The three-pair
 arrangement must not rely on equal sharing. Confirm the exact pin numbering,
 PCB footprint,
-connector clearance, cable reach, strain support, and polarity marking during
-layout. Recheck Mouser UK price, stock, normal-stock status, and MOQ for both
+connector clearance, cable reach, strain support, and polarity marking on
+the received board and harness. Recheck Mouser UK price, stock, normal-stock status, and MOQ for both
 parts before ordering; the six-position pigtail's UK listing was not confirmed
 at selection.
 
@@ -710,298 +649,10 @@ Manufacturer sources: [Mini-Fit Jr product specification](https://www.molex.com/
 
 ## 5 Superseded auxiliary-rail design and grounding
 
-Sections 5.1 and 5.2 retain the earlier 15 V converter and two 12 V
-post-regulator analysis for provenance. They do not define the current power
-tree, bill of materials, or grounding junctions. The current design uses one
-electrical GND net with physically controlled return regions; its detailed
-branch routing awaits the PCB layout.
-
-The 15 V buck output is the branching/reference point for the two 12 V rails.
-
-```text
-15 V buck
-  |
-  +--> 12V_AMP LDO
-  |      |
-  |      +--> TPA3251 VDD/GVDD
-  |
-  +--> 12V_ANA LDO
-         |
-         +--> analogue front end
-```
-
-Returns:
-
-```text
-buck output return
-  |
-  +--> 12V_AMP_GND
-  |
-  +--> 12V_ANA_GND
-```
-
-Requirements:
-
-- `12V_AMP_GND` and `12V_ANA_GND` are separate nets/branches.
-- Their intentional common point is the STH0548S15 output-return/reference
-  region.
-- Each electrical domain uses a solid local ground plane, whether the domains
-  are implemented on separate PCBs or on one partitioned PCB.
-- Do not route TPA3251 gate-drive or switching-current returns through analogue-ground wiring.
-
-### 5.1 Previous 15 V converter: XP Power STH0548S15
-
-Use the XP Power `STH0548S15` non-isolated switching-regulator module:
-
-- nominal system input: 36 V from its separate RSP-200-36 branch;
-- module input range: use the manufacturer's conservative published
-  `21–72 V DC` range for this design;
-- regulated output: 15 V;
-- component rating: 400 mA and 6 W;
-- project maximum total 15 V rail load: 250 mA and 3.75 W;
-- SMD-10 package, approximately `19.5 × 11.8 × 5.0 mm`;
-- no galvanic isolation; and
-- remote on/off left open for normal enabled operation unless the final
-  schematic identifies a specific need to control it.
-
-The 250 mA project limit preserves current and thermal margin for component
-tolerance and the TPA3251's typical-only VDD/GVDD current figures. It is the
-combined input-current budget for the `12V_AMP` LDO, `12V_ANA` LDO, RESET
-supervisor, VMID, and every other auxiliary load derived from 15 V. Do not use
-the module's unused 150 mA component capability to add functions without
-reopening this budget.
-
-Implementation requirements from the
-[STH05 data sheet](https://www.xppower.com/portals/0/pdfs/SF_STH05.pdf):
-
-- fit a performance-critical generic 22 µF, 63 V minimum, ±20%, 105 °C SMD
-  aluminium-electrolytic input capacitor at the converter pins; its 17.6 µF
-  tolerance minimum exceeds the manufacturer's 10 µF requirement; 63 V is the
-  preferred rating, while a 100 V substitute is acceptable if it meets the
-  same footprint, ripple, lifetime, and damping requirements;
-- measure a sample's ESR near the filter's 10–20 kHz resonance region and at
-  100 kHz, then use those values in the final damping assessment; this is not
-  the LM2937 output-capacitor stability test and no pass/fail ESR range is yet
-  asserted;
-- parallel it with the exact KEMET `C1206C104K1RAC7867` 100 nF, 100 V,
-  ±10%, X7R, 1206 ceramic capacitor;
-- keep total effective output capacitance within the specified 100 µF maximum;
-- populate the manufacturer's external C-L-C EMI-filter arrangement in Rev A
-  rather than treating the module-level Class-B claim as a completed-system
-  result;
-- use the exact Bourns `SRR7045-560M` 56 µH, ±20% shielded power inductor;
-- keep the input filter, converter, and local capacitors close together with
-  short current loops;
-- do not route PCB tracks beneath the module; and
-- place the module in the power region, away from the RCA inputs, VMID,
-  crossover filter, and other high-impedance analogue nodes.
-
-Use pin 9 as the 36 V branch input return and pin 7 as the output-side 15 V
-reference/branching region. Because the converter is non-isolated, these are
-electrically common inside the module; do not create an additional external
-return path that bypasses the intended input/output current routing.
-
-Implement the manufacturer's differential-mode input filter as two parallel
-2.2 µF, 100 V, 1206 MLCCs from the incoming 36 V branch to its return, followed
-by the series 56 µH inductor, followed by a second pair of parallel 2.2 µF,
-100 V, 1206 MLCCs at the converter side. The two 4.4 µF banks are on opposite
-sides of the inductor and therefore do not form one parallel 8.8 µF bank. With
-an ideally stiff source, 56 µH and the converter-side 4.4 µF give a nominal
-10.1 kHz pole; the inductor's ±20% tolerance moves that calculation to
-approximately 9.26–11.3 kHz. The local 22 µF aluminium electrolytic materially
-lowers the actual converter-side resonance, so final damping must be assessed
-using the selected capacitors' effective capacitance and ESR, the inductor DCR,
-and the source impedance.
-
-The `SRR7045-560M` has 0.18 Ω maximum DCR, 1.30 A typical RMS-current rating,
-0.80 A typical saturation current, and 9 MHz typical self-resonant frequency.
-These provide ample margin over both the 250 mA project output-load limit and
-the module's published 311 mA full-load input current at minimum input voltage.
-Treat it as a specialised exact part.
-
-Provisionally use four Würth Elektronik `885012208124` capacitors for the two
-EMI-filter shunt banks. This is a performance-critical exact Rev-A selection:
-2.2 µF, 100 V, ±10%, X7R, 1206. Würth's typical DC-bias curve indicates that
-approximately 45% of nominal capacitance remains near 40 V, giving about
-0.99 µF per capacitor and 1.98 µF per parallel pair. Using that estimate with
-56 µH moves the stiff-source pole estimate from the nominal 10.1 kHz to about
-15.1 kHz. This typical curve is a design estimate, not a guaranteed minimum.
-
-The Samsung `CL31B225KCHSNNE` was considered as an alternative. Its modelling
-tool indicates approximately 51.2% of nominal capacitance remains at 36.24 V,
-or about 1.13 µF per capacitor. Even if that model-to-model difference is
-real, it changes the calculated pole by only about 7% and ideal attenuation
-well above resonance by about 1.1 dB. That is not material enough to justify
-further catalogue optimisation before Rev-A measurement. Reopen the capacitor
-choice only if the assembled filter shows unacceptable ripple or ringing.
-
-Capacitor sources:
-
-- [Würth Elektronik 885012208124 data sheet](https://www.we-online.com/components/products/datasheet/885012208124.pdf)
-- [Samsung CL31B225KCHSNN component data](https://weblib.samsungsem.com/mlcc/mlcc-ec-data-sheet.do?partNumber=CL31B225KCHSNN)
-
-The data sheet gives approximately 540 kHz switching at 20% load and about
-50 kHz at 10% load. Check conducted ripple, magnetic/electric coupling, and
-mixing with the TPA3251's then-assumed 450 kHz switching during prototype
-validation. The current amplifier setting is nominal 600 kHz; this paragraph
-records the superseded converter option. The
-two 12 V post-regulators remain required; the converter does not directly feed
-the analogue or amplifier housekeeping circuits.
-
-### 5.2 Previous 12 V post-regulators and branch networks
-
-Use one Texas Instruments `LM2937ESX-12/NOPB` on each branch. This is the
-fixed-12 V, 500 mA DDPAK/TO-263 version; do not substitute the lower-current
-SOT-223 `LM2937IMPX-12/NOPB`. The common part was selected because its typical
-ripple-rejection plot remains useful through the STH0548S15's documented
-50–540 kHz operating region, it has adequate voltage/current/thermal margin,
-and it avoids a second regulator type. The graph is typical data measured on a
-5 V version under different conditions, not a guaranteed 12 V minimum. The
-12 V version's specified 10 Hz–100 kHz output noise is 360 µV RMS typical at a
-5 mA load, so prototype rail and audio-output noise measurements remain the
-acceptance evidence.
-
-A mixed regulator scheme could reduce intrinsic `12V_ANA` noise, but it would
-add another BOM line and layout pattern without solving a demonstrated problem.
-The OPA167x stages have strong supply rejection, the analogue branch receives
-additional RC attenuation, and the audio path is low-bandwidth. Rev A therefore
-uses two LM2937s. Reopen the mixed-regulator option only if the assembled board
-shows regulator-related noise or STH0548S15/TPA3251 mixing products that the
-defined filtering and layout cannot reduce adequately.
-
-Implement the 15 V output and two regulator inputs as follows:
-
-```text
-STH0548S15 pin 5
-  |
-  +-- 10 µF, 25 V SMD aluminium electrolytic
-  |     || KEMET C1206C104K1RAC7867 100 nF to pin 7
-  |
-  +-- 0 Ω link (12V_AMP; reserve 3.3 Ω option)
-  |     +-- KEMET EEV226M035S9DAA 22 µF aluminium electrolytic
-  |           || KEMET C1206C104K1RAC7867 100 nF
-  |     +-- LM2937ESX-12/NOPB
-  |
-  +-- 10 Ω, 1206, >=0.25 W (12V_ANA)
-        +-- KEMET EEV226M035S9DAA 22 µF aluminium electrolytic
-              || KEMET C1206C104K1RAC7867 100 nF
-        +-- LM2937ESX-12/NOPB
-```
-
-Fit the amplifier link as 0 Ω for Rev A. A 3.3 Ω population option is retained
-for measured-noise troubleshooting, but must not be fitted until RESET timing,
-minimum 15 V rail voltage, and loaded LDO headroom have been rechecked. Fit the
-10 Ω analogue resistor. With the nominal 22 µF downstream capacitance and
-ignoring ESR initially, its one-pole corner is
-
-```text
-fc = 1 / (2 pi R C) = 1 / (2 pi x 10 ohm x 22 µF) = 723 Hz
-```
-
-The selected capacitor's listed 1 Ω impedance at 100 kHz and 20 °C limits the
-high-frequency attenuation of the real 10 Ω RC network. Approximating that
-impedance as ESR gives a pole near 658 Hz, a zero near 7.23 kHz, and a
-high-frequency shelf of `1 / (10 + 1)`, or approximately -20.8 dB, before the
-LDO's own rejection. This is still useful: applying the shelf conservatively
-to the converter's specified 75 mV peak-to-peak ripple gives about 6.8 mV
-peak-to-peak at the LDO input. These are model estimates because impedance
-varies with frequency and temperature; assembled ripple measurement remains
-the acceptance evidence.
-
-At the 35 mA analogue branch budget the resistor drops 0.35 V and dissipates
-12 mW. The nominal capacitance directly associated with the converter output
-is 54.3 µF: 10 µF common, two 22 µF branch capacitors, and three 100 nF
-capacitors. This remains below the module's 100 µF maximum; even the stated
-positive component tolerances total only about 65.1 µF. Verify the final BOM
-and every additional 15 V capacitor against that limit.
-
-The power-tree capacitor selections use the project-wide generic/specialised
-distinction:
-
-| Function | Classification | Required selection |
-| --- | --- | --- |
-| STH0548S15 input bulk | performance-critical generic because its ESR contributes to filter damping | 22 µF, 63 V minimum and preferred, ±20%, 105 °C SMD aluminium electrolytic; 6.3 mm diameter × approximately 8 mm high can/land pattern; at least 100 mA ripple-current rating; measure ESR near 10–20 kHz and at 100 kHz and use it in the damping assessment; a 100 V substitute is acceptable if all requirements are met |
-| STH0548S15 EMI-filter shunt banks | performance-critical; provisional exact Rev-A part | four Würth Elektronik `885012208124`, 2.2 µF, 100 V, ±10%, X7R, 1206 MLCCs, used as two parallel pairs; use approximately 0.99 µF each at 40 V for preliminary analysis and verify the assembled filter |
-| 36 V-side high-frequency bypass | exact part for BOM consolidation | KEMET `C1206C104K1RAC7867`: 100 nF, 100 V, ±10%, X7R, 1206 |
-| STH0548S15 output bulk | generic | 10 µF, 25 V minimum, ±20%, 105 °C SMD aluminium electrolytic; 5 mm diameter × approximately 5.8 mm high can/land pattern |
-| STH0548S15 output and LM2937-input high-frequency bypasses | exact part for BOM consolidation | KEMET `C1206C104K1RAC7867`: 100 nF, 100 V, ±10%, X7R, 1206; one at the converter output and one directly at each LM2937 input |
-| each LM2937 input reservoir | performance-critical exact part | KEMET `EEV226M035S9DAA`: 22 µF, 35 V, ±20%, 105 °C SMD aluminium electrolytic, 5 mm diameter × 5.65 mm maximum height, listed 1 Ω impedance at 100 kHz and 20 °C, 160 mA ripple-current rating at 100 kHz, and 2,000-hour life at 105 °C |
-| each LM2937 output capacitor | performance-critical exact part | KEMET `EEV226M035S9DAA`; the same electrical and mechanical data apply; capacitance must remain at least 10 µF and measured ESR must remain between 0.01 Ω and 3 Ω over the project's operating-temperature range |
-| 12 V load decoupling | generic | 100 nF, 50 V, ±10%, X7R, 0603 unless a load data sheet requires otherwise |
-
-Use the same exact KEMET `EEV226M035S9DAA` at both LM2937 inputs and outputs.
-Its listed 1 Ω impedance at 100 kHz and 20 °C is comfortably within the
-LM2937's required 0.01–3 Ω output-capacitor ESR range; a lower ESR is not an
-intrinsic improvement because the regulator also imposes a lower stability
-limit. Before assembly approval, measure a representative sample's ESR at
-100 kHz. Manufacturer data or further measurements must also establish that
-capacitance remains at least 10 µF and ESR remains in range over the project's
-actual operating-temperature range. Preserve capacitor polarity. Reopen the
-selection only if those checks fail or Rev-A ripple/noise is unacceptable.
-
-Use KEMET `C1206C104K1RAC7867` for all four 100 nF high-frequency bypass
-positions in the auxiliary filter chain: the STH0548S15 input, its output, and
-the two LM2937 inputs. Its 100 V rating and 1206 package are deliberately
-overspecified on the 15 V nodes to consolidate the BOM. Yageo/KEMET's current
-specification identifies `C1206C104K1RACTU`, with
-`C1206C104K1RAC7800` as a packaging alias; treat those suffixes as the same
-electrical component only after confirming the supplied termination and
-packaging are compatible. This consolidation does not apply automatically to
-distributed 12 V load decouplers, which remain generic 100 nF parts placed in
-the package most appropriate to each load.
-
-All generic capacitor substitutions are acceptable only when every property
-in the table is met. Do not substitute the four exact KEMET capacitors without
-repeating their capacitance, ESR, temperature, ripple, lifetime, mechanical,
-and regulator-stability review. Confirm regulator stability on the assembled
-PCB because distributed ceramic load bypasses appear in parallel with the
-stability capacitor at high frequency.
-
-The current allocation is:
-
-| 15 V-derived load | Design allocation | Basis |
-| --- | ---: | --- |
-| TPA3251 VDD plus two PBTL gate-supply bridges | 120 mA | 90 mA published typical operating current plus 30 mA engineering allowance; TI gives no maximum |
-| eight OPA167x channels, including VMID allowance and signal current | 35 mA | 22.4 mA maximum quiescent current plus 12.6 mA allowance |
-| two LM2937 ground currents | 40 mA | 20 mA data-sheet maximum per regulator, conservatively applied outside its stated 500 mA test condition |
-| TPS3842 and divider/pull-up overhead | <1 mA | supervisor itself is microampere-scale; allowance covers the passive network |
-| **allocated total** | **196 mA maximum** | **54 mA remains inside the 250 mA project limit** |
-
-The TPA3251 figures are typical-only, so 120 mA is a controlled design
-allocation, not a guaranteed device maximum. Measure both branch currents on
-the first assembled board and reopen the budget if either allocation is
-exceeded.
-
-The LM2937 data sheet guarantees dropout only at 50 mA and 500 mA, not around
-the expected amplifier-branch current. Characterise one `LM2937ESX-12/NOPB`
-sample at 25 °C and 50, 75, 100, 125, 150, 175, and 200 mA. At each current,
-establish the regulated output at 15.0 V input, reduce input voltage slowly,
-and record `VIN - VOUT` when `VOUT` has fallen 100 mV from that regulated
-baseline. Treat this as sample characterisation rather than a guaranteed
-production limit, and use the result when finalising the TPS3842 threshold.
-
-For a deliberately pessimistic thermal check at 15.6 V, 40 °C ambient, full
-allocated load, and the LM2937's 20 mA maximum ground current, the amplifier
-regulator dissipates approximately
-
-```text
-PD = (15.6 V - 12 V) x 0.120 A + 15.6 V x 0.020 A = 0.744 W
-```
-
-Using TI's 41.8 °C/W JEDEC junction-to-ambient figure gives about 31 °C rise,
-or 71 °C junction. The analogue regulator, after the 10 Ω drop, dissipates
-approximately 0.42 W and reaches about 58 °C by the same deliberately
-pessimistic method. Both are comfortably below the 125 °C operating limit,
-but each DDPAK tab still needs a generous local copper heat-spreader; final PCB
-thermal verification supersedes the JEDEC estimate.
-
-Primary source:
-
-- [Texas Instruments LM2937 data sheet](https://www.ti.com/lit/ds/symlink/lm2937.pdf)
-- [KEMET EEV226M035S9DAA specification](https://search.kemet.com/download/specsheet/EEV226M035S9DAA)
-- [KEMET C1206C104K1RACTU specification](https://search.kemet.com/component-documentation/download/specsheet/C1206C104K1RACTU)
-
----
+The earlier STH0548S15 converter and two LM2937 branches are not part of the
+rev0 design. Their calculations and former grounding arrangement are in the
+[historical power record](history/power-and-grounding.md). The current power
+tree and common-GND implementation are described in the other sections here.
 
 ## 6 Amplifier ground and rear plate
 
@@ -1110,10 +761,10 @@ the physical PSU harness pairing and termination remain to be verified.
   checks. Parallel conductors' current division is not guaranteed by terminal
   assignment alone.
 - Trace the actual `17V3` supply and return loops, U3 local GND connection,
-  analogue reference, and any parallel return path to the PSU. Select the
-  ordered four-layer stack-up and copper weights from those routes. The
-  current 1 oz outer / 0.5 oz inner starting point is provisional, not a
-  finished-board current or thermal qualification.
+  analogue reference, and any parallel return path to the PSU. Verify the
+  actual finished-board stack-up and copper weights against those routes.
+  The saved nominal 1 oz outer / 0.5 oz inner stack is not a finished-board
+  current or thermal qualification; revise only if evidence warrants it.
 - Define the one intentional board-GND-to-rear-plate bond near the TPA3251 and
   account for possible additional contacts through the thermal interface,
   mounting hardware, connectors, and PSU. Verify the independent PE conductors
@@ -1170,7 +821,8 @@ Partition rules:
   crossing.
 - AC-couple both conductors symmetrically at the TPA3251 side so the amplifier
   establishes its own input bias/common-mode voltage. Confirm the final input
-  network when the differential-driver values are selected.
+  network against the selected differential-driver circuit during prototype
+  checks.
 - Populate the symmetric 100 Ω/100 pF input networks specified in
   [Front end](FRONT_END.md). Reserve matched optional footprints for any
   additional RF/common-mode mitigation justified by prototype measurements;
@@ -1226,7 +878,7 @@ Current layer intent for the first-prototype bare board:
   selected layers only if final route width, length, RMS current, voltage
   drop, heating, or fabrication constraints justify the extra cost. The user
   selected JLCPCB standard four-layer, 1.6 mm construction on 26 October;
-  confirm its options in the actual order before release.
+  the rev0 board is now in fabrication.
 
 The latest 25 October saved board restores broad GND to Inner 2, next to the
 rear-mounted U3, and broad 36 V to Inner 1. Bottom GND remains local at U3.
@@ -1248,7 +900,7 @@ The via-barrel resistance table in the
 [power-amplifier review](POWER_AMPLIFIER.md#112-via-barrel-resistance-estimate-17-october-2026)
 uses JLCPCB's published finished-layer figures; the user selected JLCPCB
 standard four-layer, 1.6 mm construction for the first bare-board order.
-Confirm the actual order options before release. If 1 oz inner planes are later
+The rev0 board is now in fabrication. If 1 oz inner planes are later
 needed for current distribution, select them deliberately and update the
 DipTrace stack and resistance estimate. The current saved via land is 0.45 mm,
 and the [via-field review](POWER_AMPLIFIER.md#113-via-field-current-and-plane-review-17-october-2026)

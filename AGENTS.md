@@ -213,8 +213,9 @@ part identities and substitution requirements.
 
 ## 8. Completion checks
 
-For a user-requested comprehensive documentation review or handover, follow
-[`doc/DOCUMENTATION_REVIEW.md`](doc/DOCUMENTATION_REVIEW.md) in addition to this file.
+For every requested documentation review or documentation handover, follow
+the [Hub documentation review procedure](../Hub/procedures/documentation-review.md)
+and the [local review route](doc/DOCUMENTATION_REVIEW.md).
 
 Before completing any task that changes project files:
 

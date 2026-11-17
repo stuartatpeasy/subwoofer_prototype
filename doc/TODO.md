@@ -4,15 +4,11 @@ Complete these in dependency order. Items described as locked in the
 [system specification](SPECIFICATION.md) should be reopened only if analysis,
 simulation, or measurement shows that they cannot meet the acceptance criteria.
 
-The `rev0` bare-board design and export are frozen for prototype fabrication.
-The user reports zero DRC and net-connectivity errors after the final trace/via
-tidying and repour; the unchanged schematic previously passed ERC. The remaining
-bare-board purchase gate is JLCPCB's rendered four-layer/NPTH upload preview
-and selected standard 1.6 mm order options. Open items below concerning
-component fit, harness, rear plate, mains assembly, rail noise, temperatures
-and measured behaviour are deferred to assembly or prototype validation unless
-their order-preview evidence reveals a bare-board defect. See [PCB layout
-review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
+The user reports that the rev0 PCB and P01 spreader are in fabrication as of
+17 November 2026. Their designs are complete for this prototype, with clearance
+verified as adequate for prototyping; physical fit and thermal performance are
+not yet verified. Perform the received-part checks and prototype validation
+below. Reopen a design only if the actual parts or measurements require it.
 
 ## 1 Complete the system specification
 
@@ -45,15 +41,15 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
 
 ## 2 Finalise and simulate the electronics
 
-- [ ] Complete the preferred TPA3251 differential-input stage: use the
+- [ ] Validate the selected TPA3251 differential-input stage: use the
   summer's 10 kΩ input and 3.0 kΩ feedback resistors to set 0.6
   correlated-stereo gain, then
   a level-pot-wiper follower and a 10.0 kΩ/10.0 kΩ unity inverter about VMID.
   Use the now-selected Panasonic `ECW-FD2W225J4` 2.2 µF film capacitors at
   both RCA inputs C1/C6 and both amplifier inputs C11/C15, followed by
   100 Ω series and 100 pF C0G shunt parts at the TPA3251 input pins.
-  Verify the four through-hole patterns and physical clearance during PCB
-  layout. Then confirm input
+  Verify the four through-hole patterns and physical fit on the received
+  board. Confirm input
   sensitivity, common-mode conditions, symmetry, and 15 V analogue-rail
   headroom in simulation. The revised 7.5 V VMID gives approximately 1.26 V
   peak input common-mode margin for a 3 V RMS source at the first buffer.
@@ -108,7 +104,7 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
   evaluation-board copper. Record the build identity and verify loaded
   buck/RESET behaviour on the prototype.
 - [ ] Check the selected U5 SOIC-8EP, C42–C44 1210 and U9 DPAK land dimensions,
-  U5 exposed-pad net, and local switching-current return before fabrication;
+  U5 exposed-pad net, and local switching-current return before assembly;
   measure the loaded ripple, start-up and meaningful load transients on the
   prototype. The fourth buck-output capacitor is an unimplemented option,
   to add only if measurements show a material need.
@@ -211,12 +207,17 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
   This is a prototype design choice, not an ESD immunity qualification;
   revisit protection if handling or susceptibility testing reveals a problem.
 - [ ] Extend the provisional white-noise review in
-  [analogue front end](FRONT_END.md) after the TPA3251 input network is fixed:
+  [analogue front end](FRONT_END.md) for the selected TPA3251 input network:
   include real VMID/rail noise, the source, pot contact/excess noise, amplifier
   self-noise, and the relevant measurement bandwidth. Compare J3 and speaker
   noise with the estimates before changing resistor values.
 
 ## 3 Complete the physical and safety design
+
+- [ ] Recover or regenerate the source geometry and complete slicer settings
+  for any vent printer job to be repeated; the existing ignored G-code is not
+  a verified reconstruction route. Preserve it until the source is resolved.
+  See the [printer-job retention gap](3d_models/README.md#5-printer-job-retention-gap).
 
 - [ ] Before the wider component order, generate a counted build BOM from the
   placed board references and add the external driver, PSU, inlet/fuse/drawer,
@@ -256,48 +257,13 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
   derating, both connector footprints, cable routes and clearances, strain
   support, polarity, and driver-end termination before assembly. Recheck
   Mouser availability and purchasing terms before ordering.
-- [ ] Confirm the replacement Gerber ZIP's rendered layers, NPTH mounting
-  holes and mask/silk alignment in JLCPCB's upload preview, then confirm the
-  selected standard four-layer, 1.6 mm order options before payment. The
-  read-only archive inspection found no remaining bare-board data defect
-  ([PR-010](PCB_LAYOUT.md#2-findings)). The saved nominal stack uses 35 µm
-  outer / 15.2 µm inner copper
-  and 0.2104/1.065/0.2104 mm dielectric spacing, matching JLCPCB's published
-  no-impedance-requirement example. The saved U9 now uses the larger `M` DPAK
-  lands; inspect its solder joints and temperature on the built prototype
-  ([PR-012](PCB_LAYOUT.md#2-findings)). If ordering a stencil, suppress paste
-  on TP1–TP11 ([PR-013](PCB_LAYOUT.md#2-findings)).
-  The [19 October power-stage review](POWER_AMPLIFIER.md#117-power-stage-copper-review-19-october-2026)
-  provisionally supports JLCPCB's standard 35 µm outer / 15.2 µm inner copper
-  at 150 W into 4 Ω. The current saved inner entry is 15.2 µm; revisit
-  weight only if final routes or prototype results justify it.
-  The saved C20/C26 bulk-capacitor feed and return now join the 36 V and GND
-  planes. Check the resulting filled copper, C21/C22/C24/C25
-  supply/return loops, output-via transitions and complete bootstrap loops
-  without imposing a length-matching requirement. Recheck whether the two
-  now-17-via `SPK+` fields or local 19-via `36V` field materially narrow either inner
-  plane; trim only where copper continuity benefits. Check the close
-  C20/C26 via-to-solder-land mask geometry and the C26 board-edge clearance;
-  the selected 5 mm maximum fastener fits its 6 mm keep-out, closing
-  [PR-003](PCB_LAYOUT.md#2-findings). The Bottom same-priority
-  `36V`/`AMP_OUT_B,C` and `AMP_OUT_A`/`GND` pour warning cleared after
-  reprioritising the output pours; verify that this did not narrow the U3
-  supply or output paths. The latest inner-layer swap restores GND adjacent
-  to U3 ([PR-006](PCB_LAYOUT.md#2-findings)); inspect the low-priority
-  [PR-007](PCB_LAYOUT.md#2-findings) analogue reference trade-off if refining
-  that region or investigating measured noise. The user reports passing DRC
-  and net-connectivity checks on this board; see the
-  [focused priority check](POWER_AMPLIFIER.md#116-bottom-copper-pour-priority-warning-18-october-2026).
-  Validate the finished via construction and JLCPCB order options;
-  rerun affected connectivity/DRC checks after any electrical, layout or rule change.
-  See the [current whole-board review](PCB_LAYOUT.md) and earlier
-  [power-stage layout review](POWER_AMPLIFIER.md#115-four-layer-output-and-supply-review-17-october-2026)
-  and [via-field review](POWER_AMPLIFIER.md#113-via-field-current-and-plane-review-17-october-2026).
-  The [local ceramic copper estimate](POWER_AMPLIFIER.md#114-local-pvdd-ceramic-copper-parasitic-estimate-17-october-2026)
-  supports retaining C21/C22/C24/C25 while the final filled copper and
-  prototype switching waveform remain open checks.
-- [ ] Finalise the aluminium-plate dimensions, mounting, finish exclusions and
-  sealing, together with the separate rear FR-4 control panel and its fixings.
+- [ ] When the fabricated PCB arrives, inspect the board and its component
+  fit. Suppress TP1–TP11 paste if a stencil is ordered; measure U9 temperature
+  and relevant switching behaviour during prototype validation. Rerun affected
+  design checks if the PCB is revised.
+- [ ] Finalise the separate rear FR-4 control panel, its fixings and the
+  spreader-to-cabinet mounting and sealing. Verify the fabricated P01 finish,
+  contact zones and mechanical fit on receipt.
 - [ ] Verify the DD11 inlet on the 1.6 mm FR-4 control panel: confirm the
   mounting cut-out, screw/washer stack, rear cover and wiring clearance on
   the purchased part before cutting. Route its PE lead to the independent
@@ -326,9 +292,8 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
 - [x] Replace the 8 November broad, 4 mm-thick plywood control land with
   a separate insulating FR-4 panel over a rear-ply through-opening in the
   11 November DAE. Physical and electrical assembly checks remain above.
-- [ ] Obtain JLCCNC confirmation of 6061 temper/8 mm stock, pocket and web
-  geometry, and the drawing-defined bare thermal/PE/ground contact zones;
-  check the 6061 heat-spreading budget before approving production geometry.
+- [ ] On receipt, verify the P01 plate material and finished pockets, threads
+  and bare thermal/PE/ground contact zones against the fabrication drawing.
 - [ ] Finalise the modelled brace network and its joints while retaining sound
   panel support; its roughly 1.259 L solid volume leaves about 21.305 L
   before driver displacement. Reconcile any overlaps and all solid
@@ -353,8 +318,7 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
 - [ ] Detail the DAE's 152 × 137 mm plate with two external 557-140AB sinks
   using the [P01 prototype order package](MECHANICAL.md#21-aluminium-heatsink-plate).
   Verify the twelve tapped heatsink positions against the received slots and
-  check the common screw stack at the six inner positions. Confirm the
-  P01 thread and finish callouts in the quote. After receiving the PCB and
+  check the common screw stack at the six inner positions. After receiving the PCB and
   P01, measure the support and contact stack and verify fastener fit,
   component clearance, PCB isolation and PE bond before releasing a revised plate.
 - [ ] Trial one rear-panel insert and countersunk screw in representative
@@ -370,17 +334,15 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
   Confirm loaded clearance, level support, and unobstructed driver/inlet
   paths; extend legs or use firm bearing pads if necessary. Preserve a
   deliberate rear-wall gap: sink tips extend about 22 mm beyond the ash legs.
-- [ ] Refine the [two-sink, reduced-plate and TIM screen](THERMAL.md)
-  for the finished pocket, the actual thin 8616 IC film, both greased sink
-  joints and wall clearance. Check 5–10 W sustained IC
-  heat at 35 °C room ambient and a bounded 15–18 W full-output stress case;
-  continuous 150 W audio output is not required. Include the 40 °C margin
-  assessment, hottest externally accessible plate and sink temperatures,
-  and the +50 °C body limit of both FR-4-panel-mounted potentiometers.
+- [ ] Measure the assembled two-sink thermal performance under representative
+  sustained operation and the bounded peak-output test, including accessible
+  surfaces, potentiometers, room temperature and wall clearance. Assess the
+  40 °C margin as described in [thermal design](THERMAL.md) and
+  [prototype validation](VALIDATION.md).
 - [ ] Resolve the TPA3251 package, PCB, and rear-plate stack mechanically and
   thermally; verify contact-land height/flatness, TIM compression, pocket
   clearances for parts and trimmed through-hole leads, and the actual heat
-  path against package and assembly drawings before laying out the board.
+  path against package and assembly drawings on the received prototype.
 
 ## 4 Build and validate
 
@@ -388,9 +350,9 @@ review](PCB_LAYOUT.md#5-current-release-disposition-12-november-2026).
   assembly-fit, grounding, thermal and mains-construction reviews before
   energising the complete prototype. The user reports zero ERC, DRC and
   connectivity errors after the current refill; rerun affected checks if the
-  electrical or PCB design changes. The bare-board data inspection passed;
-  JLCPCB's rendered upload preview remains under [PR-010](PCB_LAYOUT.md#2-findings).
-- [ ] Build the Rev-A prototype and perform the documented electrical, thermal,
+  electrical or PCB design changes. The user reports the board is in fabrication;
+  the outcome of the prior rendered-preview check is not recorded.
+- [ ] Build the rev0 prototype and perform the documented electrical, thermal,
   and acoustic validation.
 - [ ] Record measured results, deviations, corrective actions, and final
   as-built values in the documentation; update provisional statements only

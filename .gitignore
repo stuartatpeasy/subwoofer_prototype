@@ -16,3 +16,6 @@ tmp/**
 # GCode files
 *.gcode
 
+
+# On-demand SketchUp bundle; source DAE, textures and rebuild route are retained
+/3d_models/main_board_sketchup.zip
