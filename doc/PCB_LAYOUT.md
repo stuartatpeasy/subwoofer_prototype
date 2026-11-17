@@ -48,3 +48,35 @@ Inspect received board and component clearances, the selected fastener/keep-out 
 ## 5 Current release disposition, 12 November 2026
 
 The 12 November package is the rev0 fabrication release; the user reported on 17 November that the board is in fabrication and its clearance is adequate for prototyping. The precise factory preview and manufacturing results have not been independently verified here. Physical fit, thermal and electrical checks remain for the built prototype. Earlier order-preparation gates and superseded checkpoints are retained as dated evidence in the [review archive](history/PCB_LAYOUT_HISTORY.md).
+
+
+## 6 Component catalogue checkpoint, 17 November 2026
+
+The current schematic and PCB differ from the fabrication snapshots in
+section 1. C45 now records Murata `GCM1885C1H681GA16D`, a 680 pF, 50 V
+C0G capacitor in 0603 imperial (1.6 × 0.8 mm). Mouser's API confirms SKU
+`81-GCM1885C1H681GA6D` for that exact manufacturer part; the user had also
+verified the mapping. The schematic and PCB placed fields agree. The
+released and current PCB C45 footprint is `CAP_0603_N`, with a 1.6 × 0.8 mm
+body outline; no C45 PCB land change is indicated. The user corrected the
+duplicated C45 schematic datasheet URL and the C3/C7 datasheet links; the
+saved schematic contains the corrections. Embedded caches may retain older
+component data and do not establish the placed identity.
+
+R20/R21 are rated 2 W and the saved schematic and PCB now say 2 W; see the
+[power-amplifier authority](POWER_AMPLIFIER.md#4-zobeloutput-damping-network).
+The user accepts these parts for intermittent peaks; measure heating during
+prototype evaluation.
+
+C2/C4/C5 use Panasonic ECH-U1H823JX9, 4.8 × 3.3 mm. The user reports that
+the measured footprint bounding box and pads suggest adequate fit; confirm
+it during prototype assembly. The earlier catalogue case-label discrepancy
+does not by itself establish a mismatch.
+
+On 17 November, Mouser's API returned exact records for all 53 placed-part
+SKUs; R31 now correctly records `279-CRG0603F30K`, 30 kΩ, 1% and 0603.
+C49's SKU `81-GRM21BC81H475KE1K` identifies the 4.7 µF, 50 V, X6S
+0805 Murata `GRM21BC81H475KE11K`; both saved placed manufacturer-part fields
+now match that catalogue identity. All other placed manufacturer-part fields
+match the API records. This review did not qualify every land pattern, pinout or physical
+fit. No fabrication files were regenerated.

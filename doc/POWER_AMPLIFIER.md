@@ -611,7 +611,14 @@ the nominal voltage rating alone.
 
 **First-prototype saved selection, 26 October 2026:** C19/C28 use Würth
 `885012207116` 1 nF, 100 V; C16/C31 use Würth `885012207122` 10 nF,
-100 V. R20/R21 use Yageo `RC2512FK-7W3R3L` 3.3 Ω, 2.2 W, 2512.
+100 V. R20/R21 use Yageo `RC2512FK-7W3R3L` 3.3 Ω, 2 W, 2512.
+The 17 November catalogue check corrected the former 2.2 W description:
+[Yageo’s high-power series datasheet](https://www.mouser.com/datasheet/2/447/PYu-RC-HP_51_RoHS_L-1-532175.pdf)
+rates the 2512 part at 2 W at 70 °C, with derating above that temperature.
+Mouser’s listing has a conflicting 1 W description but a 2 W attribute.
+The user accepts the 2 W selection for intermittent peak output; actual
+heating remains a prototype measurement. The saved schematic and PCB now
+show the correct 2 W rating.
 The nominal voltage argument supports trying these values; it does not
 establish the actual overshoot, high-frequency damping or heat dissipation.
 

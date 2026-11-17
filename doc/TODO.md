@@ -91,7 +91,7 @@ below. Reopen a design only if the actual parts or measurements require it.
   pitch are settled for bare-board release.
 - [x] Select the first-prototype output damping parts: C19/C28 are Würth
   `885012207116` 1 nF, 100 V; C16/C31 are Würth `885012207122` 10 nF,
-  100 V; R20/R21 are Yageo `RC2512FK-7W3R3L` 3.3 Ω, 2.2 W. Measure
+  100 V; R20/R21 are Yageo `RC2512FK-7W3R3L` 3.3 Ω, 2 W. Measure
   post-inductor peaks and Zobel temperature on the built prototype before
   treating the network as qualified for sustained high output.
 - [x] Select the first-prototype auxiliary supply in
